@@ -1,7 +1,7 @@
 import { useLocalStorage } from '@vueuse/core';
 import { type Marker } from '@/types/marker';
 
-export const mainzLocation = useLocalStorage<Marker>('MAINZ_LOCATION', {
+export const mainzCoordinates = useLocalStorage<Marker>('MAINZ_LOCATION', {
     latitude: 49.97947979124793,
     longitude: 8.265089599253555,
 });

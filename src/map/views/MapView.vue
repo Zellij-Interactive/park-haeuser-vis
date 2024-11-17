@@ -11,7 +11,7 @@ import L from 'leaflet';
 import leaflet from 'leaflet';
 import { onMounted } from 'vue';
 import { useGeolocation } from '@vueuse/core';
-import { mainzLocation, nearbyMarkers } from '@/stores/mapStore';
+import { mainzCoordinates, nearbyMarkers } from '@/stores/mapStore';
 
 let map: leaflet.Map;
 let userGeoMarker: leaflet.Marker;
@@ -19,7 +19,10 @@ let userGeoMarker: leaflet.Marker;
 const { coords } = useGeolocation();
 
 onMounted(() => {
-    map = L.map('map').setView([mainzLocation.value.latitude, mainzLocation.value.longitude], 13);
+    map = L.map('map').setView(
+        [mainzCoordinates.value.latitude, mainzCoordinates.value.longitude],
+        13
+    );
 
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         minZoom: 12,
