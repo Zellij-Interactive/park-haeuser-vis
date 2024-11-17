@@ -1,8 +1,10 @@
 <template>
     <h1>DateTimeFilter</h1>
-    <p>silder goes here</p>
+    <ChartTest />
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import ChartTest from '../components/ChartTest.vue';
+</script>
 
 <style></style>
