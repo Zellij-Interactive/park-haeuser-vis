@@ -18,6 +18,10 @@ let userGeoMarker: leaflet.Marker;
 
 const { coords } = useGeolocation();
 
+// const corner1 = L.latLng(50.0078092599148, 8.137631034514413);
+// const corner2 = L.latLng(49.961951139071715, 8.380938379789432);
+// const bounds = L.latLngBounds(corner1, corner2);
+
 onMounted(() => {
     map = L.map('map').setView(
         [mainzCoordinates.value.latitude, mainzCoordinates.value.longitude],
@@ -25,8 +29,9 @@ onMounted(() => {
     );
 
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        //bounds: bounds,
         minZoom: 12,
-        maxZoom: 22,
+        maxZoom: 18,
         attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
     }).addTo(map);
 
@@ -42,10 +47,6 @@ onMounted(() => {
 <style>
 #map {
     width: 100%;
-    min-height: 100vh;
-
-    overflow: hidden;
-
-    border-radius: var(--radius);
+    min-height: 96vh;
 }
 </style>

@@ -35,6 +35,8 @@ import DateTimeFilterView from '@/date-time-filter/views/DateTimeFilterView.vue'
     grid-column: 2 / -1;
 
     z-index: 1;
+
+    margin-top: 20px;
 }
 
 .legend {
@@ -57,7 +59,6 @@ import DateTimeFilterView from '@/date-time-filter/views/DateTimeFilterView.vue'
     grid-template-rows: 4fr 4fr 1fr;
 
     height: 100vh;
-    overflow: hidden;
 
     gap: 10px;
     background-color: #2196f3;
@@ -65,7 +66,6 @@ import DateTimeFilterView from '@/date-time-filter/views/DateTimeFilterView.vue'
 }
 
 .grid-container > div {
-    border-radius: var(--radius);
     background-color: rgba(255, 255, 255, 0.7);
     text-align: center;
     padding: 20px 0;
