@@ -1,0 +1,39 @@
+<template>
+  <main>
+    <div id="map"></div>
+    <!-- <D3Line msg="Vue.js and D3 Line Chart" /> -->
+  </main>
+</template>
+
+<script setup lang="ts">
+import D3Line from '@/components/D3Line.vue'
+import L from 'leaflet'
+import leaflet from 'leaflet'
+import { onMounted } from 'vue'
+import { useGeolocation } from '@vueuse/core'
+
+let map: leaflet.Map
+//const userGeoMarker: leaflet.Marker
+
+const { coords } = useGeolocation()
+
+onMounted(() => {
+  map = L.map('map').setView([51.505, -0.09], 13)
+
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+  }).addTo(map)
+})
+</script>
+
+<style>
+#map {
+  width: 100%;
+  min-height: 100vh;
+
+  overflow: hidden;
+
+  border-radius: var(--radius);
+}
+</style>

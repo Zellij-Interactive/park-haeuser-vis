@@ -1,5 +1,5 @@
 <template>
-  <div class="main">
+  <div class="map">
     <DashboardView />
   </div>
   <div class="filter">
@@ -11,7 +11,7 @@
 </template>
 
 <script setup lang="ts">
-import DashboardView from './views/DashboardView.vue'
+import DashboardView from './views/MapView.vue'
 import DateTimeFilterView from './views/DateTimeFilterView.vue'
 import FilterView from './views/FilterView.vue'
 </script>
