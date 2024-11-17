@@ -37,34 +37,29 @@ const g = svg.append('g');
 //2. Parse the dates
 const parseTime = d3.timeParse('%d-%b-%y');
 
+const parsedData = data
+    .map((d) => ({
+        ...d,
+        parsedDate: parseTime(d.date),
+    }))
+    .filter((d) => d.parsedDate != null);
+
 //3. Creating the Chart Axes
 const x = d3
     .scaleTime()
-    .domain(
-        d3.extent(data, function (d) {
-            return parseTime(d.date);
-        })
-    )
+    .domain(d3.extent(parsedData, (d) => d.parsedDate) as [Date, Date])
     .rangeRound([0, width]);
 
 const y = d3
     .scaleLinear()
-    .domain(
-        d3.extent(data, function (d) {
-            return d.amount;
-        })
-    )
+    .domain(d3.extent(parsedData, (d) => d.amount) as [number, number])
     .rangeRound([height, 0]);
 
 //4. Creating a Line
 const line = d3
     .line()
-    .x(function (d) {
-        return x(parseTime(d.date));
-    })
-    .y(function (d) {
-        return y(d.amount);
-    });
+    .x((d) => x(d[1]))
+    .y((d) => y(d[1]));
 
 //5. Appending the Axes to the Chart
 g.append('g')
@@ -83,7 +78,7 @@ g.append('g')
 
 //6. Appending a path to the Chart
 g.append('path')
-    .datum(data)
+    .data(data)
     .attr('fill', 'none')
     .attr('stroke', 'steelblue')
     .attr('stroke-width', 1.5)

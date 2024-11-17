@@ -1,6 +1,6 @@
 <template>
-    <div id="map"></div>
-    <!-- <D3Line msg="Vue.js and D3 Line Chart" /> -->
+    <!-- <div id="map"></div> -->
+    <D3Line msg="Vue.js and D3 Line Chart" />
 </template>
 
 <script setup lang="ts">
