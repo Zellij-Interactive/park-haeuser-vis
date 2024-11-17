@@ -11,7 +11,7 @@ import L from 'leaflet';
 import leaflet from 'leaflet';
 import { onMounted } from 'vue';
 import { useGeolocation } from '@vueuse/core';
-import { mainzCoordinates, nearbyMarkers } from '@/stores/mapStore';
+import { mainzCoordinates, parkingGarages } from '@/stores/mapStore';
 
 let map: leaflet.Map;
 let userGeoMarker: leaflet.Marker;
