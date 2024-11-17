@@ -1,4 +1,4 @@
-import type { Marker } from './Marker'
+import type { Marker } from './marker'
 
 export type ParkingGarage = {
   location: Marker
