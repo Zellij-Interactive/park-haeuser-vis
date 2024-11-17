@@ -1,12 +1,11 @@
 <template>
-    <main>
-        <div id="map"></div>
-        <!-- <D3Line msg="Vue.js and D3 Line Chart" /> -->
-    </main>
+    <div id="map"></div>
+    <h1>Text</h1>
+    <!-- <D3Line msg="Vue.js and D3 Line Chart" /> -->
 </template>
 
 <script setup lang="ts">
-import D3Line from '@/components/D3Line.vue';
+import D3Line from '@/map/components/D3Line.vue';
 import L from 'leaflet';
 import leaflet from 'leaflet';
 import { onMounted } from 'vue';

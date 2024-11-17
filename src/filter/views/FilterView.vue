@@ -1,8 +1,6 @@
 <template>
-    <main>
-        <h1>Filter</h1>
-        <p>Filter goes here</p>
-    </main>
+    <h1>Filter</h1>
+    <p>Filter goes here</p>
 </template>
 
 <script setup lang="ts"></script>
