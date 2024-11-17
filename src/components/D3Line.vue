@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h2>{{ msg }} test</h2>
+    <h2>{{ props.msg }}</h2>
     <svg></svg>
   </div>
 </template>
@@ -8,14 +8,9 @@
 <script setup lang="ts">
 import * as d3 from 'd3'
 
-defineProps<{
+const props = defineProps<{
   msg: string
 }>()
-
-const width = 800
-const height = 600
-const svg = d3.select('svg').attr('width', width).attr('height', height)
-const g = svg.append('g')
 
 const data = [
   { date: '24-Apr-07', amount: 93.24 },
@@ -33,12 +28,20 @@ const data = [
   { date: '10-May-07', amount: 107.34 },
 ]
 
+const width = 800
+const height = 500
+
+const svg = d3.select('svg').attr('width', width).attr('height', height)
+const g = svg.append('g')
+
+//2. Parse the dates
 const parseTime = d3.timeParse('%d-%b-%y')
 
+//3. Creating the Chart Axes
 const x = d3
   .scaleTime()
   .domain(
-    d3.extent(data, function (d: { date: any }) {
+    d3.extent(data, function (d) {
       return parseTime(d.date)
     }),
   )
@@ -47,21 +50,23 @@ const x = d3
 const y = d3
   .scaleLinear()
   .domain(
-    d3.extent(data, function (d: { amount: any }) {
+    d3.extent(data, function (d) {
       return d.amount
     }),
   )
   .rangeRound([height, 0])
 
+//4. Creating a Line
 const line = d3
   .line()
-  .x(function (d: { date: any }) {
+  .x(function (d) {
     return x(parseTime(d.date))
   })
-  .y(function (d: { amount: any }) {
+  .y(function (d) {
     return y(d.amount)
   })
 
+//5. Appending the Axes to the Chart
 g.append('g')
   .attr('transform', 'translate(0,' + height + ')')
   .call(d3.axisBottom(x))
@@ -76,6 +81,7 @@ g.append('g')
   .attr('text-anchor', 'end')
   .text('Price ($)')
 
+//6. Appending a path to the Chart
 g.append('path')
   .datum(data)
   .attr('fill', 'none')

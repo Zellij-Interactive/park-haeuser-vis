@@ -1,8 +1,6 @@
 <template>
   <main>
-    <div class="about">
-      <h1>Dashboard</h1>
-    </div>
+    <h1>Dashboard</h1>
     <D3Line msg="Vue.js and D3 Line Chart" />
   </main>
 </template>
@@ -11,12 +9,4 @@
 import D3Line from '@/components/D3Line.vue'
 </script>
 
-<style>
-@media (min-width: 1024px) {
-  .about {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-  }
-}
-</style>
+<style></style>
