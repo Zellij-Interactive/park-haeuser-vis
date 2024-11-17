@@ -1,4 +1,4 @@
 export type Marker = {
-  latitude: number
-  longitude: number
-}
+    latitude: number;
+    longitude: number;
+};
