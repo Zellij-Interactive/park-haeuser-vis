@@ -1,6 +1,5 @@
 <template>
     <div id="map"></div>
-    <h1>Text</h1>
     <!-- <D3Line msg="Vue.js and D3 Line Chart" /> -->
 </template>
 
@@ -34,12 +33,14 @@ onMounted(() => {
         attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
     }).addTo(map);
 
-    var circle = L.circle([49.99431352635961, 8.257889508635651], {
+    const circle = L.circle([49.99431352635961, 8.257889508635651], {
         color: 'red',
         fillColor: '#f03',
         fillOpacity: 0.5,
         radius: 500,
     }).addTo(map);
+
+    circle.setRadius(600);
 });
 </script>
 
@@ -47,5 +48,7 @@ onMounted(() => {
 #map {
     width: 100%;
     min-height: 96vh;
+
+    z-index: 0;
 }
 </style>
