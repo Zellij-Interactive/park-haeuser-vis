@@ -12,7 +12,6 @@ import leaflet from 'leaflet'
 import { onMounted } from 'vue'
 import { useGeolocation } from '@vueuse/core'
 import { mainzLocation, nearbyMarkers } from '@/stores/mapStore'
-import { watchEffect } from 'vue'
 
 let map: leaflet.Map
 let userGeoMarker: leaflet.Marker
