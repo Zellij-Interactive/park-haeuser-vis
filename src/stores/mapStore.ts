@@ -9,18 +9,35 @@ export const mainzCoordinates = useLocalStorage<Marker>('MAINZ_LOCATION', {
     longitude: 8.265089599253555,
 });
 
-export const parkingGarages = useLocalStorage<ParkingGarage[]>('PARKING_GARAGES', () => {
-    let data;
+export const parkingGarages = useLocalStorage<ParkingGarage[]>('PARKING_GARAGES', []);
 
-    d3.csv('../../data/Parkhausdaten.csv')
-        .then((_data) => {
-            data = _data;
-            console.log(_data);
-        })
-        .catch((error) => {
-            console.error('Error loading the data:', error);
-        });
-
-    console.log(data);
-    return [];
+loadParkingGarageInfos().then((data) => {
+    parkingGarages.value = data;
 });
+
+async function loadParkingGarageInfos(): Promise<ParkingGarage[]> {
+    try {
+        const dsv = d3.dsvFormat(';');
+
+        const response = await fetch('./src/data/Parkhausinfos.csv');
+
+        if (!response) {
+            throw new Error('Failed to fetch CSV: ${response.statusText}');
+        }
+
+        const csvText = await response.text();
+        const rawData = dsv.parse(csvText);
+
+        return rawData.map((d) => ({
+            name: d.Name,
+            maximalOccupancy: +d['Maximale Belegung in Parkplaetze'],
+            location: {
+                latitude: parseFloat(d.Latitude.replace(',', '.')),
+                longitude: parseFloat(d.Longitude.replace(',', '.')),
+            },
+        }));
+    } catch (error) {
+        console.error('Error processing CSV data:', error);
+        return [];
+    }
+}
