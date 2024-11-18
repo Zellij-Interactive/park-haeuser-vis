@@ -1,6 +1,6 @@
 import type { Marker } from './marker';
 
-export type ParkingGarage = {
+export type ParkingGarageInfo = {
     location: Marker;
     name: string;
     maximalOccupancy: number;
