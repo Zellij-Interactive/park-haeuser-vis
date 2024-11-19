@@ -6,7 +6,7 @@
 import L from 'leaflet';
 import { onMounted } from 'vue';
 import { useGeolocation } from '@vueuse/core';
-import { mainzCoordinates, parkingGaragesInfos } from '@/stores/mapStore';
+import { mainzCoordinates, parkingGaragesInfos } from '@/services/parkingGarageService';
 
 let map: L.Map;
 
