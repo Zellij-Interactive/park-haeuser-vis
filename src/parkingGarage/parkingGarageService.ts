@@ -6,30 +6,17 @@ import { _throw } from '@/core/_throw';
 import { openDB } from 'idb';
 import type { ParkingGarage, ParkingGarageRaw } from '@/parkingGarage/types/parkingGarage';
 import { mapParkingGarageRawToParingGarage } from './mappers/parkingGarageMapper';
-import type { ParkingGarageInfo, ParkingGarageInfoRaw, ParkingGarageRMSERaw } from './types/parkingGarageInfo';
+import type {
+    ParkingGarageInfo,
+    ParkingGarageInfoRaw,
+    ParkingGarageRMSERaw,
+} from './types/parkingGarageInfo';
+import { ParkingGarageNames } from './types/parkingGarageNames';
 
 export const mainzCoordinates = useLocalStorage<Marker>('MAINZ_LOCATION', {
     latitude: 49.97947979124793,
     longitude: 8.265089599253555,
 });
-
-export enum ParkingGarageNames {
-    Bleiche = 'Bleiche',
-    Cinestar = 'Cinestar',
-    CityPort = 'CityPort',
-    Deutschhausplatz = 'Deutschhausplatz',
-    Loehrstrasse = 'Loehrstrasse',
-    Rheinufergarage = 'Rheinufergarage',
-    RoemischesTheater = 'RoemischesTheater',
-    Schillerplatz = 'Schillerplatz',
-    Taubertsberg = 'Taubertsberg',
-    Augustusplatz = 'Augustusplatz',
-}
-
-export const parkingGaragesInfos = useLocalStorage<ParkingGarageInfo[]>(
-    'PARKING_GARAGES_INFOS',
-    []
-);
 
 export const bleiche = useLocalStorage<ParkingGarage[]>('BLEICHE', []);
 export const cinestar = useLocalStorage<ParkingGarage[]>('CINESTAR', []);
