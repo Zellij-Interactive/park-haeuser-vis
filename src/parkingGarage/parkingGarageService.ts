@@ -1,16 +1,11 @@
 import { useLocalStorage } from '@vueuse/core';
-import { type Marker } from '@/types/marker';
+import { type Marker } from '@/parkingGarage/types/marker';
 import * as d3 from 'd3';
 import { timeParse } from 'd3';
 import { _throw } from '@/core/_throw';
 import { openDB } from 'idb';
-import type {
-    ParkingGarageInfo,
-    ParkingGarage,
-    ParkingGarageInfoRaw,
-    ParkingGarageRMSERaw,
-    ParkingGarageRaw,
-} from '@/types/parkingGarage';
+import type { ParkingGarage, ParkingGarageRaw } from '@/parkingGarage/types/parkingGarage';
+import { mapParkingGarageRawToParingGarage } from './mappers/parkingGarageMapper';
 
 export const mainzCoordinates = useLocalStorage<Marker>('MAINZ_LOCATION', {
     latitude: 49.97947979124793,
@@ -46,22 +41,21 @@ export const schillerplatz = useLocalStorage<ParkingGarage[]>('SCHILLERPLATZ', [
 export const taubertsberg = useLocalStorage<ParkingGarage[]>('TAUBERTSBERG', []);
 export const augustusplatz = useLocalStorage<ParkingGarage[]>('AUGUSTUSPLATZ', []);
 
-loadParkingGaragesInfos().then((data) => {
-    storeInIndexedDB('PARKING_GARAGES_INFOS', data);
-});
-
-loadParkingGaragesRMSE().then((data) => {
-    //storeInIndexedDB('PARKING_GARAGES_RMSE', data);
-});
-
 for (const garageName of Object.values(ParkingGarageNames)) {
-    loadParkingGaragesData(garageName).then((data) => {
-        //TODO add more garage infos before saving
-        storeInIndexedDB(garageName, data);
+    getParkingGaragesRaw(garageName).then(async (data) => {
+        const info = await getParkingGaragesInfoRaw();
+        const rmse = await getParkingGaragesRMSERaw();
+
+        data.forEach((d) => {
+            const parkingGarage = mapParkingGarageRawToParingGarage(d);
+            parkingGarage.infos = info;
+        });
+
+        //storeInIndexedDB(garageName, data);
     });
 }
 
-async function loadParkingGaragesInfos(): Promise<ParkingGarageInfoRaw[]> {
+async function getParkingGaragesInfoRaw(): Promise<ParkingGarageInfoRaw[]> {
     try {
         const dsv = d3.dsvFormat(';');
 
@@ -88,7 +82,7 @@ async function loadParkingGaragesInfos(): Promise<ParkingGarageInfoRaw[]> {
     }
 }
 
-async function loadParkingGaragesRMSE(): Promise<ParkingGarageRMSERaw[]> {
+async function getParkingGaragesRMSERaw(): Promise<ParkingGarageRMSERaw[]> {
     try {
         const dsv = d3.dsvFormat(';');
 
@@ -113,7 +107,7 @@ async function loadParkingGaragesRMSE(): Promise<ParkingGarageRMSERaw[]> {
     }
 }
 
-async function loadParkingGaragesData(garageName: string): Promise<ParkingGarageRaw[]> {
+async function getParkingGaragesRaw(garageName: string): Promise<ParkingGarageRaw[]> {
     try {
         const dsv = d3.dsvFormat(';');
 

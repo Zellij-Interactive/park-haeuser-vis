@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import type { ParkingGarage } from '@/types/parkingGarage';
+import type { ParkingGarage } from '@/parkingGarage/types/parkingGarage';
 
 export const useParkingGarageStore = defineStore('parking-garage', {
     state: () => ({
