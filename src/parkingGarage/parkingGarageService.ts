@@ -6,6 +6,7 @@ import { _throw } from '@/core/_throw';
 import { openDB } from 'idb';
 import type { ParkingGarage, ParkingGarageRaw } from '@/parkingGarage/types/parkingGarage';
 import { mapParkingGarageRawToParingGarage } from './mappers/parkingGarageMapper';
+import type { ParkingGarageInfo, ParkingGarageInfoRaw, ParkingGarageRMSERaw } from './types/parkingGarageInfo';
 
 export const mainzCoordinates = useLocalStorage<Marker>('MAINZ_LOCATION', {
     latitude: 49.97947979124793,
