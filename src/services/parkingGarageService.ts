@@ -1,12 +1,16 @@
 import { useLocalStorage } from '@vueuse/core';
 import { type Marker } from '@/types/marker';
-import type { ParkingGarageInfo, ParkingGarageInfoRaw } from '@/types/parkingGarage';
-import type { ParkingGarageData, ParkingGarageDataRaw } from '@/types/parkingGarageData';
 import * as d3 from 'd3';
 import { timeParse } from 'd3';
 import { _throw } from '@/core/_throw';
-import type { ParkingGarageRMSERaw } from '@/types/parkingGarageRMSE';
 import { openDB } from 'idb';
+import type {
+    ParkingGarageInfo,
+    ParkingGarage,
+    ParkingGarageInfoRaw,
+    ParkingGarageRMSERaw,
+    ParkingGarageRaw,
+} from '@/types/parkingGarage';
 
 export const mainzCoordinates = useLocalStorage<Marker>('MAINZ_LOCATION', {
     latitude: 49.97947979124793,
@@ -31,16 +35,16 @@ export const parkingGaragesInfos = useLocalStorage<ParkingGarageInfo[]>(
     []
 );
 
-export const bleiche = useLocalStorage<ParkingGarageData[]>('BLEICHE', []);
-export const cinestar = useLocalStorage<ParkingGarageData[]>('CINESTAR', []);
-export const cityPort = useLocalStorage<ParkingGarageData[]>('CITY_PORT', []);
-export const deutschhausplatz = useLocalStorage<ParkingGarageData[]>('DEUTSCHHAUSPLATZ', []);
-export const loehrstrasse = useLocalStorage<ParkingGarageData[]>('LOEHRSTRASSE', []);
-export const rheinufergarage = useLocalStorage<ParkingGarageData[]>('RHEINUFERGARAGE', []);
-export const roemischesTheater = useLocalStorage<ParkingGarageData[]>('ROEMISCHES_THEATER', []);
-export const schillerplatz = useLocalStorage<ParkingGarageData[]>('SCHILLERPLATZ', []);
-export const taubertsberg = useLocalStorage<ParkingGarageData[]>('TAUBERTSBERG', []);
-export const augustusplatz = useLocalStorage<ParkingGarageData[]>('AUGUSTUSPLATZ', []);
+export const bleiche = useLocalStorage<ParkingGarage[]>('BLEICHE', []);
+export const cinestar = useLocalStorage<ParkingGarage[]>('CINESTAR', []);
+export const cityPort = useLocalStorage<ParkingGarage[]>('CITY_PORT', []);
+export const deutschhausplatz = useLocalStorage<ParkingGarage[]>('DEUTSCHHAUSPLATZ', []);
+export const loehrstrasse = useLocalStorage<ParkingGarage[]>('LOEHRSTRASSE', []);
+export const rheinufergarage = useLocalStorage<ParkingGarage[]>('RHEINUFERGARAGE', []);
+export const roemischesTheater = useLocalStorage<ParkingGarage[]>('ROEMISCHES_THEATER', []);
+export const schillerplatz = useLocalStorage<ParkingGarage[]>('SCHILLERPLATZ', []);
+export const taubertsberg = useLocalStorage<ParkingGarage[]>('TAUBERTSBERG', []);
+export const augustusplatz = useLocalStorage<ParkingGarage[]>('AUGUSTUSPLATZ', []);
 
 loadParkingGaragesInfos().then((data) => {
     storeInIndexedDB('PARKING_GARAGES_INFOS', data);
@@ -109,7 +113,7 @@ async function loadParkingGaragesRMSE(): Promise<ParkingGarageRMSERaw[]> {
     }
 }
 
-async function loadParkingGaragesData(garageName: string): Promise<ParkingGarageDataRaw[]> {
+async function loadParkingGaragesData(garageName: string): Promise<ParkingGarageRaw[]> {
     try {
         const dsv = d3.dsvFormat(';');
 
