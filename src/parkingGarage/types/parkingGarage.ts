@@ -12,7 +12,7 @@ export type ParkingGarage = {
 };
 
 export type ParkingGarageRaw = {
-    name: string;
+    name: ParkingGarageName;
     location: Marker;
     maximalOccupancy: number;
 };

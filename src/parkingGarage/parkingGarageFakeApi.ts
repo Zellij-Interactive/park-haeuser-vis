@@ -3,7 +3,7 @@ import d3, { timeParse } from 'd3';
 import { openDB } from 'idb';
 import { mapParkingGarageRawToParingGarage } from './mappers/parkingGarageMapper';
 import type { ParkingGarageRaw, ParkingGarageRMSERaw, ParkingGarage } from './types/parkingGarage';
-import { ParkingGarageName } from './types/parkingGarageNames';
+import { ParkingGarageName, toParkingGarageName } from './types/parkingGarageNames';
 import type { ParkingGaragePredictions } from './types/parkingGaragePredictions';
 
 export const parkingGarageApi = {
@@ -63,13 +63,13 @@ async function getParkingGarageRaw(name: string): Promise<ParkingGarageRaw> {
         const csvText = await response.text();
         const rawData = dsv.parse(csvText);
 
-        const data = rawData.at(0);
+        const data = rawData[0];
         if (data == null) {
             _throw('Error getting parking garage infos.');
         }
 
         return {
-            name: data.Name,
+            name: toParkingGarageName(data.Name),
             maximalOccupancy: parseInt(data['Maximale Belegung in Parkplaetze']),
             location: {
                 latitude: parseFloat(data.Latitude.replace(',', '.')),
