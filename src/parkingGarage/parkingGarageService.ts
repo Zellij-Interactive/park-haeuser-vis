@@ -93,8 +93,7 @@ async function getParkingGaragesRMSERaw(name: string): Promise<ParkingGarageRMSE
             meanValue: parseFloat(d['Wahrer Mittelwert'].replace(',', '.')),
         }));
     } catch (error) {
-        console.error('Error processing CSV data:', error);
-        return [];
+        _throw('Error processing CSV data: ' + error);
     }
 }
 
@@ -135,8 +134,7 @@ async function getParkingGaragePredictionsRaw(name: string): Promise<ParkingGara
             shapSum: parseFloat(d['SHAP_Sum'].replace(',', '.')),
         }));
     } catch (error) {
-        console.error('Error processing CSV data:', error);
-        return [];
+        _throw('Error processing CSV data: ' + error);
     }
 }
 
@@ -147,16 +145,19 @@ async function storeInIndexedDB(key: string, value: any) {
             db.createObjectStore('keyval');
         },
     });
+
     await db.put('keyval', value, key);
 }
 
 // Retrieve data from IndexedDB
 export async function retrieveFromIndexedDB(key: ParkingGarageNames) {
     const db = await openDB('parking-garage-db', 1);
+
     return await db.get('keyval', key);
 }
 
 function getTimeOfDay(input: string): number {
     const match = input.match(/^(\d+),/);
+
     return match ? parseInt(match[1], 10) : -1;
 }
