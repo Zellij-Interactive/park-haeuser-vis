@@ -15,17 +15,22 @@ const props = defineProps<{
     parkingGarages: ParkingGarage[];
 }>();
 
-// const corner1 = L.latLng(50.0078092599148, 8.137631034514413);
-// const corner2 = L.latLng(49.961951139071715, 8.380938379789432);
-// const bounds = L.latLngBounds(corner1, corner2);
-let map: L.Map;
+var map: L.Map;
 
 function onButtonclick() {
-    console.log(props.parkingGarages);
+    for (const parking of props.parkingGarages) {
+        var marker = L.marker([parking.location.latitude, parking.location.longitude]).addTo(map);
+
+        marker.bindPopup(parking.name);
+    }
 }
 
 onMounted(() => {
     map = L.map('map').setView([mainzCoordinates.latitude, mainzCoordinates.longitude], 13);
+
+    // const corner1 = L.latLng(50.0078092599148, 8.137631034514413);
+    // const corner2 = L.latLng(49.961951139071715, 8.380938379789432);
+    // const bounds = L.latLngBounds(corner1, corner2);
 
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         //bounds: bounds,
@@ -33,15 +38,6 @@ onMounted(() => {
         maxZoom: 18,
         attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
     }).addTo(map);
-
-    const circle = L.circle([mainzCoordinates.latitude, mainzCoordinates.longitude], {
-        color: 'red',
-        fillColor: '#f03',
-        fillOpacity: 0.5,
-        radius: 500,
-    }).addTo(map);
-
-    //circle.setRadius(600);
 });
 </script>
 
