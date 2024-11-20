@@ -1,4 +1,4 @@
-export enum ParkingGarageNames {
+export enum ParkingGarageName {
     Bleiche = 'Bleiche',
     Cinestar = 'Cinestar',
     CityPort = 'CityPort',
