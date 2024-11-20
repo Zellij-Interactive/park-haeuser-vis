@@ -69,7 +69,6 @@ async function getParkingGarageRaw(name: string): Promise<ParkingGarageRaw> {
         const rawData = dsv.parse(csvText);
 
         const data = rawData.at(0);
-
         if (data != null) {
             return {
                 name: data.Name,
@@ -80,9 +79,9 @@ async function getParkingGarageRaw(name: string): Promise<ParkingGarageRaw> {
                 },
             };
         }
-    } finally {
-        throw new Error(`Error processing CSV data`);
-    }
+    } catch (ignore) {}
+
+    throw new Error(`Error processing CSV data`);
 }
 
 async function getParkingGaragesRMSERaw(name: string): Promise<ParkingGarageRMSERaw[]> {
