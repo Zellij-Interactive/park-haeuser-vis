@@ -1,8 +1,6 @@
 <template>
-  <main>
-    <h1>DateTimeFilter</h1>
-    <p>silder goes here</p>
-  </main>
+    <h1>Legend</h1>
+    <p>Legend goes here</p>
 </template>
 
 <script setup lang="ts"></script>
