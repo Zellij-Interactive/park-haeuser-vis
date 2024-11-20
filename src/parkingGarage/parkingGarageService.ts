@@ -1,7 +1,7 @@
 import { _throw } from '@/core/_throw';
 import type { ParkingGarage } from './types/parkingGarage';
 import { ParkingGarageName } from './types/parkingGarageNames';
-import { parkingGarageApi } from './parkingGarageApi';
+import { parkingGarageApi } from './parkingGarageFakeApi';
 
 export const parkingGarageService = {
     async getParkingGarage(name: ParkingGarageName): Promise<ParkingGarage> {
