@@ -2,11 +2,10 @@ import * as d3 from 'd3';
 import { timeParse } from 'd3';
 import { _throw } from '@/core/_throw';
 import { openDB } from 'idb';
-import type { ParkingGaragePredictionsRaw } from '@/parkingGarage/types/parkingGaragePredictions';
-import { mapParkingGaragePredictionsRawToParingGaragePredictions } from './mappers/parkingGaragePredictionsMapper';
 import type { ParkingGarageRaw, ParkingGarageRMSERaw } from './types/parkingGarage';
 import { ParkingGarageNames } from './types/parkingGarageNames';
 import { mapParkingGarageRawToParingGarage } from './mappers/parkingGarageMapper';
+import type { ParkingGaragePredictions } from './types/parkingGaragePredictions';
 
 // export const bleiche = useLocalStorage<ParkingGarage[]>('BLEICHE', []);
 // export const cinestar = useLocalStorage<ParkingGarage[]>('CINESTAR', []);
@@ -36,9 +35,7 @@ for (const name of Object.values(ParkingGarageNames)) {
 
     getParkingGaragePredictionsRaw(name).then(async (data) => {
         data.forEach((d) => {
-            const parkingGaragePredictions =
-                mapParkingGaragePredictionsRawToParingGaragePredictions(d);
-            parkingGarage.predictions.push(parkingGaragePredictions);
+            parkingGarage.predictions.push(d);
         });
 
         storeInIndexedDB(name, parkingGarage);
@@ -99,9 +96,7 @@ async function getParkingGaragesRMSERaw(name: string): Promise<ParkingGarageRMSE
     }
 }
 
-async function getParkingGaragePredictionsRaw(
-    name: string
-): Promise<ParkingGaragePredictionsRaw[]> {
+async function getParkingGaragePredictionsRaw(name: string): Promise<ParkingGaragePredictions[]> {
     try {
         const dsv = d3.dsvFormat(';');
 
