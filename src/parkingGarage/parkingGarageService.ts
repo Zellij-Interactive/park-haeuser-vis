@@ -2,7 +2,7 @@ import * as d3 from 'd3';
 import { timeParse } from 'd3';
 import { _throw } from '@/core/_throw';
 import { openDB } from 'idb';
-import type { ParkingGarageRaw, ParkingGarageRMSERaw } from './types/parkingGarage';
+import type { ParkingGarage, ParkingGarageRaw, ParkingGarageRMSERaw } from './types/parkingGarage';
 import { ParkingGarageNames } from './types/parkingGarageNames';
 import { mapParkingGarageRawToParingGarage } from './mappers/parkingGarageMapper';
 import type { ParkingGaragePredictions } from './types/parkingGaragePredictions';
@@ -17,6 +17,21 @@ import type { ParkingGaragePredictions } from './types/parkingGaragePredictions'
 // export const schillerplatz = useLocalStorage<ParkingGarage[]>('SCHILLERPLATZ', []);
 // export const taubertsberg = useLocalStorage<ParkingGarage[]>('TAUBERTSBERG', []);
 // export const augustusplatz = useLocalStorage<ParkingGarage[]>('AUGUSTUSPLATZ', []);
+
+export const parkingGarageService = {
+    async getParkingGarage(name: ParkingGarageNames): Promise<ParkingGarage> {
+        return await retrieveFromIndexedDB(name);
+    },
+
+    async getAllParkingGarages(): Promise<ParkingGarage[]> {
+        const parkingGarages: ParkingGarage[] = [];
+
+        for (const name of Object.values(ParkingGarageNames)) {
+            parkingGarages.push(await this.getParkingGarage(name));
+        }
+        return parkingGarages;
+    },
+};
 
 for (const name of Object.values(ParkingGarageNames)) {
     const parkingGarageRaw = await getParkingGarageRaw(name);
@@ -150,7 +165,7 @@ async function storeInIndexedDB(key: string, value: any) {
 }
 
 // Retrieve data from IndexedDB
-export async function retrieveFromIndexedDB(key: ParkingGarageNames) {
+export async function retrieveFromIndexedDB(key: ParkingGarageNames): Promise<ParkingGarage> {
     const db = await openDB('parking-garage-db', 1);
 
     return await db.get('keyval', key);
