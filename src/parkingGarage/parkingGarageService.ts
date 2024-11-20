@@ -56,19 +56,21 @@ async function getParkingGarageRaw(name: string): Promise<ParkingGarageRaw> {
         const rawData = dsv.parse(csvText);
 
         const data = rawData.at(0);
-        if (data != null) {
-            return {
-                name: data.Name,
-                maximalOccupancy: parseInt(data['Maximale Belegung in Parkplaetze']),
-                location: {
-                    latitude: parseFloat(data.Latitude.replace(',', '.')),
-                    longitude: parseFloat(data.Longitude.replace(',', '.')),
-                },
-            };
+        if (data == null) {
+            _throw('Error getting parking garage infos.');
         }
-    } catch (ignore) {}
 
-    throw new Error(`Error processing CSV data`);
+        return {
+            name: data.Name,
+            maximalOccupancy: parseInt(data['Maximale Belegung in Parkplaetze']),
+            location: {
+                latitude: parseFloat(data.Latitude.replace(',', '.')),
+                longitude: parseFloat(data.Longitude.replace(',', '.')),
+            },
+        };
+    } catch (error) {
+        _throw('Error processing CSV data: ' + error);
+    }
 }
 
 async function getParkingGaragesRMSERaw(name: string): Promise<ParkingGarageRMSERaw[]> {
