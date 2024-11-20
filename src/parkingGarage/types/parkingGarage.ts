@@ -1,8 +1,9 @@
 import type { Marker } from './marker';
+import type { ParkingGarageName } from './parkingGarageNames';
 import type { ParkingGaragePredictions } from './parkingGaragePredictions';
 
 export type ParkingGarage = {
-    name: string;
+    name: ParkingGarageName;
     location: Marker;
     maximalOccupancy: number;
     predictions: ParkingGaragePredictions[];
