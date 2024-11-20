@@ -1,4 +1,7 @@
 <template>
+    <div class="test">
+        <v-btn @click="onButtonclick()">Button</v-btn>
+    </div>
     <div id="map"></div>
 </template>
 
@@ -6,12 +9,20 @@
 import L from 'leaflet';
 import { onMounted } from 'vue';
 import { mainzCoordinates } from '@/core/constants';
+import type { ParkingGarage } from '@/parkingGarage/types/parkingGarage';
 
-let map: L.Map;
+const props = defineProps<{
+    parkingGarages: ParkingGarage[];
+}>();
 
 // const corner1 = L.latLng(50.0078092599148, 8.137631034514413);
 // const corner2 = L.latLng(49.961951139071715, 8.380938379789432);
 // const bounds = L.latLngBounds(corner1, corner2);
+let map: L.Map;
+
+function onButtonclick() {
+    console.log(props.parkingGarages);
+}
 
 onMounted(() => {
     map = L.map('map').setView([mainzCoordinates.latitude, mainzCoordinates.longitude], 13);
@@ -35,8 +46,15 @@ onMounted(() => {
 </script>
 
 <style>
+.test {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    z-index: 1;
+}
 #map {
     width: 100%;
     min-height: 96vh;
+    z-index: 0;
 }
 </style>

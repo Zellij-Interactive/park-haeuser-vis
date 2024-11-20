@@ -2,7 +2,7 @@
     <main>
         <div class="grid-container">
             <div class="map">
-                <MapView />
+                <MapView :parking-garages="parkingGarages" />
             </div>
             <div class="filter">
                 <FilterView />
@@ -22,6 +22,17 @@ import MapView from '@/map/views/MapView.vue';
 import FilterView from '@/filter/views/FilterView.vue';
 import LegendView from '@/legend/views/LegendView.vue';
 import DateTimeFilterView from '@/date-time-filter/views/DateTimeFilterView.vue';
+import { useParkingGarageStore } from '@/parkingGarage/parkingGarageStore';
+import type { ParkingGarage } from '@/parkingGarage/types/parkingGarage';
+import { onMounted, ref } from 'vue';
+
+const parkingGarageStore = useParkingGarageStore();
+
+const parkingGarages = ref<ParkingGarage[]>();
+
+onMounted(async () => {
+    parkingGarages.value = await parkingGarageStore.getAllParkingGarage();
+});
 </script>
 
 <style>
