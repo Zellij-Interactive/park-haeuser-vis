@@ -1,10 +1,11 @@
 import { _throw } from '@/core/_throw';
-import d3, { timeParse } from 'd3';
+import * as d3 from 'd3';
 import { openDB } from 'idb';
 import { mapParkingGarageRawToParingGarage } from './mappers/parkingGarageMapper';
 import type { ParkingGarageRaw, ParkingGarageRMSERaw, ParkingGarage } from './types/parkingGarage';
 import { ParkingGarageName, toParkingGarageName } from './types/parkingGarageNames';
 import type { ParkingGaragePredictions } from './types/parkingGaragePredictions';
+import { timeParse } from 'd3';
 
 export const parkingGarageApi = {
     // Retrieve data from IndexedDB
@@ -24,31 +25,35 @@ export const parkingGarageApi = {
 
         await db.put('keyval', value, key);
     },
+
+    async loadCSVData() {
+        console.log('Loading CSV data');
+        for (const name of Object.values(ParkingGarageName)) {
+            const parkingGarageRaw = await getParkingGarageRaw(name);
+
+            const parkingGarage = mapParkingGarageRawToParingGarage(parkingGarageRaw);
+
+            const rmseList = await getParkingGaragesRMSERaw(name);
+            rmseList
+                .map((e) => {
+                    return { rmse: e.rmse, meanValue: e.meanValue };
+                })
+                .forEach(({ rmse, meanValue }) => {
+                    parkingGarage.rmse.push(rmse);
+                    parkingGarage.meanValues.push(meanValue);
+                });
+
+            getParkingGaragePredictionsRaw(name).then(async (data) => {
+                data.forEach((d) => {
+                    parkingGarage.predictions.push(d);
+                });
+
+                parkingGarageApi.storeInIndexedDB(name, parkingGarage);
+            });
+        }
+        console.log('Data successfully loaded');
+    },
 };
-
-for (const name of Object.values(ParkingGarageName)) {
-    const parkingGarageRaw = await getParkingGarageRaw(name);
-
-    const parkingGarage = mapParkingGarageRawToParingGarage(parkingGarageRaw);
-
-    const rmseList = await getParkingGaragesRMSERaw(name);
-    rmseList
-        .map((e) => {
-            return { rmse: e.rmse, meanValue: e.meanValue };
-        })
-        .forEach(({ rmse, meanValue }) => {
-            parkingGarage.rmse.push(rmse);
-            parkingGarage.meanValues.push(meanValue);
-        });
-
-    getParkingGaragePredictionsRaw(name).then(async (data) => {
-        data.forEach((d) => {
-            parkingGarage.predictions.push(d);
-        });
-
-        parkingGarageApi.storeInIndexedDB(name, parkingGarage);
-    });
-}
 
 async function getParkingGarageRaw(name: string): Promise<ParkingGarageRaw> {
     try {
