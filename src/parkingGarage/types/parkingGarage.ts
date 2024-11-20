@@ -1,40 +1,24 @@
-import type { ParkingGarageInfo } from './parkingGarageInfo';
+import type { Marker } from './marker';
+import type { ParkingGaragePredictions } from './parkingGaragePredictions';
 
 export type ParkingGarage = {
-    infos?: ParkingGarageInfo;
-    date?: Date;
-    prediction: number;
-    shapEducation: number;
-    shapServicesSpecialtyRetail: number;
-    shapFinanceInsurance: number;
-    shapLeisureTime: number;
-    shapFoodServices: number;
-    shapHealth: number;
-    shapGrocery: number;
-    shapReligion: number;
-    shapShopping: number;
-    shapOthers: number;
-    shapPublicSector: number;
-    shapTime: number;
-    shapMonth: number;
-    shapSum: number;
+    name: string;
+    location: Marker;
+    maximalOccupancy: number;
+    predictions: ParkingGaragePredictions[];
+    rmse: number[];
+    meanValues: number[];
 };
 
 export type ParkingGarageRaw = {
     name: string;
-    prediction: number;
-    shapEducation: number;
-    shapServicesSpecialtyRetail: number;
-    shapFinanceInsurance: number;
-    shapLeisureTime: number;
-    shapFoodServices: number;
-    shapHealth: number;
-    shapGrocery: number;
-    shapReligion: number;
-    shapShopping: number;
-    shapOthers: number;
-    shapPublicSector: number;
-    shapTime: number;
-    shapMonth: number;
-    shapSum: number;
+    location: Marker;
+    maximalOccupancy: number;
+};
+
+export type ParkingGarageRMSERaw = {
+    name: string;
+    time: number;
+    rmse: number;
+    meanValue: number;
 };

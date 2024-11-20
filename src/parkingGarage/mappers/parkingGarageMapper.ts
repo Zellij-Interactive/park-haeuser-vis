@@ -1,23 +1,14 @@
-import type { ParkingGarageRaw, ParkingGarage } from '../types/parkingGarage';
+import type { ParkingGarage, ParkingGarageRaw } from '../types/parkingGarage.js';
 
-export function mapParkingGarageRawToParingGarage(parkingGarage: ParkingGarageRaw): ParkingGarage {
+export function mapParkingGarageRawToParingGarage(
+    parkingGarageInfo: ParkingGarageRaw
+): ParkingGarage {
     return {
-        infos: undefined,
-        date: undefined,
-        prediction: parkingGarage.prediction,
-        shapEducation: parkingGarage.shapEducation,
-        shapServicesSpecialtyRetail: parkingGarage.shapServicesSpecialtyRetail,
-        shapFinanceInsurance: parkingGarage.shapFinanceInsurance,
-        shapLeisureTime: parkingGarage.shapLeisureTime,
-        shapFoodServices: parkingGarage.shapFoodServices,
-        shapHealth: parkingGarage.shapHealth,
-        shapGrocery: parkingGarage.shapGrocery,
-        shapReligion: parkingGarage.shapReligion,
-        shapShopping: parkingGarage.shapShopping,
-        shapOthers: parkingGarage.shapOthers,
-        shapPublicSector: parkingGarage.shapPublicSector,
-        shapTime: parkingGarage.shapTime,
-        shapMonth: parkingGarage.shapMonth,
-        shapSum: parkingGarage.shapSum,
+        name: parkingGarageInfo.name,
+        location: parkingGarageInfo.location,
+        maximalOccupancy: parkingGarageInfo.maximalOccupancy,
+        predictions: [],
+        rmse: [],
+        meanValues: [],
     };
 }

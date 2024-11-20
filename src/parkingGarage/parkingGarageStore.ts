@@ -1,16 +1,16 @@
 import { defineStore } from 'pinia';
-import type { ParkingGarage } from '@/parkingGarage/types/parkingGarage';
+import type { ParkingGaragePredictions } from '@/parkingGarage/types/parkingGaragePredictions';
 
 export const useParkingGarageStore = defineStore('parking-garage', {
     state: () => ({
-        parkingGarages: new Array<ParkingGarage>(),
+        parkingGarages: new Array<ParkingGaragePredictions>(),
     }),
 
     actions: {
-        async loadAllParkingGarages(): Promise<ParkingGarage[]> {
+        async loadAllParkingGarages(): Promise<ParkingGaragePredictions[]> {
             return [];
         },
-        async getAllParkingGarages(): Promise<ParkingGarage[]> {
+        async getAllParkingGarages(): Promise<ParkingGaragePredictions[]> {
             return [];
         },
     },
