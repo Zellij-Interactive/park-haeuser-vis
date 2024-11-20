@@ -5,7 +5,7 @@
 <script setup lang="ts">
 import L from 'leaflet';
 import { onMounted } from 'vue';
-import { mainzCoordinates } from '@/parkingGarage/parkingGarageService';
+import { mainzCoordinates } from '@/core/constants';
 
 let map: L.Map;
 
@@ -14,10 +14,7 @@ let map: L.Map;
 // const bounds = L.latLngBounds(corner1, corner2);
 
 onMounted(() => {
-    map = L.map('map').setView(
-        [mainzCoordinates.value.latitude, mainzCoordinates.value.longitude],
-        13
-    );
+    map = L.map('map').setView([mainzCoordinates.latitude, mainzCoordinates.longitude], 13);
 
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         //bounds: bounds,
@@ -26,7 +23,7 @@ onMounted(() => {
         attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
     }).addTo(map);
 
-    const circle = L.circle([mainzCoordinates.value.latitude, mainzCoordinates.value.longitude], {
+    const circle = L.circle([mainzCoordinates.latitude, mainzCoordinates.longitude], {
         color: 'red',
         fillColor: '#f03',
         fillOpacity: 0.5,

@@ -1,22 +1,12 @@
-import { useLocalStorage } from '@vueuse/core';
-import { type Marker } from '@/parkingGarage/types/marker';
 import * as d3 from 'd3';
 import { timeParse } from 'd3';
 import { _throw } from '@/core/_throw';
 import { openDB } from 'idb';
-import type {
-    ParkingGaragePredictions,
-    ParkingGaragePredictionsRaw,
-} from '@/parkingGarage/types/parkingGaragePredictions';
+import type { ParkingGaragePredictionsRaw } from '@/parkingGarage/types/parkingGaragePredictions';
 import { mapParkingGaragePredictionsRawToParingGaragePredictions } from './mappers/parkingGaragePredictionsMapper';
-import type { ParkingGarage, ParkingGarageRaw, ParkingGarageRMSERaw } from './types/parkingGarage';
+import type { ParkingGarageRaw, ParkingGarageRMSERaw } from './types/parkingGarage';
 import { ParkingGarageNames } from './types/parkingGarageNames';
 import { mapParkingGarageRawToParingGarage } from './mappers/parkingGarageMapper';
-
-export const mainzCoordinates = useLocalStorage<Marker>('MAINZ_LOCATION', {
-    latitude: 49.97947979124793,
-    longitude: 8.265089599253555,
-});
 
 // export const bleiche = useLocalStorage<ParkingGarage[]>('BLEICHE', []);
 // export const cinestar = useLocalStorage<ParkingGarage[]>('CINESTAR', []);
@@ -164,7 +154,7 @@ async function storeInIndexedDB(key: string, value: any) {
 }
 
 // Retrieve data from IndexedDB
-async function retrieveFromIndexedDB(key: string) {
+export async function retrieveFromIndexedDB(key: ParkingGarageNames) {
     const db = await openDB('parking-garage-db', 1);
     return await db.get('keyval', key);
 }
