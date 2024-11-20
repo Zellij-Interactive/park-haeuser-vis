@@ -128,7 +128,7 @@ async function getParkingGaragePredictionsRaw(
 
         return rawData.map((d) => ({
             name: name,
-            date: parseDate(d.Datum) ?? undefined,
+            date: parseDate(d.Datum) ?? _throw('Error occurred while parsing date.'),
             prediction: parseFloat(d.Prediction.replace(',', '.')),
             shapEducation: parseFloat(d['SHAP_Education'].replace(',', '.')),
             shapServicesSpecialtyRetail: parseFloat(

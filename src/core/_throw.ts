@@ -1,3 +1,3 @@
-export function _throw(msg: string) {
+export function _throw(msg: string): never {
     throw new Error(msg);
 }
