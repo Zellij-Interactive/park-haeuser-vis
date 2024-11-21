@@ -26,5 +26,19 @@ export const useParkingGarageStore = defineStore('parking-garage', {
 
             return await this.loadAllParkingGarages();
         },
+
+        async getParkingGarage(name: ParkingGarageName): Promise<ParkingGarage> {
+            let parkingGarage = this.parkingGaragesMap.get(name);
+
+            if (parkingGarage != null) {
+                return parkingGarage;
+            }
+
+            parkingGarage = await parkingGarageService.getParkingGarage(name);
+
+            this.parkingGaragesMap.set(name, parkingGarage);
+
+            return parkingGarage;
+        },
     },
 });
