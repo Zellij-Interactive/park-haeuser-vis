@@ -1,5 +1,11 @@
 <template>
     <main>
+        <v-dialog v-model="isLoading" no-click-animation persistent height="46" width="250">
+            <v-card class="d-flex flex-column text-center pt-2">
+                <b class="mb-2">Loading...</b>
+                <v-progress-linear indeterminate></v-progress-linear>
+            </v-card>
+        </v-dialog>
         <div class="grid-container">
             <div class="map">
                 <MapView :parking-garages="parkingGarages" />
@@ -25,13 +31,17 @@ import DateTimeFilterView from '@/date-time-filter/views/DateTimeFilterView.vue'
 import { useParkingGarageStore } from '@/parkingGarage/parkingGarageStore';
 import type { ParkingGarage } from '@/parkingGarage/types/parkingGarage';
 import { onMounted, ref } from 'vue';
+import { usingIndicator } from '@/core/usingIndicator';
 
 const parkingGarageStore = useParkingGarageStore();
 
 const parkingGarages = ref<ParkingGarage[]>();
+const isLoading = ref(false);
 
 onMounted(async () => {
-    parkingGarages.value = await parkingGarageStore.getAllParkingGarage();
+    await usingIndicator(isLoading, async () => {
+        parkingGarages.value = await parkingGarageStore.getAllParkingGarage();
+    });
 });
 </script>
 
