@@ -11,60 +11,42 @@ import { onMounted, ref } from 'vue';
 import { mainzCoordinates } from '@/core/constants';
 import type { ParkingGarage } from '@/parkingGarage/types/parkingGarage';
 import { _throw } from '@/core/_throw';
+import { getCircleRadius, getColorSaturation } from '@/core/utils';
 
 const props = defineProps<{
     parkingGarages: ParkingGarage[];
 }>();
 
 const map = ref<L.Map>();
+const circlePane = ref<HTMLElement>();
 
 function onButtonClick() {
     if (map.value == null) {
         _throw('Something is wrong with the map.');
     }
     for (const parking of props.parkingGarages) {
-        var marker = L.marker([parking.location.latitude, parking.location.longitude]).addTo(
-            map.value
-        );
-
-        marker.bindPopup(parking.name).openPopup();
-    }
+        L.circle([parking.location.latitude, parking.location.longitude], {
+            color: '#000000',
+            fillColor: getColorSaturation(parking.predictions[0].prediction),
+            fillOpacity: 1,
+            radius: getCircleRadius(parking.maximalOccupancy),
+            pane: 'circlePane',
+        }).addTo(map.value);
+        }
 }
 
 onMounted(() => {
     map.value = L.map('map').setView([mainzCoordinates.latitude, mainzCoordinates.longitude], 13);
 
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        minZoom: 12,
+        minZoom: 14.5,
         maxZoom: 18,
         attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
     }).addTo(map.value);
 
     map.value.createPane('circlePane');
 
-    const circlePane = map.value.getPane('circlePane');
-
-    if (circlePane != null) {
-        circlePane.style.zIndex = '650';
-    }
-
-    var polygon = L.polygon([
-        [mainzCoordinates.latitude, mainzCoordinates.longitude],
-        [mainzCoordinates.latitude - 1, mainzCoordinates.longitude - 2],
-        [mainzCoordinates.latitude - 3, mainzCoordinates.longitude - 6],
-    ]).addTo(map.value);
-
-    var circle = L.circle([mainzCoordinates.latitude, mainzCoordinates.longitude], {
-        color: 'red',
-        fillColor: '#f03',
-        fillOpacity: 0.5,
-        radius: 500,
-        pane: 'circlePane', // Assign circle to the custom pane
-    }).addTo(map.value);
-
-    var marker = L.marker([mainzCoordinates.latitude, mainzCoordinates.longitude], {
-        pane: 'circlePane',
-    }).addTo(map.value);
+    circlePane.value = map.value.getPane('circlePane');
 });
 </script>
 
