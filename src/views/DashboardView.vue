@@ -35,7 +35,7 @@ import { usingIndicator } from '@/core/usingIndicator';
 
 const parkingGarageStore = useParkingGarageStore();
 
-const parkingGarages = ref<ParkingGarage[]>();
+const parkingGarages = ref<ParkingGarage[]>([]);
 const isLoading = ref(false);
 
 onMounted(async () => {
