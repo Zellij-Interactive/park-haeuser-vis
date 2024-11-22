@@ -10,4 +10,4 @@ Department of Technology, Applied Computer Science
 
 Tutor: Dr. Prof. Klaus Böhm
 
-Conception and development: Walid Beladdad, Karim Ouhammi
+Conception and development: Walid Beladdad, Maryam Asad and Karim Ouhammi
