@@ -1,8 +1,19 @@
 <template>
-    <h1>Legend</h1>
-    <p>Legend goes here</p>
+    <div class="legend-container">
+        <PredictionLegend />
+        <maxOccupancyLegend />
+    </div>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import maxOccupancyLegend from '../components/MaxOccupancyLegend.vue';
+import PredictionLegend from '../components/PredictionLegend.vue';
+</script>
 
-<style></style>
+<style>
+.legend-container {
+    width: 80%;
+    margin: var(--gap);
+    padding: var(--gap);
+}
+</style>
