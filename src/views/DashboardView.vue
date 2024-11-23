@@ -10,13 +10,13 @@
             <div class="map">
                 <MapView :parking-garages="parkingGarages" />
             </div>
-            <div class="filter">
+            <div class="filter d-flex justify-center align-center">
                 <FilterView />
             </div>
-            <div class="legend">
+            <div class="legend d-flex justify-center align-center">
                 <LegendView />
             </div>
-            <div class="date-time-filter">
+            <div class="date-time-filter d-flex justify-center align-center">
                 <DateTimeFilterView />
             </div>
         </div>
@@ -77,7 +77,7 @@ onMounted(async () => {
 .grid-container {
     display: grid;
     grid-template-columns: 6fr 1fr;
-    grid-template-rows: 4fr 4fr 1fr;
+    grid-template-rows: 4fr 1fr 1fr;
 
     height: 100vh;
 
@@ -88,8 +88,7 @@ onMounted(async () => {
 
 .grid-container > div {
     background-color: rgba(255, 255, 255, 0.7);
-    text-align: center;
     padding: 20px 0;
-    font-size: 30px;
+    font-size: 14px;
 }
 </style>
