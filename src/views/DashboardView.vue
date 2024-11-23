@@ -1,16 +1,22 @@
 <template>
     <main>
+        <v-dialog v-model="isLoading" no-click-animation persistent height="46" width="250">
+            <v-card class="d-flex flex-column text-center pt-2">
+                <b class="mb-2">Loading...</b>
+                <v-progress-linear indeterminate></v-progress-linear>
+            </v-card>
+        </v-dialog>
         <div class="grid-container">
             <div class="map">
                 <MapView :parking-garages="parkingGarages" />
             </div>
-            <div class="filter">
+            <div class="filter d-flex justify-center align-center">
                 <FilterView />
             </div>
-            <div class="legend">
+            <div class="legend d-flex justify-center align-center">
                 <LegendView />
             </div>
-            <div class="date-time-filter">
+            <div class="date-time-filter d-flex justify-center align-center">
                 <DateTimeFilterView />
             </div>
         </div>
@@ -25,13 +31,17 @@ import DateTimeFilterView from '@/date-time-filter/views/DateTimeFilterView.vue'
 import { useParkingGarageStore } from '@/parkingGarage/parkingGarageStore';
 import type { ParkingGarage } from '@/parkingGarage/types/parkingGarage';
 import { onMounted, ref } from 'vue';
+import { usingIndicator } from '@/core/usingIndicator';
 
 const parkingGarageStore = useParkingGarageStore();
 
-const parkingGarages = ref<ParkingGarage[]>();
+const parkingGarages = ref<ParkingGarage[]>([]);
+const isLoading = ref(false);
 
 onMounted(async () => {
-    parkingGarages.value = await parkingGarageStore.getAllParkingGarage();
+    await usingIndicator(isLoading, async () => {
+        parkingGarages.value = await parkingGarageStore.getAllParkingGarage();
+    });
 });
 </script>
 
@@ -67,7 +77,7 @@ onMounted(async () => {
 .grid-container {
     display: grid;
     grid-template-columns: 6fr 1fr;
-    grid-template-rows: 4fr 4fr 1fr;
+    grid-template-rows: 4fr 1fr 1fr;
 
     height: 100vh;
 
@@ -78,8 +88,7 @@ onMounted(async () => {
 
 .grid-container > div {
     background-color: rgba(255, 255, 255, 0.7);
-    text-align: center;
     padding: 20px 0;
-    font-size: 30px;
+    font-size: 14px;
 }
 </style>

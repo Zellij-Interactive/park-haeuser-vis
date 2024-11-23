@@ -1,47 +1,54 @@
 <template>
     <div class="test">
-        <v-btn @click="onButtonclick()">Button</v-btn>
+        <v-btn @click="onButtonClick()">Button</v-btn>
     </div>
     <div id="map"></div>
 </template>
 
 <script setup lang="ts">
 import L from 'leaflet';
-import { onMounted } from 'vue';
+import { onMounted, ref } from 'vue';
 import { mainzCoordinates } from '@/core/constants';
 import type { ParkingGarage } from '@/parkingGarage/types/parkingGarage';
+import { _throw } from '@/core/_throw';
+import { getCircleRadius } from '@/legend/utils/sizeScale';
+import { getColorSaturation } from '@/legend/utils/ordinalScale';
+import { sizeScale } from '@/legend/utils/sizeScale';
 
 const props = defineProps<{
     parkingGarages: ParkingGarage[];
 }>();
 
-// const corner1 = L.latLng(50.0078092599148, 8.137631034514413);
-// const corner2 = L.latLng(49.961951139071715, 8.380938379789432);
-// const bounds = L.latLngBounds(corner1, corner2);
-let map: L.Map;
+const map = ref<L.Map>();
+const circlePane = ref<HTMLElement>();
 
-function onButtonclick() {
-    console.log(props.parkingGarages);
+function onButtonClick() {
+    if (map.value == null) {
+        _throw('Something is wrong with the map.');
+    }
+    for (const parking of props.parkingGarages) {
+        L.circle([parking.location.latitude, parking.location.longitude], {
+            color: '#000000',
+            fillColor: getColorSaturation(parking.predictions[0].prediction),
+            fillOpacity: 1,
+            radius: sizeScale(parking.maximalOccupancy),
+            pane: 'circlePane',
+        }).addTo(map.value);
+    }
 }
 
 onMounted(() => {
-    map = L.map('map').setView([mainzCoordinates.latitude, mainzCoordinates.longitude], 13);
+    map.value = L.map('map').setView([mainzCoordinates.latitude, mainzCoordinates.longitude], 13);
 
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        //bounds: bounds,
-        minZoom: 12,
+        minZoom: 14.5,
         maxZoom: 18,
         attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-    }).addTo(map);
+    }).addTo(map.value);
 
-    const circle = L.circle([mainzCoordinates.latitude, mainzCoordinates.longitude], {
-        color: 'red',
-        fillColor: '#f03',
-        fillOpacity: 0.5,
-        radius: 500,
-    }).addTo(map);
+    map.value.createPane('circlePane');
 
-    //circle.setRadius(600);
+    circlePane.value = map.value.getPane('circlePane');
 });
 </script>
 

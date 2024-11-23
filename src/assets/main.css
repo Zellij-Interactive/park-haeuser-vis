@@ -1,23 +1,15 @@
 @import './base.css';
-/* 
-#app {
-    display: grid;
-    grid-template-columns: 6fr 1fr;
-    grid-template-rows: 4fr 4fr 1fr;
-
-    height: 100vh;
-    overflow: hidden;
-
-    gap: 10px;
-    background-color: #2196f3;
-    padding: 10px;
+/* Internet Explorer 10+ */
+html {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none;
 }
 
-#app > div {
-    border-radius: var(--radius);
-    background-color: rgba(255, 255, 255, 0.7);
-    text-align: center;
-    padding: 20px 0;
-    font-size: 30px;
-} 
-*/
+/* Chrome, Edge, Safari */
+html::-webkit-scrollbar {
+    display: none; /* Hide the scrollbar */
+}
+
+body {
+    overflow: auto;
+}
