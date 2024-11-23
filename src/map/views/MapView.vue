@@ -11,7 +11,9 @@ import { onMounted, ref } from 'vue';
 import { mainzCoordinates } from '@/core/constants';
 import type { ParkingGarage } from '@/parkingGarage/types/parkingGarage';
 import { _throw } from '@/core/_throw';
-import { getCircleRadius, getColorSaturation } from '@/core/utils';
+import { getCircleRadius } from '@/legend/utils/sizeScale';
+import { getColorSaturation } from '@/legend/utils/ordinalScale';
+import { sizeScale } from '@/legend/utils/sizeScale';
 
 const props = defineProps<{
     parkingGarages: ParkingGarage[];
@@ -29,10 +31,10 @@ function onButtonClick() {
             color: '#000000',
             fillColor: getColorSaturation(parking.predictions[0].prediction),
             fillOpacity: 1,
-            radius: getCircleRadius(parking.maximalOccupancy),
+            radius: sizeScale(parking.maximalOccupancy),
             pane: 'circlePane',
         }).addTo(map.value);
-        }
+    }
 }
 
 onMounted(() => {
