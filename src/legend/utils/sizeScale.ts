@@ -17,6 +17,7 @@ export const sizeLegend = (
     props: {
         sizeScale: d3.ScalePower<number, number, never>;
         textOffset: number;
+        isDarkModeOn: boolean;
     }
 ) => {
     const ticks = sizeScale.ticks(5).filter((d) => d != 0 && d != 400 && d != 800);
@@ -24,6 +25,8 @@ export const sizeLegend = (
     const groups: d3.Selection<SVGGElement, number, SVGGElement, number> = selection
         .selectAll<SVGGElement, number>('g')
         .data(ticks);
+
+    const textAndCirclesColor = props.isDarkModeOn ? 'white' : 'black';
 
     const groupsEnter = groups.enter().append('g');
     groupsEnter.merge(groups).attr('transform', (d, i) => `translate(0, ${sizeScale(d)})`);
@@ -33,14 +36,15 @@ export const sizeLegend = (
         .merge(groups.select('circle'))
         .attr('r', sizeScale)
         .attr('fill', 'none')
-        .attr('stroke', 'black');
+        .attr('stroke', textAndCirclesColor);
 
     groupsEnter
         .append('text')
         .merge(groups.select('text'))
         .text((d) => d)
         .attr('y', sizeScale)
-        .attr('x', props.textOffset);
+        .attr('x', props.textOffset)
+        .attr('fill', textAndCirclesColor);
 };
 
 export function getCircleRadius(occupancy: number): number {
