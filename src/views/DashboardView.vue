@@ -7,7 +7,11 @@
     </v-dialog>
     <div class="grid-container">
         <div class="map">
-            <MapView :parking-garages="parkingGarages" :dark-mode-on="props.darkModeOn" />
+            <MapView
+                :parking-garages="parkingGarages"
+                :dark-mode-on="props.darkModeOn"
+                :filter="filter"
+            />
         </div>
         <div class="filter">
             <FilterView :parking-garages-names="parkingGaragesNames" :filter="filter" />

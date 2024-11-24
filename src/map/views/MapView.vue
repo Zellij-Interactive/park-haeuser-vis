@@ -8,16 +8,15 @@ import { onMounted, ref, watch } from 'vue';
 import { mainzCoordinates } from '@/core/constants';
 import type { ParkingGarage } from '@/parkingGarage/types/parkingGarage';
 import { _throw } from '@/core/_throw';
-import { getColorSaturation } from '@/legend/utils/ordinalScale';
-import { sizeScale } from '@/legend/utils/sizeScale';
+import type { Filter } from '@/parkingGarage/types/filter';
 
 const props = defineProps<{
     parkingGarages: ParkingGarage[];
     darkModeOn: boolean;
+    filter: Filter;
 }>();
 
 const map = ref<L.Map>();
-const circlePane = ref<HTMLElement>();
 
 let lightLayer: L.Layer, darkLayer: L.Layer;
 
