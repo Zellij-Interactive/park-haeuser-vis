@@ -27,7 +27,6 @@ export const parkingGarageApi = {
     },
 
     async loadCSVData() {
-        console.log('Loading CSV data');
         for (const name of Object.values(ParkingGarageName)) {
             const parkingGarageRaw = await getParkingGarageRaw(name);
 
@@ -51,7 +50,6 @@ export const parkingGarageApi = {
                 parkingGarageApi.storeInIndexedDB(name, parkingGarage);
             });
         }
-        console.log('Data successfully loaded');
     },
 };
 
