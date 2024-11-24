@@ -1,16 +1,18 @@
 <template>
     <v-card class="pa-4">
-        <v-autocomplete
-            v-model="actualFilter.parkingGarages"
-            label="Parkhäuser"
-            :items="props.parkingGaragesNames"
-            variant="solo-filled"
-            bg-color="grey-lighten-5"
-            flat
-            multiple
-            chips
-            clearable
-        ></v-autocomplete>
+        <div>
+            <v-autocomplete
+                v-model="actualFilter.parkingGarages"
+                label="Parkhäuser"
+                :items="props.parkingGaragesNames"
+                variant="solo"
+                bg-color="secondary"
+                flat
+                multiple
+                chips
+                clearable
+            ></v-autocomplete>
+        </div>
 
         <div class="d-flex justify-space-between">
             <v-menu :close-on-content-click="false" location="bottom">
@@ -18,7 +20,7 @@
                     <v-btn
                         prepend-icon="mdi-calendar"
                         variant="flat"
-                        color="grey-lighten-3"
+                        color="secondary"
                         rounded="lg"
                         v-bind="props"
                         :text="`Startdatum: ${formatDate(actualFilter.dateRange.startDate)}`"
@@ -39,7 +41,7 @@
                     <v-btn
                         prepend-icon="mdi-calendar"
                         variant="flat"
-                        color="grey-lighten-3"
+                        color="secondary"
                         rounded="lg"
                         v-bind="props"
                         :text="`Enddatum: ${formatDate(actualFilter.dateRange.endDate)}`"
@@ -56,7 +58,12 @@
             </v-menu>
         </div>
 
-        <v-checkbox v-model="actualFilter.showSHAPValues" label="SHAP-Werte anzeigen"></v-checkbox>
+        <div>
+            <v-checkbox
+                v-model="actualFilter.showSHAPValues"
+                label="SHAP-Werte anzeigen"
+            ></v-checkbox>
+        </div>
 
         <v-card-actions class="justify-center px-6 py-3">
             <v-btn

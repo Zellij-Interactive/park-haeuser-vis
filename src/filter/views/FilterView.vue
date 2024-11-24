@@ -1,6 +1,6 @@
 <template>
     <div class="foo">
-        <v-expansion-panels elevation="0" class="pa-4">
+        <v-expansion-panels elevation="0" class="pa-4" color="primary">
             <v-expansion-panel eager>
                 <v-expansion-panel-title>Filter</v-expansion-panel-title>
                 <v-expansion-panel-text>
