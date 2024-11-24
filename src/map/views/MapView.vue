@@ -12,6 +12,7 @@ import type { Filter } from '@/parkingGarage/types/filter';
 import { useParkingGarageStore } from '@/parkingGarage/parkingGarageStore';
 import { sizeScale } from '@/legend/utils/sizeScale';
 import { getColorSaturation } from '@/legend/utils/ordinalScale';
+import type { ParkingGarageName } from '@/parkingGarage/types/parkingGarageNames';
 
 const props = defineProps<{
     parkingGarages: ParkingGarage[];
@@ -23,26 +24,20 @@ const parkingGarageStore = useParkingGarageStore();
 const map = ref<L.Map>();
 const circlePane = ref<HTMLElement>();
 
+const circleLayers = new Map<ParkingGarageName, L.Circle>();
+
 const lightLayer = ref<L.Layer>();
 const darkLayer = ref<L.Layer>();
 
 watch(
     () => parkingGarageStore.filter,
     (filter) => {
-        filter.parkingGarages.forEach(async (name) => {
-            if (map.value == null) {
-                _throw('Something is wrong with the map.');
-            }
+        removeCirclesFromMap();
 
+        filter.parkingGarages.forEach(async (name) => {
             const parkingGarage = await parkingGarageStore.getParkingGarage(name);
 
-            L.circle([parkingGarage.location.latitude, parkingGarage.location.longitude], {
-                color: '#000000',
-                fillColor: getColorSaturation(parkingGarage.predictions[0].prediction),
-                fillOpacity: 1,
-                radius: sizeScale(parkingGarage.maximalOccupancy),
-                pane: 'circlePane',
-            }).addTo(map.value);
+            addCircleToMap(parkingGarage);
         });
     }
 );
@@ -63,6 +58,33 @@ watch(
         map.value.addLayer(lightLayer.value);
     }
 );
+
+function addCircleToMap(parkingGarage: ParkingGarage) {
+    if (map.value == null) {
+        _throw('Unexpected error occurred with the map.');
+    }
+
+    const circle = L.circle([parkingGarage.location.latitude, parkingGarage.location.longitude], {
+        color: '#000000',
+        fillColor: getColorSaturation(parkingGarage.predictions[0].prediction),
+        fillOpacity: 1,
+        radius: sizeScale(parkingGarage.maximalOccupancy),
+        pane: 'circlePane',
+    });
+
+    circle.addTo(map.value);
+
+    circleLayers.set(parkingGarage.name, circle);
+}
+
+function removeCirclesFromMap() {
+    circleLayers.forEach((circle, name) => {
+        if (circle) {
+            map.value?.removeLayer(circle);
+            circleLayers.delete(name);
+        }
+    });
+}
 
 onMounted(() => {
     map.value = L.map('map').setView([mainzCoordinates.latitude, mainzCoordinates.longitude], 13);
