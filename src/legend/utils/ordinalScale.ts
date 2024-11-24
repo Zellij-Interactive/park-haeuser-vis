@@ -14,11 +14,14 @@ export const colorLegend = (
         rectSize: number;
         spacing: number;
         textOffset: number;
+        isDarkModeOn: boolean;
     }
 ) => {
     const groups: d3.Selection<SVGGElement, string, SVGGElement, unknown> = selection
         .selectAll<SVGGElement, string>('g')
         .data(colorScale.domain());
+
+    const textColor = props.isDarkModeOn ? 'white' : 'black';
 
     const groupsEnter = groups.enter().append('g');
     groupsEnter.merge(groups).attr('transform', (d, i) => `translate(0, ${i * props.spacing})`);
@@ -36,7 +39,8 @@ export const colorLegend = (
         .text((d) => d)
         .attr('dy', '0.32em')
         .attr('dx', props.textOffset)
-        .attr('y', props.rectSize / 2);
+        .attr('y', props.rectSize / 2)
+        .attr('fill', textColor);
 };
 
 export function getColorSaturation(prediction: number) {

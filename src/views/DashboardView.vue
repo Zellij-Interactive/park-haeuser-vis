@@ -12,8 +12,8 @@
         <div class="filter">
             <FilterView :parking-garages-names="parkingGaragesNames" :filter="filter" />
         </div>
-        <div class="legend d-flex justify-center align-center">
-            <LegendView />
+        <div class="legend d-flex justify-end align-end pr-4">
+            <LegendView :dark-mode-on="props.darkModeOn" />
         </div>
         <div class="date-time-filter d-flex justify-center align-center">
             <DateTimeFilterView />
@@ -74,6 +74,8 @@ onMounted(async () => {
     z-index: 1;
 
     margin-top: 20px;
+
+    border: 2px black solid;
 }
 
 .legend {
@@ -81,6 +83,7 @@ onMounted(async () => {
     grid-column: 2 / -1;
 
     z-index: 1;
+    border: 2px black solid;
 }
 
 .date-time-filter {
