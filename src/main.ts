@@ -19,7 +19,7 @@ const vuetify = createVuetify({
     components,
     directives,
     theme: {
-        defaultTheme: 'dark',
+        defaultTheme: 'light',
         themes: {
             light: {
                 dark: false,
@@ -27,7 +27,6 @@ const vuetify = createVuetify({
                     background: colors.grey.lighten5,
                     primary: colors.teal.darken3,
                     secondary: colors.grey.lighten5,
-                    'border-color': colors.teal.darken3,
                 },
             },
             dark: {

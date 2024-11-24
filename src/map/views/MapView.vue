@@ -55,7 +55,7 @@ onMounted(() => {
     });
 
     // Add the default layer (light mode)
-    darkLayer.addTo(map.value);
+    map.value.addLayer(lightLayer);
 });
 </script>
 
