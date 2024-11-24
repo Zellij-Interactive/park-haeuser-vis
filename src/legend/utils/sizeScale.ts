@@ -20,7 +20,6 @@ export const sizeLegend = (
     }
 ) => {
     const ticks = sizeScale.ticks(5).filter((d) => d != 0 && d != 400 && d != 800);
-    console.log(ticks);
 
     const groups: d3.Selection<SVGGElement, number, SVGGElement, number> = selection
         .selectAll<SVGGElement, number>('g')

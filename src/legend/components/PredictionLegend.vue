@@ -1,5 +1,5 @@
 <template>
-    <b>Prediction:</b>
+    <span>Prediction:</span>
     <div class="d-flex justify-end align-end container">
         <div ref="svgSaturationLegendContainer"></div>
     </div>

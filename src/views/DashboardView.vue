@@ -1,26 +1,24 @@
 <template>
-    <main>
-        <v-dialog v-model="isLoading" no-click-animation persistent height="46" width="250">
-            <v-card class="d-flex flex-column text-center pt-2">
-                <b class="mb-2">Loading...</b>
-                <v-progress-linear indeterminate></v-progress-linear>
-            </v-card>
-        </v-dialog>
-        <div class="grid-container">
-            <div class="map">
-                <MapView :parking-garages="parkingGarages" />
-            </div>
-            <div class="filter d-flex justify-center align-center">
-                <FilterView />
-            </div>
-            <div class="legend d-flex justify-center align-center">
-                <LegendView />
-            </div>
-            <div class="date-time-filter d-flex justify-center align-center">
-                <DateTimeFilterView />
-            </div>
+    <v-dialog v-model="isLoading" no-click-animation persistent height="46" width="250">
+        <v-card class="d-flex flex-column text-center pt-2">
+            <b class="mb-2">Loading...</b>
+            <v-progress-linear indeterminate></v-progress-linear>
+        </v-card>
+    </v-dialog>
+    <div class="grid-container">
+        <div class="map">
+            <MapView :parking-garages="parkingGarages" :dark-mode-on="props.darkModeOn" />
         </div>
-    </main>
+        <div class="filter">
+            <FilterView :parking-garages-names="parkingGaragesNames" :filter="filter" />
+        </div>
+        <div class="legend d-flex justify-center align-center">
+            <LegendView />
+        </div>
+        <div class="date-time-filter d-flex justify-center align-center">
+            <DateTimeFilterView />
+        </div>
+    </div>
 </template>
 
 <script setup lang="ts">
@@ -32,11 +30,29 @@ import { useParkingGarageStore } from '@/parkingGarage/parkingGarageStore';
 import type { ParkingGarage } from '@/parkingGarage/types/parkingGarage';
 import { onMounted, ref } from 'vue';
 import { usingIndicator } from '@/core/usingIndicator';
+import {
+    listOfParkingGaragesNames,
+    ParkingGarageName,
+} from '@/parkingGarage/types/parkingGarageNames';
+import { maxDate, minDate, type Filter } from '@/parkingGarage/types/filter';
+import { DateRange } from '@/core/dateRange';
+
+const props = defineProps<{
+    darkModeOn: boolean;
+}>();
 
 const parkingGarageStore = useParkingGarageStore();
 
+const parkingGaragesNames: ParkingGarageName[] = listOfParkingGaragesNames;
+
 const parkingGarages = ref<ParkingGarage[]>([]);
 const isLoading = ref(false);
+
+const filter = ref<Filter>({
+    parkingGarages: [],
+    dateRange: new DateRange(minDate, maxDate),
+    showSHAPValues: false,
+});
 
 onMounted(async () => {
     await usingIndicator(isLoading, async () => {
@@ -76,19 +92,17 @@ onMounted(async () => {
 
 .grid-container {
     display: grid;
-    grid-template-columns: 6fr 1fr;
+    grid-template-columns: 6fr 3fr;
     grid-template-rows: 4fr 1fr 1fr;
 
     height: 100vh;
 
-    gap: 10px;
-    background-color: #2196f3;
+    gap: var(--gap);
+    background-color: var(--v-teal-darken-3);
     padding: 10px;
 }
 
 .grid-container > div {
-    background-color: rgba(255, 255, 255, 0.7);
     padding: 20px 0;
-    font-size: 14px;
 }
 </style>

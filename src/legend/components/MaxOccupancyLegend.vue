@@ -1,5 +1,5 @@
 <template>
-    <b>Maximale Auslastung:</b>
+    <span>Maximale Auslastung:</span>
     <div class="d-flex justify-end align-end container">
         <div ref="svgCircleAreaLegendContainer"></div>
     </div>
