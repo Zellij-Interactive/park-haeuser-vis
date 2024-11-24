@@ -74,8 +74,6 @@ onMounted(async () => {
     z-index: 1;
 
     margin-top: 20px;
-
-    border: 2px black solid;
 }
 
 .legend {
@@ -83,7 +81,6 @@ onMounted(async () => {
     grid-column: 2 / -1;
 
     z-index: 1;
-    border: 2px black solid;
 }
 
 .date-time-filter {

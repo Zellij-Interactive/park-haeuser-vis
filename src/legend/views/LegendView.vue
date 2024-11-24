@@ -21,6 +21,5 @@ const props = defineProps<{
     width: 80%;
     margin: var(--gap);
     padding: var(--gap);
-    border: 2px black solid;
 }
 </style>
