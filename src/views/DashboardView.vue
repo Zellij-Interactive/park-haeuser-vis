@@ -10,8 +10,8 @@
             <div class="map">
                 <MapView :parking-garages="parkingGarages" />
             </div>
-            <div class="filter d-flex justify-center align-center">
-                <FilterView />
+            <div class="filter">
+                <FilterView :parking-garages-names="parkingGaragesNames" />
             </div>
             <div class="legend d-flex justify-center align-center">
                 <LegendView />
@@ -32,10 +32,16 @@ import { useParkingGarageStore } from '@/parkingGarage/parkingGarageStore';
 import type { ParkingGarage } from '@/parkingGarage/types/parkingGarage';
 import { onMounted, ref } from 'vue';
 import { usingIndicator } from '@/core/usingIndicator';
+import {
+    listOfParkingGaragesNames,
+    ParkingGarageName,
+} from '@/parkingGarage/types/parkingGarageNames';
 
 const parkingGarageStore = useParkingGarageStore();
 
 const parkingGarages = ref<ParkingGarage[]>([]);
+const parkingGaragesNames: ParkingGarageName[] = listOfParkingGaragesNames;
+
 const isLoading = ref(false);
 
 onMounted(async () => {
@@ -76,7 +82,7 @@ onMounted(async () => {
 
 .grid-container {
     display: grid;
-    grid-template-columns: 6fr 1fr;
+    grid-template-columns: 6fr 3fr;
     grid-template-rows: 4fr 1fr 1fr;
 
     height: 100vh;
