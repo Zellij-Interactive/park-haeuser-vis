@@ -1,26 +1,24 @@
 <template>
-    <main>
-        <v-dialog v-model="isLoading" no-click-animation persistent height="46" width="250">
-            <v-card class="d-flex flex-column text-center pt-2">
-                <b class="mb-2">Loading...</b>
-                <v-progress-linear indeterminate></v-progress-linear>
-            </v-card>
-        </v-dialog>
-        <div class="grid-container">
-            <div class="map">
-                <MapView :parking-garages="parkingGarages" />
-            </div>
-            <div class="filter">
-                <FilterView :parking-garages-names="parkingGaragesNames" />
-            </div>
-            <div class="legend d-flex justify-center align-center">
-                <LegendView />
-            </div>
-            <div class="date-time-filter d-flex justify-center align-center">
-                <DateTimeFilterView />
-            </div>
+    <v-dialog v-model="isLoading" no-click-animation persistent height="46" width="250">
+        <v-card class="d-flex flex-column text-center pt-2">
+            <b class="mb-2">Loading...</b>
+            <v-progress-linear indeterminate></v-progress-linear>
+        </v-card>
+    </v-dialog>
+    <div class="grid-container">
+        <div class="map">
+            <MapView :parking-garages="parkingGarages" />
         </div>
-    </main>
+        <div class="filter">
+            <FilterView :parking-garages-names="parkingGaragesNames" :filter="filter" />
+        </div>
+        <div class="legend d-flex justify-center align-center">
+            <LegendView />
+        </div>
+        <div class="date-time-filter d-flex justify-center align-center">
+            <DateTimeFilterView />
+        </div>
+    </div>
 </template>
 
 <script setup lang="ts">
@@ -36,13 +34,21 @@ import {
     listOfParkingGaragesNames,
     ParkingGarageName,
 } from '@/parkingGarage/types/parkingGarageNames';
+import { maxDate, minDate, type Filter } from '@/parkingGarage/types/filter';
+import { DateRange } from '@/core/dateRange';
 
 const parkingGarageStore = useParkingGarageStore();
 
-const parkingGarages = ref<ParkingGarage[]>([]);
 const parkingGaragesNames: ParkingGarageName[] = listOfParkingGaragesNames;
 
+const parkingGarages = ref<ParkingGarage[]>([]);
 const isLoading = ref(false);
+
+const filter = ref<Filter>({
+    parkingGarages: [],
+    dateRange: new DateRange(minDate, maxDate),
+    showSHAPValues: false,
+});
 
 onMounted(async () => {
     await usingIndicator(isLoading, async () => {
