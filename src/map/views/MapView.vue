@@ -18,35 +18,36 @@ const props = defineProps<{
 
 const map = ref<L.Map>();
 
-let lightLayer: L.Layer, darkLayer: L.Layer;
+const lightLayer = ref<L.Layer>();
+const darkLayer = ref<L.Layer>();
 
 watch(
     () => props.darkModeOn,
     (isDarkModeOn) => {
-        if (map.value == null) return;
+        if (map.value == null || lightLayer.value == null || darkLayer.value == null) return;
 
         if (isDarkModeOn) {
-            map.value.removeLayer(lightLayer);
-            map.value.addLayer(darkLayer);
+            map.value.removeLayer(lightLayer.value);
+            map.value.addLayer(darkLayer.value);
 
             return;
         }
 
-        map.value.removeLayer(darkLayer);
-        map.value.addLayer(lightLayer);
+        map.value.removeLayer(darkLayer.value);
+        map.value.addLayer(lightLayer.value);
     }
 );
 
 onMounted(() => {
     map.value = L.map('map').setView([mainzCoordinates.latitude, mainzCoordinates.longitude], 13);
 
-    lightLayer = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    lightLayer.value = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         minZoom: 14.5,
         maxZoom: 18,
         attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
     });
 
-    darkLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+    darkLayer.value = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
         subdomains: 'abcd',
         maxZoom: 19,
         attribution:
@@ -54,7 +55,7 @@ onMounted(() => {
     });
 
     // Add the default layer (light mode)
-    map.value.addLayer(lightLayer);
+    map.value.addLayer(lightLayer.value);
 });
 </script>
 
