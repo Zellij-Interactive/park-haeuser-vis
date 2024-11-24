@@ -62,6 +62,7 @@
             <v-checkbox
                 v-model="actualFilter.showSHAPValues"
                 label="SHAP-Werte anzeigen"
+                color="primary"
             ></v-checkbox>
         </div>
 
@@ -70,7 +71,7 @@
                 class="flex-grow-1 text-none"
                 color="primary"
                 rounded="lg"
-                variant="plain"
+                variant="text"
                 :disabled="!hasChanges"
                 @click="onResetClick()"
             >
