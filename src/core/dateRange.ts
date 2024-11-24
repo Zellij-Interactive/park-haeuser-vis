@@ -2,8 +2,8 @@ import { _throw } from './_throw';
 import { differenceInDays } from 'date-fns';
 
 export class DateRange {
-    readonly startDate: Date;
-    readonly endDate: Date;
+    startDate: Date;
+    endDate: Date;
 
     constructor(startDate: Date, endDate: Date) {
         if (startDate.getTime() > endDate.getTime()) {
@@ -16,4 +16,19 @@ export class DateRange {
     getDifferenceInDays() {
         return differenceInDays(this.endDate, this.startDate);
     }
+
+    equals(dateRange: DateRange): boolean {
+        return (
+            this.startDate.getTime() == dateRange.startDate.getTime() &&
+            this.endDate.getTime() == dateRange.endDate.getTime()
+        );
+    }
+}
+
+export function formatDate(date: Date) {
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+
+    return `${day}.${month}.${year}`;
 }
