@@ -9,6 +9,14 @@
     },
     {
       "path": "./tsconfig.vitest.json"
+    },
+    
+     
+  ],
+  "compilerOptions": 
+  {
+      "strict": true,
+      "esModuleInterop": true,
+      "skipLibCheck": true
     }
-  ]
 }

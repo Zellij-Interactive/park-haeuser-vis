@@ -1,3 +1,4 @@
+// Simulates an API for loading parking garage data from CSVs or IndexedDB.
 import { _throw } from '@/core/_throw';
 import * as d3 from 'd3';
 import { openDB } from 'idb';
