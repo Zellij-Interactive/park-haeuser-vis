@@ -13,6 +13,10 @@ export enum ParkingGarageName {
     Augustusplatz = 'Augustusplatz',
 }
 
+export const listOfParkingGaragesNames = Object.values(ParkingGarageName).sort((a, b) =>
+    a.localeCompare(b)
+);
+
 export function toParkingGarageName(name: string): ParkingGarageName {
     if (Object.values(ParkingGarageName).includes(name as ParkingGarageName)) {
         return name as ParkingGarageName;
