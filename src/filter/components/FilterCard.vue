@@ -120,7 +120,6 @@ const hasChanges = computed(() => {
 });
 
 function onApplyClick() {
-    console.log(hasChanges.value);
     emit('update-filter', actualFilter.value);
 
     initialFilter.value = copy(actualFilter.value);
