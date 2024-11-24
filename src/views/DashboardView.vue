@@ -7,7 +7,7 @@
     </v-dialog>
     <div class="grid-container">
         <div class="map">
-            <MapView :parking-garages="parkingGarages" />
+            <MapView :parking-garages="parkingGarages" :dark-mode-on="props.darkModeOn" />
         </div>
         <div class="filter">
             <FilterView :parking-garages-names="parkingGaragesNames" :filter="filter" />
@@ -36,6 +36,10 @@ import {
 } from '@/parkingGarage/types/parkingGarageNames';
 import { maxDate, minDate, type Filter } from '@/parkingGarage/types/filter';
 import { DateRange } from '@/core/dateRange';
+
+const props = defineProps<{
+    darkModeOn: boolean;
+}>();
 
 const parkingGarageStore = useParkingGarageStore();
 
@@ -93,14 +97,12 @@ onMounted(async () => {
 
     height: 100vh;
 
-    gap: 10px;
-    background-color: #2196f3;
+    gap: var(--gap);
+    background-color: var(--v-teal-darken-3);
     padding: 10px;
 }
 
 .grid-container > div {
-    background-color: rgba(255, 255, 255, 0.7);
     padding: 20px 0;
-    font-size: 14px;
 }
 </style>

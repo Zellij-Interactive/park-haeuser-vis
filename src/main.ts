@@ -11,9 +11,36 @@ import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
 import { parkingGarageApi } from './parkingGarage/parkingGarageFakeApi';
+import colors from 'vuetify/util/colors';
+import 'vuetify/styles';
 
 const app = createApp(App);
-const vuetify = createVuetify({ components, directives });
+const vuetify = createVuetify({
+    components,
+    directives,
+    theme: {
+        defaultTheme: 'dark',
+        themes: {
+            light: {
+                dark: false,
+                colors: {
+                    background: colors.grey.lighten5,
+                    primary: colors.teal.darken3,
+                    secondary: colors.grey.lighten5,
+                    'border-color': colors.teal.darken3,
+                },
+            },
+            dark: {
+                dark: true,
+                colors: {
+                    background: colors.grey.darken3,
+                    primary: colors.teal.darken1,
+                    secondary: colors.grey.darken3,
+                },
+            },
+        },
+    },
+});
 
 app.use(createPinia());
 app.use(vuetify);
