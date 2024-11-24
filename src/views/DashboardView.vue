@@ -7,14 +7,10 @@
     </v-dialog>
     <div class="grid-container">
         <div class="map">
-            <MapView
-                :parking-garages="parkingGarages"
-                :dark-mode-on="props.darkModeOn"
-                :filter="filter"
-            />
+            <MapView :parking-garages="parkingGarages" :dark-mode-on="props.darkModeOn" />
         </div>
         <div class="filter">
-            <FilterView :parking-garages-names="parkingGaragesNames" :filter="filter" />
+            <FilterView :parking-garages-names="parkingGaragesNames" />
         </div>
         <div class="legend d-flex justify-end align-end pr-4">
             <LegendView :dark-mode-on="props.darkModeOn" />
@@ -38,8 +34,6 @@ import {
     listOfParkingGaragesNames,
     ParkingGarageName,
 } from '@/parkingGarage/types/parkingGarageNames';
-import { maxDate, minDate, type Filter } from '@/parkingGarage/types/filter';
-import { DateRange } from '@/core/dateRange';
 
 const props = defineProps<{
     darkModeOn: boolean;
@@ -51,12 +45,6 @@ const parkingGaragesNames: ParkingGarageName[] = listOfParkingGaragesNames;
 
 const parkingGarages = ref<ParkingGarage[]>([]);
 const isLoading = ref(false);
-
-const filter = ref<Filter>({
-    parkingGarages: [],
-    dateRange: new DateRange(minDate, maxDate),
-    showSHAPValues: false,
-});
 
 onMounted(async () => {
     await usingIndicator(isLoading, async () => {

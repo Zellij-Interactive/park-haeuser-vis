@@ -6,8 +6,8 @@
                 <v-expansion-panel-text>
                     <FilterCard
                         :parking-garages-names="props.parkingGaragesNames"
-                        :filter="props.filter"
-                        @update-filter="(filter) => applyFilter(filter)"
+                        :filter="filter"
+                        @update-filter="(filter) => (parkingGarageStore.filter = { ...filter })"
                     />
                 </v-expansion-panel-text>
             </v-expansion-panel>
@@ -19,19 +19,16 @@
 import { ParkingGarageName } from '@/parkingGarage/types/parkingGarageNames';
 import FilterCard from '../components/FilterCard.vue';
 import type { Filter } from '@/parkingGarage/types/filter';
-import { EmitFlags } from 'typescript';
+import { useParkingGarageStore } from '@/parkingGarage/parkingGarageStore';
+import { ref } from 'vue';
+
+const parkingGarageStore = useParkingGarageStore();
 
 const props = defineProps<{
     parkingGaragesNames: ParkingGarageName[];
-    filter: Filter;
 }>();
 
-function applyFilter(filter: Filter) {
-    console.log('applying the following filter:');
-    console.log(filter);
-
-    // logic to apply the filter
-}
+const filter = ref<Filter>(parkingGarageStore.filter);
 </script>
 
 <style></style>
