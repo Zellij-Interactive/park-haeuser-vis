@@ -11,7 +11,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { mainzCoordinates } from '@/core/constants';
 import type { ParkingGarage } from '@/parkingGarage/types/parkingGarage';
 import { _throw } from '@/core/_throw';
@@ -68,10 +68,6 @@ function addMarkerToMap(parkingGarage: ParkingGarage) {
         },
     });
 }
-
-function removeMarkersFromMap() {}
-
-onMounted(() => {});
 </script>
 
 <style>
