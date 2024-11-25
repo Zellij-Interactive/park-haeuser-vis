@@ -16,7 +16,7 @@
         <v-card class="pa-4">
             <div>
                 <v-autocomplete
-                    v-model="actualFilter.parkingGarages"
+                    v-model="unsavedFilter.parkingGarages"
                     label="Parkhäuser"
                     :items="props.parkingGaragesNames"
                     variant="solo"
@@ -37,12 +37,12 @@
                             color="secondary"
                             rounded="lg"
                             v-bind="props"
-                            :text="`Startdatum: ${formatDate(actualFilter.dateRange.startDate)}`"
+                            :text="`Startdatum: ${formatDate(unsavedFilter.dateRange.startDate)}`"
                         />
                     </template>
 
                     <v-date-picker
-                        v-model="actualFilter.dateRange.startDate"
+                        v-model="unsavedFilter.dateRange.startDate"
                         hide-header
                         rounded="lg"
                         elevation="0"
@@ -58,12 +58,12 @@
                             color="secondary"
                             rounded="lg"
                             v-bind="props"
-                            :text="`Enddatum: ${formatDate(actualFilter.dateRange.endDate)}`"
+                            :text="`Enddatum: ${formatDate(unsavedFilter.dateRange.endDate)}`"
                         />
                     </template>
 
                     <v-date-picker
-                        v-model="actualFilter.dateRange.endDate"
+                        v-model="unsavedFilter.dateRange.endDate"
                         hide-header
                         rounded="lg"
                         elevation="0"
@@ -74,7 +74,7 @@
 
             <div>
                 <v-checkbox
-                    v-model="actualFilter.showSHAPValues"
+                    v-model="unsavedFilter.showSHAPValues"
                     label="SHAP-Werte anzeigen"
                     color="primary"
                 ></v-checkbox>
@@ -111,7 +111,7 @@
 import { DateRange, formatDate } from '@/core/dateRange';
 import type { Filter } from '@/parkingGarage/types/filter';
 import { ParkingGarageName } from '@/parkingGarage/types/parkingGarageNames';
-import { computed, ref } from 'vue';
+import { computed, ref, watchEffect } from 'vue';
 
 const props = defineProps<{
     parkingGaragesNames: ParkingGarageName[];
@@ -119,33 +119,39 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-    (event: 'update-filter', filter: Filter): void;
+    (event: 'update:filter', filter: Filter): void;
 }>();
 
 const initialFilter = ref<Filter>(props.filter);
 
-const actualFilter = ref<Filter>(copy(initialFilter.value));
+const unsavedFilter = ref<Filter>(copy(initialFilter.value));
 const isFilterVisible = ref(false);
 
 const hasChanges = computed(() => {
     return (
-        !actualFilter.value.dateRange.equals(initialFilter.value.dateRange) ||
-        actualFilter.value.showSHAPValues != initialFilter.value.showSHAPValues ||
-        actualFilter.value.parkingGarages != initialFilter.value.parkingGarages
+        !unsavedFilter.value.dateRange.equals(initialFilter.value.dateRange) ||
+        unsavedFilter.value.showSHAPValues != initialFilter.value.showSHAPValues ||
+        unsavedFilter.value.parkingGarages != initialFilter.value.parkingGarages
     );
 });
 
-function onApplyClick() {
-    emit('update-filter', actualFilter.value);
+watchEffect(() => keepFilterUpdated());
 
-    initialFilter.value = copy(actualFilter.value);
+function onApplyClick() {
+    emit('update:filter', unsavedFilter.value);
+
+    initialFilter.value = copy(unsavedFilter.value);
     isFilterVisible.value = false;
 }
 
 function onResetClick() {
     console.log(hasChanges.value);
 
-    actualFilter.value = copy(initialFilter.value);
+    unsavedFilter.value = copy(initialFilter.value);
+}
+
+function keepFilterUpdated() {
+    unsavedFilter.value = copy(props.filter);
 }
 
 function copy(filter: Filter): Filter {

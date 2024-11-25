@@ -4,9 +4,8 @@
             ><v-icon>mdi-theme-light-dark</v-icon>
         </v-btn>
         <FilterCard
+            v-model:filter="parkingGarageStore.filter"
             :parking-garages-names="props.parkingGaragesNames"
-            :filter="parkingGarageStore.filter"
-            @update-filter="(filter) => (parkingGarageStore.filter = { ...filter })"
         />
     </div>
 </template>
