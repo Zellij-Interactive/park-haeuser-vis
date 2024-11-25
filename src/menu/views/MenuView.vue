@@ -30,8 +30,4 @@ const emit = defineEmits<{
 }>();
 </script>
 
-<style>
-.foo {
-    border: 2px solid black;
-}
-</style>
+<style></style>

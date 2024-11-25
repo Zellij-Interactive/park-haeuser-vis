@@ -6,6 +6,7 @@
         location="bottom"
         transition="none"
         offset="8"
+        max-width="500"
     >
         <template v-slot:activator="{ props }">
             <v-btn color="primary" v-bind="props" @click="() => isFilterVisible ?? resetFilter()"
@@ -15,7 +16,7 @@
 
         <v-card class="pa-4">
             <div>
-                <v-autocomplete
+                <v-select
                     v-model="unsavedFilter.parkingGarages"
                     label="Parkhäuser"
                     :items="props.parkingGaragesNames"
@@ -25,7 +26,7 @@
                     multiple
                     chips
                     clearable
-                ></v-autocomplete>
+                ></v-select>
             </div>
 
             <div class="d-flex justify-space-between">
