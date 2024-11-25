@@ -1,16 +1,11 @@
 <template>
     <v-app>
-        <div class="toggle-theme">
-            <v-btn @click="toggleTheme" color="primary" density="compact"
-                ><v-icon>mdi-theme-light-dark</v-icon></v-btn
-            >
-        </div>
-        <DashboardView :dark-mode-on="darkModeOn" />
+        <DashboardView :dark-mode-on="darkModeOn" @toggle-theme="toggleTheme()" />
     </v-app>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import DashboardView from './views/DashboardView.vue';
 import { useTheme } from 'vuetify';
 
@@ -24,10 +19,4 @@ function toggleTheme() {
 </script>
 
 <style scoped>
-.toggle-theme {
-    position: absolute;
-    top: 40px;
-    left: 70px;
-    z-index: 1;
-}
 </style>
