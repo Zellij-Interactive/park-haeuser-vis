@@ -14,7 +14,7 @@
             </v-btn>
         </template>
 
-        <v-card class="pa-4">
+        <v-card class="pa-4 elevation-1">
             <div>
                 <v-select
                     v-model="unsavedFilter.parkingGarages"
