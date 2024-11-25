@@ -1,4 +1,4 @@
-export type Marker = {
+export type Coordinates = {
     latitude: number;
     longitude: number;
 };

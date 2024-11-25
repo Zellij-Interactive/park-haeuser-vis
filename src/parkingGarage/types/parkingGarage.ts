@@ -1,10 +1,10 @@
-import type { Marker } from './marker';
+import type { Coordinates } from './marker';
 import type { ParkingGarageName } from './parkingGarageNames';
 import type { ParkingGaragePredictions } from './parkingGaragePredictions';
 
 export type ParkingGarage = {
     name: ParkingGarageName;
-    location: Marker;
+    location: Coordinates;
     maximalOccupancy: number;
     predictions: ParkingGaragePredictions[];
     rmse: number[];
@@ -13,7 +13,7 @@ export type ParkingGarage = {
 
 export type ParkingGarageRaw = {
     name: ParkingGarageName;
-    location: Marker;
+    location: Coordinates;
     maximalOccupancy: number;
 };
 
