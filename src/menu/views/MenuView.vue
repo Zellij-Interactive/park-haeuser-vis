@@ -1,12 +1,16 @@
 <template>
     <div class="foo d-flex justify-end gap-4">
-        <v-btn @click="() => emit('toggleTheme')" color="primary"
-            ><v-icon>mdi-theme-light-dark</v-icon>
-        </v-btn>
-        <FilterCard
-            v-model:filter="parkingGarageStore.filter"
-            :parking-garages-names="props.parkingGaragesNames"
-        />
+        <div class="mx-1">
+            <v-btn @click="() => emit('toggleTheme')" color="primary"
+                ><v-icon>mdi-theme-light-dark</v-icon>
+            </v-btn>
+        </div>
+        <div class="mx-1">
+            <FilterCard
+                v-model:filter="parkingGarageStore.filter"
+                :parking-garages-names="props.parkingGaragesNames"
+            />
+        </div>
     </div>
 </template>
 

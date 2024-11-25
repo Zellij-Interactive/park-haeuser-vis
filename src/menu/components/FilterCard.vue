@@ -8,7 +8,7 @@
         offset="8"
     >
         <template v-slot:activator="{ props }">
-            <v-btn color="primary" v-bind="props" @click="() => (isFilterVisible = true)"
+            <v-btn color="primary" v-bind="props" @click="() => isFilterVisible ?? resetFilter()"
                 ><v-icon>mdi-filter-outline</v-icon>
             </v-btn>
         </template>
@@ -87,7 +87,7 @@
                     rounded="lg"
                     variant="text"
                     :disabled="!hasChanges"
-                    @click="onResetClick()"
+                    @click="resetFilter()"
                 >
                     Zurücksetzen
                 </v-btn>
@@ -144,9 +144,7 @@ function onApplyClick() {
     isFilterVisible.value = false;
 }
 
-function onResetClick() {
-    console.log(hasChanges.value);
-
+function resetFilter() {
     unsavedFilter.value = copy(initialFilter.value);
 }
 
@@ -163,8 +161,4 @@ function copy(filter: Filter): Filter {
 }
 </script>
 
-<style>
-.foo {
-    border: 2px solid black;
-}
-</style>
+<style></style>
