@@ -1,11 +1,11 @@
 <template>
-    <div class="foo d-flex justify-end gap-4">
-        <div class="mx-1">
+    <div class="foo d-flex justify-end">
+        <div class="mr-1">
             <v-btn @click="() => emit('toggleTheme')" color="primary"
                 ><v-icon>mdi-theme-light-dark</v-icon>
             </v-btn>
         </div>
-        <div class="mx-1">
+        <div class="ml-1">
             <FilterCard
                 v-model:filter="parkingGarageStore.filter"
                 :parking-garages-names="props.parkingGaragesNames"
