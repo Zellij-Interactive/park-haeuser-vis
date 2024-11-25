@@ -10,7 +10,10 @@
             <MapView :parking-garages="parkingGarages" :dark-mode-on="props.darkModeOn" />
         </div>
         <div class="filter">
-            <FilterView :parking-garages-names="parkingGaragesNames" />
+            <MenuView
+                :parking-garages-names="parkingGaragesNames"
+                @toggle-theme="emit('toggleTheme')"
+            />
         </div>
         <div class="legend d-flex justify-end align-end pr-4">
             <LegendView :dark-mode-on="props.darkModeOn" />
@@ -23,7 +26,7 @@
 
 <script setup lang="ts">
 import MapView from '@/map/views/MapView.vue';
-import FilterView from '@/filter/views/FilterView.vue';
+import MenuView from '@/menu/views/MenuView.vue';
 import LegendView from '@/legend/views/LegendView.vue';
 import DateTimeFilterView from '@/date-time-filter/views/DateTimeFilterView.vue';
 import { useParkingGarageStore } from '@/parkingGarage/parkingGarageStore';
@@ -37,6 +40,10 @@ import {
 
 const props = defineProps<{
     darkModeOn: boolean;
+}>();
+
+const emit = defineEmits<{
+    (event: 'toggleTheme'): void;
 }>();
 
 const parkingGarageStore = useParkingGarageStore();
