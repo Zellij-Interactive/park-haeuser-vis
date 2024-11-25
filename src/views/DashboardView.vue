@@ -23,7 +23,7 @@
 
 <script setup lang="ts">
 import MapView from '@/map/views/MapView.vue';
-import FilterView from '@/filter/views/FilterView.vue';
+import FilterView from '@/filter/views/MenuView.vue';
 import LegendView from '@/legend/views/LegendView.vue';
 import DateTimeFilterView from '@/date-time-filter/views/DateTimeFilterView.vue';
 import { useParkingGarageStore } from '@/parkingGarage/parkingGarageStore';
