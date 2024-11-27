@@ -115,6 +115,5 @@ function sleep(ms: number): Promise<void> {
 <style>
 .slider {
     width: 90%;
-    border: black solid 2px;
 }
 </style>
