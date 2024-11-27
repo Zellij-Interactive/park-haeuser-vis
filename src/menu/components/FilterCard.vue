@@ -158,6 +158,7 @@ function copy(filter: Filter): Filter {
         parkingGarages: filter.parkingGarages,
         dateRange: new DateRange(filter.dateRange.startDate, filter.dateRange.endDate),
         showSHAPValues: filter.showSHAPValues,
+        index: filter.index,
     };
 }
 </script>
