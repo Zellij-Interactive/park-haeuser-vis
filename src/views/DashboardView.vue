@@ -21,7 +21,7 @@
                 <LegendView :dark-mode-on="props.darkModeOn" />
             </div>
             <div class="date-time-filter px-2">
-                <DateTimeFilterView />
+                <TimeLineView />
             </div>
         </div>
     </main>
@@ -31,7 +31,6 @@
 import MapView from '@/map/views/MapView.vue';
 import MenuView from '@/menu/views/MenuView.vue';
 import LegendView from '@/legend/views/LegendView.vue';
-import DateTimeFilterView from '@/date-time-filter/views/DateTimeFilterView.vue';
 import { useParkingGarageStore } from '@/parkingGarage/parkingGarageStore';
 import type { ParkingGarage } from '@/parkingGarage/types/parkingGarage';
 import { onMounted, ref } from 'vue';
@@ -40,6 +39,7 @@ import {
     listOfParkingGaragesNames,
     ParkingGarageName,
 } from '@/parkingGarage/types/parkingGarageNames';
+import TimeLineView from '@/date-time-filter/views/TimeLineView.vue';
 
 const props = defineProps<{
     darkModeOn: boolean;
