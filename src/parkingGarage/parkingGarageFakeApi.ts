@@ -4,7 +4,7 @@ import { openDB } from 'idb';
 import { mapParkingGarageRawToParingGarage } from './mappers/parkingGarageMapper';
 import type { ParkingGarageRaw, ParkingGarageRMSERaw, ParkingGarage } from './types/parkingGarage';
 import { ParkingGarageName, toParkingGarageName } from './types/parkingGarageNames';
-import type { ParkingGaragePredictions } from './types/parkingGaragePredictions';
+import type { ParkingGaragePrediction } from './types/parkingGaragePrediction';
 import { timeParse } from 'd3';
 
 export const parkingGarageApi = {
@@ -43,8 +43,8 @@ export const parkingGarageApi = {
                 });
 
             getParkingGaragePredictionsRaw(name).then(async (data) => {
-                data.forEach((d) => {
-                    parkingGarage.predictions.push(d);
+                data.forEach((prediction, date) => {
+                    parkingGarage.predictions.set(date.getTime(), prediction);
                 });
 
                 parkingGarageApi.storeInIndexedDB(name, parkingGarage);
@@ -108,7 +108,9 @@ async function getParkingGaragesRMSERaw(name: string): Promise<ParkingGarageRMSE
     }
 }
 
-async function getParkingGaragePredictionsRaw(name: string): Promise<ParkingGaragePredictions[]> {
+async function getParkingGaragePredictionsRaw(
+    name: ParkingGarageName
+): Promise<Map<Date, ParkingGaragePrediction>> {
     try {
         const dsv = d3.dsvFormat(';');
 
@@ -123,27 +125,32 @@ async function getParkingGaragePredictionsRaw(name: string): Promise<ParkingGara
 
         const parseDate = timeParse('%d.%m.%Y %H:%M');
 
-        return rawData.map((d) => ({
-            name: name,
-            date: parseDate(d.Datum) ?? _throw('Error occurred while parsing date.'),
-            prediction: parseFloat(d.Prediction.replace(',', '.')),
-            shapEducation: parseFloat(d['SHAP_Education'].replace(',', '.')),
-            shapServicesSpecialtyRetail: parseFloat(
-                d['SHAP_Services and specialty retail'].replace(',', '.')
-            ),
-            shapFinanceInsurance: parseFloat(d['SHAP_Finance and insurance'].replace(',', '.')),
-            shapLeisureTime: parseFloat(d['SHAP_Leisure time'].replace(',', '.')),
-            shapFoodServices: parseFloat(d['SHAP_Food services'].replace(',', '.')),
-            shapHealth: parseFloat(d['SHAP_Health'].replace(',', '.')),
-            shapGrocery: parseFloat(d['SHAP_Grocery'].replace(',', '.')),
-            shapReligion: parseFloat(d['SHAP_Religion'].replace(',', '.')),
-            shapShopping: parseFloat(d['SHAP_Shopping'].replace(',', '.')),
-            shapOthers: parseFloat(d['SHAP_Others'].replace(',', '.')),
-            shapPublicSector: parseFloat(d['SHAP_Public sector'].replace(',', '.')),
-            shapTime: parseFloat(d['SHAP_Time'].replace(',', '.')),
-            shapMonth: parseFloat(d['SHAP_Month'].replace(',', '.')),
-            shapSum: parseFloat(d['SHAP_Sum'].replace(',', '.')),
-        }));
+        return new Map(
+            rawData.map((d) => [
+                parseDate(d.Datum) ?? _throw('Error occurred while parsing date.'),
+                {
+                    prediction: parseFloat(d.Prediction.replace(',', '.')),
+                    shapEducation: parseFloat(d['SHAP_Education'].replace(',', '.')),
+                    shapServicesSpecialtyRetail: parseFloat(
+                        d['SHAP_Services and specialty retail'].replace(',', '.')
+                    ),
+                    shapFinanceInsurance: parseFloat(
+                        d['SHAP_Finance and insurance'].replace(',', '.')
+                    ),
+                    shapLeisureTime: parseFloat(d['SHAP_Leisure time'].replace(',', '.')),
+                    shapFoodServices: parseFloat(d['SHAP_Food services'].replace(',', '.')),
+                    shapHealth: parseFloat(d['SHAP_Health'].replace(',', '.')),
+                    shapGrocery: parseFloat(d['SHAP_Grocery'].replace(',', '.')),
+                    shapReligion: parseFloat(d['SHAP_Religion'].replace(',', '.')),
+                    shapShopping: parseFloat(d['SHAP_Shopping'].replace(',', '.')),
+                    shapOthers: parseFloat(d['SHAP_Others'].replace(',', '.')),
+                    shapPublicSector: parseFloat(d['SHAP_Public sector'].replace(',', '.')),
+                    shapTime: parseFloat(d['SHAP_Time'].replace(',', '.')),
+                    shapMonth: parseFloat(d['SHAP_Month'].replace(',', '.')),
+                    shapSum: parseFloat(d['SHAP_Sum'].replace(',', '.')),
+                },
+            ])
+        );
     } catch (error) {
         _throw('Error processing CSV data: ' + error);
     }

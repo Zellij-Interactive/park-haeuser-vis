@@ -1,7 +1,6 @@
 /* color palette from <https://github.com/vuejs/theme> */
 :root {
-    --gap: 8px;
-    --radius: 20px;
+    --gap: 4px;
 }
 
 *,

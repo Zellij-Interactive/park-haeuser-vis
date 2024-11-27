@@ -6,12 +6,12 @@
         :zoom="15"
         :styles="mapStyles"
     >
-        <Marker v-for="marker in markers" :key="marker.title" :options="marker" />
+        <Marker v-for="[key, value] in markers" :key="value.title" :options="value" />
     </GoogleMap>
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { mainzCoordinates } from '@/core/constants';
 import type { ParkingGarage } from '@/parkingGarage/types/parkingGarage';
 import { _throw } from '@/core/_throw';
@@ -21,6 +21,7 @@ import { getColorSaturation } from '@/legend/utils/ordinalScale';
 import { GoogleMap, Marker } from 'vue3-google-map';
 import { googleMapLightModeStyling, googleMapsDarkModeStyling } from '../utils';
 import type { CustomMarker } from '../customMarker';
+import { ParkingGarageName } from '@/parkingGarage/types/parkingGarageNames';
 
 const props = defineProps<{
     parkingGarages: ParkingGarage[];
@@ -30,7 +31,7 @@ const props = defineProps<{
 const parkingGarageStore = useParkingGarageStore();
 
 const center = { lat: mainzCoordinates.latitude, lng: mainzCoordinates.longitude };
-const markers = ref<CustomMarker[]>([]);
+const markers = ref(new Map<ParkingGarageName, CustomMarker>());
 
 const mapStyles = computed(() =>
     props.darkModeOn ? googleMapsDarkModeStyling : googleMapLightModeStyling
@@ -39,20 +40,22 @@ const mapStyles = computed(() =>
 watch(
     () => parkingGarageStore.filter,
     (filter) => {
-        markers.value = markers.value.filter((marker) =>
-            filter.parkingGarages.includes(marker.title)
-        );
+        // Hide non filter parking garages
+        Object.values(ParkingGarageName)
+            .filter((e) => !parkingGarageStore.filter.parkingGarages.includes(e))
+            .forEach((e) => markers.value.delete(e));
 
         filter.parkingGarages.forEach(async (name) => {
             const parkingGarage = await parkingGarageStore.getParkingGarage(name);
 
             addMarkerToMap(parkingGarage);
         });
-    }
+    },
+    { immediate: true, deep: true }
 );
 
 function addMarkerToMap(parkingGarage: ParkingGarage) {
-    markers.value.push({
+    markers.value.set(parkingGarage.name, {
         position: {
             lat: parkingGarage.location.latitude,
             lng: parkingGarage.location.longitude,
@@ -61,17 +64,16 @@ function addMarkerToMap(parkingGarage: ParkingGarage) {
         icon: {
             path: google.maps.SymbolPath.CIRCLE,
             scale: sizeScale(parkingGarage.maximalOccupancy),
-            fillColor: getColorSaturation(parkingGarage.predictions[0].prediction),
+            fillColor: getColorSaturation(
+                parkingGarage.predictions.get(parkingGarageStore.filter.index)?.prediction ??
+                    _throw('An error has occurred while getting the prediction value')
+            ),
             fillOpacity: 1.0,
             strokeColor: '#000000',
             strokeWeight: 1,
         },
     });
 }
-
-function removeMarkersFromMap() {}
-
-onMounted(() => {});
 </script>
 
 <style>

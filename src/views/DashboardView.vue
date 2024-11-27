@@ -5,30 +5,32 @@
             <v-progress-linear indeterminate></v-progress-linear>
         </v-card>
     </v-dialog>
-    <div class="grid-container">
-        <div class="map">
-            <MapView :parking-garages="parkingGarages" :dark-mode-on="props.darkModeOn" />
+
+    <main>
+        <div class="grid-container">
+            <div class="map">
+                <MapView :parking-garages="parkingGarages" :dark-mode-on="props.darkModeOn" />
+            </div>
+            <div class="menu pr-2">
+                <MenuView
+                    :parking-garages-names="parkingGaragesNames"
+                    @toggle-theme="emit('toggleTheme')"
+                />
+            </div>
+            <div class="legend d-flex justify-end align-end pr-2">
+                <LegendView :dark-mode-on="props.darkModeOn" />
+            </div>
+            <div class="time-line px-2">
+                <TimeLineView />
+            </div>
         </div>
-        <div class="filter">
-            <MenuView
-                :parking-garages-names="parkingGaragesNames"
-                @toggle-theme="emit('toggleTheme')"
-            />
-        </div>
-        <div class="legend d-flex justify-end align-end pr-4">
-            <LegendView :dark-mode-on="props.darkModeOn" />
-        </div>
-        <div class="date-time-filter d-flex justify-center align-center">
-            <DateTimeFilterView />
-        </div>
-    </div>
+    </main>
 </template>
 
 <script setup lang="ts">
 import MapView from '@/map/views/MapView.vue';
 import MenuView from '@/menu/views/MenuView.vue';
 import LegendView from '@/legend/views/LegendView.vue';
-import DateTimeFilterView from '@/date-time-filter/views/DateTimeFilterView.vue';
 import { useParkingGarageStore } from '@/parkingGarage/parkingGarageStore';
 import type { ParkingGarage } from '@/parkingGarage/types/parkingGarage';
 import { onMounted, ref } from 'vue';
@@ -37,6 +39,7 @@ import {
     listOfParkingGaragesNames,
     ParkingGarageName,
 } from '@/parkingGarage/types/parkingGarageNames';
+import TimeLineView from '@/time-line/views/TimeLineView.vue';
 
 const props = defineProps<{
     darkModeOn: boolean;
@@ -66,13 +69,13 @@ onMounted(async () => {
 
     z-index: 0;
 }
-.filter {
+.menu {
     grid-row: 1 / 2;
     grid-column: 2 / -1;
 
     z-index: 1;
 
-    margin-top: 20px;
+    margin-top: 4px;
 }
 
 .legend {
@@ -82,7 +85,7 @@ onMounted(async () => {
     z-index: 1;
 }
 
-.date-time-filter {
+.time-line {
     grid-row: 3 / -1;
     grid-column: 1 / -1;
 
@@ -91,17 +94,15 @@ onMounted(async () => {
 
 .grid-container {
     display: grid;
-    grid-template-columns: 6fr 3fr;
-    grid-template-rows: 4fr 1fr 1fr;
+    grid-template-columns: 6fr 2fr;
+    grid-template-rows: 4fr 1fr 2fr;
 
     height: 100vh;
 
-    gap: var(--gap);
     background-color: var(--v-teal-darken-3);
-    padding: 10px;
 }
 
-.grid-container > div {
-    padding: 20px 0;
+.grid-container > div:not(.map) {
+    padding: var(--gap);
 }
 </style>
