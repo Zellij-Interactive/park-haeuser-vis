@@ -1,12 +1,16 @@
 import type { Coordinates } from './marker';
 import type { ParkingGarageName } from './parkingGarageNames';
-import type { ParkingGaragePredictions } from './parkingGaragePredictions';
+import type { ParkingGaragePrediction } from './parkingGaragePrediction';
 
 export type ParkingGarage = {
     name: ParkingGarageName;
     location: Coordinates;
     maximalOccupancy: number;
-    predictions: ParkingGaragePredictions[];
+
+    // The number key represents the value of getTime()
+    // milliseconds since January 1, 1970, 00:00:00 UTC
+    predictions: Map<number, ParkingGaragePrediction>;
+
     rmse: number[];
     meanValues: number[];
 };

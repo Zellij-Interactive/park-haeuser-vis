@@ -1,5 +1,5 @@
 <template>
-    <v-card class="pa-4">
+    <v-card class="pa-4" elevation="1" rounded="lg">
         <div>
             <PredictionLegend :dark-mode-on="props.darkModeOn" />
             <maxOccupancyLegend :dark-mode-on="props.darkModeOn" />

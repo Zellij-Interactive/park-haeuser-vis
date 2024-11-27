@@ -14,7 +14,7 @@
             </v-btn>
         </template>
 
-        <v-card class="pa-4 elevation-1">
+        <v-card class="pa-4" rounded="lg" elevation="1">
             <div>
                 <v-select
                     v-model="unsavedFilter.parkingGarages"
@@ -158,6 +158,7 @@ function copy(filter: Filter): Filter {
         parkingGarages: filter.parkingGarages,
         dateRange: new DateRange(filter.dateRange.startDate, filter.dateRange.endDate),
         showSHAPValues: filter.showSHAPValues,
+        index: filter.index,
     };
 }
 </script>

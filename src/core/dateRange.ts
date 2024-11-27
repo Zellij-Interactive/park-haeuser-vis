@@ -1,12 +1,13 @@
 import { _throw } from './_throw';
 import { differenceInDays } from 'date-fns';
+import { startOfDay } from 'date-fns';
 
 export class DateRange {
     startDate: Date;
     endDate: Date;
 
     constructor(startDate: Date, endDate: Date) {
-        if (startDate.getTime() > endDate.getTime()) {
+        if (startOfDay(startDate).getTime() > startOfDay(endDate).getTime()) {
             _throw('startDate must be before endDate');
         }
         this.startDate = startDate;
