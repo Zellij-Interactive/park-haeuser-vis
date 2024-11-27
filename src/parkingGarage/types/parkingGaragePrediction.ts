@@ -1,6 +1,4 @@
-export type ParkingGaragePredictions = {
-    name: string;
-    date: Date;
+export type ParkingGaragePrediction = {
     prediction: number;
     shapEducation: number;
     shapServicesSpecialtyRetail: number;
