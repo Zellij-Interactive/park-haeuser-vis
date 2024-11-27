@@ -104,6 +104,5 @@ onMounted(async () => {
 
 .grid-container > div:not(.map) {
     padding: var(--gap);
-    border: 2px solid black;
 }
 </style>
