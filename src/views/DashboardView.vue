@@ -20,7 +20,7 @@
             <div class="legend d-flex justify-end align-end pr-2">
                 <LegendView :dark-mode-on="props.darkModeOn" />
             </div>
-            <div class="date-time-filter px-2">
+            <div class="time-line px-2">
                 <TimeLineView />
             </div>
         </div>
@@ -39,7 +39,7 @@ import {
     listOfParkingGaragesNames,
     ParkingGarageName,
 } from '@/parkingGarage/types/parkingGarageNames';
-import TimeLineView from '@/date-time-filter/views/TimeLineView.vue';
+import TimeLineView from '@/time-line/views/TimeLineView.vue';
 
 const props = defineProps<{
     darkModeOn: boolean;
@@ -85,7 +85,7 @@ onMounted(async () => {
     z-index: 1;
 }
 
-.date-time-filter {
+.time-line {
     grid-row: 3 / -1;
     grid-column: 1 / -1;
 
