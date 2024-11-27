@@ -5,7 +5,8 @@ export type Filter = {
     parkingGarages: ParkingGarageName[];
     dateRange: DateRange;
     showSHAPValues: boolean;
+    index: number;
 };
 
-export const minDate = new Date('2025-01-01');
-export const maxDate = new Date('2025-12-31');
+export const filterMinDate = new Date('2025-01-01T00:00:00');
+export const filterMaxDate = new Date('2025-12-31T23:00:00');
