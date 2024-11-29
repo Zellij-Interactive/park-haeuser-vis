@@ -26,16 +26,25 @@
                     label="Parkhäuser"
                     variant="solo"
                     bg-color="secondary"
+                    color="primary"
                     flat
                     multiple
                     chips
                     hide-details
                 >
+                    <template #selection="{ item, index }">
+                        <v-chip v-if="index < 1" class="selection-chip">
+                            {{ index }}: {{ item }}
+                        </v-chip>
+                        <span v-if="index == 1" class="text-caption align-self-center">
+                            (+{{ unsavedFilter.parkingGarages.length - 1 }} weitere)
+                        </span>
+                    </template>
                     <template v-slot:prepend-item>
                         <v-checkbox
                             v-model="areAllSelected"
                             label="Alle auswählen"
-                            @update:model-value="selectAll()"
+                            color="primary"
                             :indeterminate="
                                 computed(
                                     () =>
@@ -45,14 +54,6 @@
                             "
                             hide-details
                         />
-                    </template>
-                    <template #selection="{ item, index }">
-                        <v-chip v-if="index < 1" class="selection-chip">
-                            <span v-text="item" />
-                        </v-chip>
-                        <span v-if="index === 1" class="text-caption align-self-center">
-                            (+{{ unsavedFilter.parkingGarages.length - 1 }} weitere)
-                        </span>
                     </template>
                 </v-select>
 
@@ -68,6 +69,7 @@
                                 v-bind="props"
                                 label="Startdatum"
                                 variant="solo"
+                                color="primary"
                                 bg-color="secondary"
                                 prepend-inner-icon="mdi-calendar"
                                 rounded="lg"
@@ -84,7 +86,7 @@
                             hide-header
                             rounded="lg"
                             elevation="3"
-                            color="secondary"
+                            color="primary"
                             :min="filterMinDate"
                             :max="filterMaxDate"
                             @update:modelValue="isStartDatePickerVisible = false"
@@ -102,6 +104,7 @@
                                 v-bind="props"
                                 label="Enddatum"
                                 variant="solo"
+                                color="primary"
                                 bg-color="secondary"
                                 prepend-inner-icon="mdi-calendar"
                                 rounded="lg"
@@ -118,7 +121,7 @@
                             hide-header
                             rounded="lg"
                             elevation="3"
-                            color="secondary"
+                            color="primary"
                             :min="filterMinDate"
                             :max="filterMaxDate"
                             @update:modelValue="isEndDatePickerVisible = false"
@@ -168,7 +171,6 @@ import type { Filter } from '@/parkingGarage/types/filter';
 import { ParkingGarageName } from '@/parkingGarage/types/parkingGarageNames';
 import { computed, ref, watchEffect } from 'vue';
 import { filterMinDate, filterMaxDate } from '@/parkingGarage/types/filter';
-import { computedInject } from '@vueuse/core';
 
 const props = defineProps<{
     parkingGaragesNames: ParkingGarageName[];
@@ -180,15 +182,18 @@ const emit = defineEmits<{
 }>();
 
 const initialFilter = ref<Filter>(props.filter);
-
 const unsavedFilter = ref<Filter>(copy(initialFilter.value));
 const isFilterVisible = ref(false);
 const isStartDatePickerVisible = ref(false);
 const isEndDatePickerVisible = ref(false);
-const areAllSelected = ref(false);
 
 const startDate = computed(() => formatDate(unsavedFilter.value.dateRange.startDate));
 const endDate = computed(() => formatDate(unsavedFilter.value.dateRange.endDate));
+
+const areAllSelected = computed({
+    get: () => unsavedFilter.value.parkingGarages.length == props.parkingGaragesNames.length,
+    set: (value) => toggleSelectAll(value),
+});
 
 const hasChanges = computed(() => {
     return (
@@ -224,8 +229,11 @@ function copy(filter: Filter): Filter {
     };
 }
 
-function selectAll() {
-    if (areAllSelected.value) {
+function toggleSelectAll(selectAll: boolean | null) {
+    if (selectAll == null) {
+        return;
+    }
+    if (selectAll) {
         unsavedFilter.value.parkingGarages = [...props.parkingGaragesNames];
 
         return;
