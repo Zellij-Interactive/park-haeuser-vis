@@ -1,6 +1,8 @@
 <template>
-    <span>Prediction:</span>
-    <div ref="svgSaturationLegendContainer"></div>
+    <div class="pr-2">
+        <span>Prediction:</span>
+        <div ref="svgSaturationLegendContainer"></div>
+    </div>
 </template>
 
 <script setup lang="ts">
@@ -32,8 +34,8 @@ function renderLegend() {
     svgSaturationLegend.append('g').attr('transform', `translate(5,5)`).call(colorLegend, {
         colorScale,
         rectSize: 20,
-        spacing: 20,
-        textOffset: 30,
+        spacing: 6,
+        textOffset: 40,
         isDarkModeOn: props.darkModeOn,
     });
 }
@@ -44,16 +46,17 @@ onMounted(() => {
     svgSaturationLegend = d3
         .select(svgSaturationLegendContainer.value)
         .append('svg')
-        .attr('height', 105)
-        .attr('width', 100);
+        .attr('height', 50)
+        .attr('width', 140);
 
     svgSaturationLegend.append('g').attr('transform', `translate(5,5)`).call(colorLegend, {
         colorScale,
         rectSize: 20,
-        spacing: 20,
-        textOffset: 30,
+        spacing: 6,
+        textOffset: 40,
         isDarkModeOn: props.darkModeOn,
     });
 });
 </script>
+
 <style></style>

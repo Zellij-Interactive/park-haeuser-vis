@@ -95,7 +95,7 @@ onMounted(async () => {
 .grid-container {
     display: grid;
     grid-template-columns: 6fr 2fr;
-    grid-template-rows: 4fr 1fr 2fr;
+    grid-template-rows: 4fr 1fr 1fr;
 
     height: 100vh;
 
@@ -104,5 +104,7 @@ onMounted(async () => {
 
 .grid-container > div:not(.map) {
     padding: var(--gap);
+
+    border: 2px solid black;
 }
 </style>
