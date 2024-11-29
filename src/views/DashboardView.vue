@@ -76,6 +76,11 @@ onMounted(async () => {
     z-index: 1;
 
     margin-top: 4px;
+    pointer-events: none;
+}
+
+.menu > * {
+    pointer-events: auto;
 }
 
 .legend {
