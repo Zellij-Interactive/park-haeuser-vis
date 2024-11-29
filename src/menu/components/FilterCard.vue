@@ -22,24 +22,32 @@
             <div class="d-flex flex-column card-elements">
                 <v-select
                     v-model="unsavedFilter.parkingGarages"
-                    :items="props.parkingGaragesNames"
+                    :items="sortedParkingGarages"
                     label="Parkhäuser"
                     variant="solo"
                     bg-color="secondary"
                     color="primary"
                     flat
                     multiple
-                    chips
                     hide-details
                 >
                     <template #selection="{ item, index }">
-                        <v-chip v-if="index < 1" class="selection-chip">
-                            {{ index }}: {{ item }}
+                        <v-chip
+                            v-if="index < 2"
+                            class="selection-chip"
+                            data-test="selection-employee-chip"
+                        >
+                            <span v-text="item.title" />
                         </v-chip>
-                        <span v-if="index == 1" class="text-caption align-self-center">
+                        <span
+                            v-if="index === 2"
+                            class="text-caption align-self-center"
+                            data-test="selection-employee-more"
+                        >
                             (+{{ unsavedFilter.parkingGarages.length - 1 }} weitere)
                         </span>
                     </template>
+
                     <template v-slot:prepend-item>
                         <v-checkbox
                             v-model="areAllSelected"
@@ -186,6 +194,8 @@ const unsavedFilter = ref<Filter>(copy(initialFilter.value));
 const isFilterVisible = ref(false);
 const isStartDatePickerVisible = ref(false);
 const isEndDatePickerVisible = ref(false);
+
+const sortedParkingGarages = [...props.parkingGaragesNames].sort((a, b) => b.localeCompare(a));
 
 const startDate = computed(() => formatDate(unsavedFilter.value.dateRange.startDate));
 const endDate = computed(() => formatDate(unsavedFilter.value.dateRange.endDate));
