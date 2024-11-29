@@ -40,7 +40,7 @@
                             <span v-text="item.title" />
                         </v-chip>
                         <span
-                            v-if="index === 2"
+                            v-if="index == 2"
                             class="text-caption align-self-center"
                             data-test="selection-employee-more"
                         >
