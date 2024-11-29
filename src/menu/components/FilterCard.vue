@@ -2,11 +2,14 @@
     <v-menu
         v-model="isFilterVisible"
         :close-on-content-click="false"
+        :close-on-back="false"
+        :no-click-animation="true"
         eager
         location="bottom"
         transition="none"
         offset="8"
         max-width="500"
+        persistent
     >
         <template v-slot:activator="{ props }">
             <v-btn color="primary" v-bind="props" @click="() => isFilterVisible ?? resetFilter()"
@@ -30,7 +33,11 @@
             </div>
 
             <div class="d-flex justify-space-between">
-                <v-menu :close-on-content-click="false" location="bottom">
+                <v-menu
+                    v-model="isStartDatePickerVisible"
+                    :close-on-content-click="false"
+                    location="bottom"
+                >
                     <template v-slot:activator="{ props }">
                         <v-btn
                             prepend-icon="mdi-calendar"
@@ -46,12 +53,19 @@
                         v-model="unsavedFilter.dateRange.startDate"
                         hide-header
                         rounded="lg"
-                        elevation="0"
+                        elevation="3"
                         color="primary"
+                        :min="filterMinDate"
+                        :max="filterMaxDate"
+                        @update:modelValue="isStartDatePickerVisible = false"
                     ></v-date-picker>
                 </v-menu>
 
-                <v-menu :close-on-content-click="false" location="bottom">
+                <v-menu
+                    v-model="isEndDatePickerVisible"
+                    :close-on-content-click="false"
+                    location="bottom"
+                >
                     <template v-slot:activator="{ props }">
                         <v-btn
                             prepend-icon="mdi-calendar"
@@ -67,8 +81,11 @@
                         v-model="unsavedFilter.dateRange.endDate"
                         hide-header
                         rounded="lg"
-                        elevation="0"
+                        elevation="3"
                         color="primary"
+                        :min="filterMinDate"
+                        :max="filterMaxDate"
+                        @update:modelValue="isEndDatePickerVisible = false"
                     ></v-date-picker>
                 </v-menu>
             </div>
@@ -113,6 +130,7 @@ import { DateRange, formatDate } from '@/core/dateRange';
 import type { Filter } from '@/parkingGarage/types/filter';
 import { ParkingGarageName } from '@/parkingGarage/types/parkingGarageNames';
 import { computed, ref, watchEffect } from 'vue';
+import { filterMinDate, filterMaxDate } from '@/parkingGarage/types/filter';
 
 const props = defineProps<{
     parkingGaragesNames: ParkingGarageName[];
@@ -127,6 +145,8 @@ const initialFilter = ref<Filter>(props.filter);
 
 const unsavedFilter = ref<Filter>(copy(initialFilter.value));
 const isFilterVisible = ref(false);
+const isStartDatePickerVisible = ref(false);
+const isEndDatePickerVisible = ref(false);
 
 const hasChanges = computed(() => {
     return (
