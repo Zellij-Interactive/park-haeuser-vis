@@ -12,10 +12,17 @@
         width="500"
         persistent
     >
-        <template v-slot:activator="{ props }">
-            <v-btn color="primary" v-bind="props" @click="() => isFilterVisible ?? resetFilter()"
-                ><v-icon>mdi-filter-outline</v-icon>
-            </v-btn>
+        <template v-slot:activator="{ props: menuProps }">
+            <v-tooltip v-bind="menuProps" text="Filteroptionen" location="bottom">
+                <template v-slot:activator="{ props: tooltipProps }">
+                    <v-btn
+                        v-bind="{ ...menuProps, ...tooltipProps }"
+                        color="primary"
+                        @click="() => isFilterVisible ?? resetFilter()"
+                        ><v-icon>mdi-filter-outline</v-icon>
+                    </v-btn>
+                </template>
+            </v-tooltip>
         </template>
 
         <v-card class="pa-4 card" rounded="lg" elevation="1">

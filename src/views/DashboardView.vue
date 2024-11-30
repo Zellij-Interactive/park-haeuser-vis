@@ -14,6 +14,7 @@
             <div class="menu pr-2">
                 <MenuView
                     :parking-garages-names="parkingGaragesNames"
+                    :dark-mode-on="props.darkModeOn"
                     @toggle-theme="emit('toggleTheme')"
                 />
             </div>
