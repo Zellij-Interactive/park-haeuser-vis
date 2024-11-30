@@ -1,4 +1,5 @@
 <template>
+    <!-- Loading Dialog -->
     <v-dialog v-model="isLoading" no-click-animation persistent height="46" width="250">
         <v-card class="d-flex flex-column text-center pt-2">
             <b class="mb-2">Loading...</b>
@@ -7,11 +8,14 @@
     </v-dialog>
 
     <main>
+        <!-- Layout Grid -->
         <div class="grid-container">
             <!-- Map Section -->
             <div class="map">
                 <MapView :dark-mode-on="props.darkModeOn" />
             </div>
+
+            <!-- Filter Section -->
             <div class="menu pr-2">
                 <MenuView
                     :parking-garages-names="parkingGaragesNames"
@@ -19,16 +23,15 @@
                     @toggle-theme="emit('toggleTheme')"
                 />
             </div>
+
+            <!-- Legend Section -->
             <div class="legend d-flex justify-end align-end pr-2">
                 <LegendView :dark-mode-on="props.darkModeOn" />
             </div>
+
+            <!-- Time-Line Section -->
             <div class="time-line px-2">
                 <TimeLineView />
-            </div>
-
-            <!-- Bar Chart Section -->
-            <div class="bar-chart" v-if="selectedChartData">
-                <BarChart :data="selectedChartData.data" :title="selectedChartData.title" />
             </div>
         </div>
     </main>

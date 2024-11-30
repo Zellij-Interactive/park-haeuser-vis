@@ -60,9 +60,7 @@ function renderHorizontalChart(data: number[], title: string) {
     svg.append('g').call(d3.axisLeft(y));
 
     // Add X axis
-    svg.append('g')
-        .attr('transform', `translate(0,${height})`)
-        .call(d3.axisBottom(x));
+    svg.append('g').attr('transform', `translate(0,${height})`).call(d3.axisBottom(x));
 
     // Add title
     svg.append('text')
@@ -75,7 +73,11 @@ function renderHorizontalChart(data: number[], title: string) {
 
 // Render chart on mount and when data changes
 onMounted(() => renderHorizontalChart(props.data, props.title));
-watch(() => props.data, (newData) => renderHorizontalChart(newData, props.title));
+
+watch(
+    () => props.data,
+    (newData) => renderHorizontalChart(newData, props.title)
+);
 </script>
 
 <style>

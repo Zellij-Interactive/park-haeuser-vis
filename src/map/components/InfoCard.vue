@@ -1,6 +1,6 @@
 <template>
     <InfoWindow :options="props.options">
-        <div class="info-window d-flex flex-column px-4 pb-4" :style="{ width: '260px' }">
+        <div class="info-window d-flex flex-column px-4 pb-4" :style="{ width: '600px' }">
             <b class="text-center text-primary pb-4" v-text="props.parkingGarage.name" />
 
             <span><b>Maximale Auslastung:</b> {{ props.parkingGarage.maximalOccupancy }}</span>
@@ -25,6 +25,8 @@
                 <b>Uhrzeit:</b>
                 {{ formatHour(new Date(props.filter.index)) }}</span
             >
+
+            <BarChart :data="props.parkingGarage.rmse" title="testing" />
         </div>
     </InfoWindow>
 </template>
@@ -32,13 +34,13 @@
 <script setup lang="ts">
 import type { ParkingGarage } from '@/parkingGarage/types/parkingGarage';
 import { _throw } from '@/core/_throw';
-
 import { InfoWindow } from 'vue3-google-map';
 import type { Filter } from '@/parkingGarage/types/filter';
 import { useTheme } from 'vuetify';
 import { formatNumber } from '@/core/formatNumber';
 import { formatDate } from '@/core/dateRange';
 import { formatHour } from '@/core/dateRange';
+import BarChart from './BarChart.vue';
 
 const props = defineProps<{
     options: google.maps.InfoWindowOptions;
