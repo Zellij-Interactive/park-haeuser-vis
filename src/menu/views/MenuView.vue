@@ -1,9 +1,16 @@
 <template>
     <div class="foo d-flex justify-end">
         <div class="mr-1">
-            <v-btn @click="() => emit('toggleTheme')" color="primary"
-                ><v-icon>mdi-theme-light-dark</v-icon>
-            </v-btn>
+            <v-tooltip
+                :text="`Darstellung: ${props.darkModeOn ? 'Dunkles Design' : 'Helles Design'}`"
+                location="bottom"
+            >
+                <template v-slot:activator="{ props }">
+                    <v-btn v-bind="props" @click="() => emit('toggleTheme')" color="primary">
+                        <v-icon>mdi-theme-light-dark</v-icon>
+                    </v-btn>
+                </template>
+            </v-tooltip>
         </div>
         <div class="ml-1">
             <FilterCard
@@ -23,6 +30,7 @@ const parkingGarageStore = useParkingGarageStore();
 
 const props = defineProps<{
     parkingGaragesNames: ParkingGarageName[];
+    darkModeOn: boolean;
 }>();
 
 const emit = defineEmits<{
