@@ -14,6 +14,7 @@
             <div class="menu pr-2">
                 <MenuView
                     :parking-garages-names="parkingGaragesNames"
+                    :dark-mode-on="props.darkModeOn"
                     @toggle-theme="emit('toggleTheme')"
                 />
             </div>
@@ -76,6 +77,11 @@ onMounted(async () => {
     z-index: 1;
 
     margin-top: 4px;
+    pointer-events: none;
+}
+
+.menu > * {
+    pointer-events: auto;
 }
 
 .legend {
@@ -95,7 +101,7 @@ onMounted(async () => {
 .grid-container {
     display: grid;
     grid-template-columns: 6fr 2fr;
-    grid-template-rows: 4fr 1fr 2fr;
+    grid-template-rows: 4fr 1fr 1fr;
 
     height: 100vh;
 
@@ -104,5 +110,10 @@ onMounted(async () => {
 
 .grid-container > div:not(.map) {
     padding: var(--gap);
+
+    border: 2px solid black;
+}
+.test {
+    border: 2px solid black;
 }
 </style>

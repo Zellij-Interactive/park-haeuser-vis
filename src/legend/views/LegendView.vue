@@ -1,6 +1,6 @@
 <template>
     <v-card class="pa-4" elevation="1" rounded="lg">
-        <div>
+        <div class="d-flex justify-space-between">
             <PredictionLegend :dark-mode-on="props.darkModeOn" />
             <maxOccupancyLegend :dark-mode-on="props.darkModeOn" />
         </div>
@@ -16,10 +16,4 @@ const props = defineProps<{
 }>();
 </script>
 
-<style>
-.legend-container {
-    width: 80%;
-    margin: var(--gap);
-    padding: var(--gap);
-}
-</style>
+<style></style>

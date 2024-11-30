@@ -1,6 +1,8 @@
 <template>
-    <span>Maximale Auslastung:</span>
-    <div ref="svgCircleAreaLegendContainer"></div>
+    <div class="pl-2">
+        <span>Maximale Auslastung:</span>
+        <div ref="svgCircleAreaLegendContainer"></div>
+    </div>
 </template>
 
 <script setup lang="ts">
