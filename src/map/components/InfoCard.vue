@@ -1,17 +1,27 @@
 <template>
     <InfoWindow :options="props.options">
         <div class="info-window d-flex flex-column px-4 pb-4" :style="{ width: '260px' }">
-            <b class="text-center text-primary">{{ props.parkingGarage.name }}</b>
+            <b class="text-center text-primary pb-4" v-text="props.parkingGarage.name" />
 
-            <span>Maximale Auslastung: {{ props.parkingGarage.maximalOccupancy }}</span>
-            <span
-                >Vorhergesagte Auslastung:
-                {{ props.parkingGarage.predictions.get(filter.index)?.prediction }}</span
+            <span><b>Maximale Auslastung:</b> {{ props.parkingGarage.maximalOccupancy }}</span>
+
+            <span><b>Koordinaten:</b></span>
+
+            <span class="pl-6">Breitengrad: {{ props.parkingGarage.location.latitude }}</span>
+            <span class="pl-6">Längengrad: {{ props.parkingGarage.location.longitude }}</span>
+
+            <span>
+                <b>Vorhergesagte Auslastung:</b>
+                {{ formatNumber(props.parkingGarage.predictions.get(filter.index)?.prediction) }}%
+            </span>
+
+            <span>
+                <b>Datum:</b>
+                {{ formatDate(new Date(props.filter.index)) }}</span
             >
-
-            <span
-                >Vorhergesagte Auslastung:
-                {{ props.parkingGarage.predictions.get(filter.index) }}</span
+            <span>
+                <b>Uhrzeit:</b>
+                {{ formatHour(new Date(props.filter.index)) }}</span
             >
         </div>
     </InfoWindow>
@@ -24,6 +34,9 @@ import { _throw } from '@/core/_throw';
 import { InfoWindow } from 'vue3-google-map';
 import type { Filter } from '@/parkingGarage/types/filter';
 import { useTheme } from 'vuetify';
+import { formatNumber } from '@/core/formatNumber';
+import { formatDate } from '@/core/dateRange';
+import { formatHour } from '@/core/dateRange';
 
 const props = defineProps<{
     options: google.maps.InfoWindowOptions;
@@ -35,6 +48,9 @@ const theme = useTheme();
 </script>
 
 <style>
+.info-window > *:not(:first-child) {
+    padding-bottom: 4px;
+}
 .custom-btn {
     box-sizing: border-box;
     background: white;
@@ -58,7 +74,7 @@ const theme = useTheme();
     display: none !important;
 }
 
-/* Remove any padding or margins on the outer container */
+/* Remove any padding or margins on the outer container and use the primary color as a background color */
 .gm-style-iw {
     background-color: rgb(
         var(--v-theme-secondary)
@@ -67,7 +83,12 @@ const theme = useTheme();
     margin: 0 !important; /* Ensure no extra margin */
 }
 
-/* Additional catch-all for possible internal containers */
+/* Change triangle (arrow) background */
+.gm-style-iw-tc::after {
+    background-color: rgb(var(--v-theme-secondary)) !important; /* Matches your InfoWindow color */
+}
+
+/* Additional catch-all for possible internal containers (White bards at the right and the bottom sides) */
 .gm-style-iw-d {
     overflow: hidden !important; /* Prevent scrollbars */
 }
