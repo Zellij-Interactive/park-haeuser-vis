@@ -79,7 +79,7 @@ const theme = useTheme();
 /* Remove any padding or margins on the outer container and use the primary color as a background color */
 .gm-style-iw {
     background-color: rgb(
-        var(--v-theme-secondary)
+        var(--v-theme-background)
     ) !important; /* Remove Google's default styling */
     padding: 0 !important; /* Ensure no extra padding */
     margin: 0 !important; /* Ensure no extra margin */
@@ -87,7 +87,7 @@ const theme = useTheme();
 
 /* Change triangle (arrow) background */
 .gm-style-iw-tc::after {
-    background-color: rgb(var(--v-theme-secondary)) !important; /* Matches your InfoWindow color */
+    background-color: rgb(var(--v-theme-background)) !important; /* Matches your InfoWindow color */
 }
 
 /* Additional catch-all for possible internal containers (White bards at the right and the bottom sides) */
