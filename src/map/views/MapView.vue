@@ -46,6 +46,7 @@ import type { CustomMarker } from '../customMarker';
 import { ParkingGarageName } from '@/parkingGarage/types/parkingGarageNames';
 import InfoCards from '../components/InfoCard.vue';
 
+// Props for parking garages
 const props = defineProps<{
     darkModeOn: boolean;
 }>();

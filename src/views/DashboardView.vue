@@ -8,6 +8,7 @@
 
     <main>
         <div class="grid-container">
+            <!-- Map Section -->
             <div class="map">
                 <MapView :dark-mode-on="props.darkModeOn" />
             </div>
@@ -23,6 +24,11 @@
             </div>
             <div class="time-line px-2">
                 <TimeLineView />
+            </div>
+
+            <!-- Bar Chart Section -->
+            <div class="bar-chart" v-if="selectedChartData">
+                <BarChart :data="selectedChartData.data" :title="selectedChartData.title" />
             </div>
         </div>
     </main>
@@ -50,30 +56,41 @@ const emit = defineEmits<{
     (event: 'toggleTheme'): void;
 }>();
 
+// Reactive Properties
 const parkingGarageStore = useParkingGarageStore();
 
 const parkingGaragesNames: ParkingGarageName[] = listOfParkingGaragesNames;
 
 const parkingGarages = ref<ParkingGarage[]>([]);
+const selectedChartData = ref<{ data: number[]; title: string } | null>(null);
 const isLoading = ref(false);
 
+// Load parking garages on component mount
 onMounted(async () => {
     await usingIndicator(isLoading, async () => {
         parkingGarages.value = await parkingGarageStore.getAllParkingGarage();
     });
 });
+
+// Handle marker click to show bar chart
+function handleMarkerClick(garage: ParkingGarage) {
+    console.log(`Marker clicked: ${garage.name}`); // Debug Log
+
+    selectedChartData.value = {
+        data: garage.rmse, // Replace with real data, e.g., RMSE values from the garage
+        title: `Data for ${garage.name}`,
+    };
+}
 </script>
 
 <style>
 .map {
     grid-area: 1 / 1 / -1 / -1;
-
     z-index: 0;
 }
 .menu {
     grid-row: 1 / 2;
     grid-column: 2 / -1;
-
     z-index: 1;
 
     margin-top: 4px;
@@ -87,14 +104,18 @@ onMounted(async () => {
 .legend {
     grid-row: 2 / 3;
     grid-column: 2 / -1;
-
     z-index: 1;
 }
 
 .time-line {
     grid-row: 3 / -1;
     grid-column: 1 / -1;
+    z-index: 1;
+}
 
+.bar-chart {
+    grid-row: 3 / -1; /* Position the chart below the legend */
+    grid-column: 2 / -1;
     z-index: 1;
 }
 
@@ -102,7 +123,6 @@ onMounted(async () => {
     display: grid;
     grid-template-columns: 6fr 2fr;
     grid-template-rows: 4fr 1fr 1fr;
-
     height: 100vh;
 
     background-color: var(--v-teal-darken-3);

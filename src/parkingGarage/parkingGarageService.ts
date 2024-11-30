@@ -1,3 +1,4 @@
+// parkingGarageService: Handles API or database operations (e.g., fetching parking garage data).
 import { _throw } from '@/core/_throw';
 import type { ParkingGarage } from './types/parkingGarage';
 import { ParkingGarageName } from './types/parkingGarageNames';
