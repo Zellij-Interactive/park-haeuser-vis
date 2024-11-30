@@ -1,5 +1,5 @@
 <template>
-    <div class="test slider d-flex flex-column justify-center align-center">
+    <div class="slider d-flex flex-column justify-center align-center">
         <v-slider
             v-model="currentValue"
             :max="maxDateInMilliseconds"
