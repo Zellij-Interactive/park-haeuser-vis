@@ -1,6 +1,6 @@
 <template>
     <InfoWindow :options="props.options">
-        <div class="info-window d-flex flex-column pa-4" :style="{ width: '260px' }">
+        <div class="info-window d-flex flex-column px-4 pb-4" :style="{ width: '260px' }">
             <b class="text-center text-primary">{{ props.parkingGarage.name }}</b>
 
             <span>Maximale Auslastung: {{ props.parkingGarage.maximalOccupancy }}</span>
@@ -35,9 +35,6 @@ const theme = useTheme();
 </script>
 
 <style>
-.info-window {
-    background-color: var(--v-secondary);
-}
 .custom-btn {
     box-sizing: border-box;
     background: white;
@@ -63,7 +60,9 @@ const theme = useTheme();
 
 /* Remove any padding or margins on the outer container */
 .gm-style-iw {
-    background-color: rgb(var(--v-theme-secondary)); /* Remove Google's default styling */
+    background-color: rgb(
+        var(--v-theme-secondary)
+    ) !important; /* Remove Google's default styling */
     padding: 0 !important; /* Ensure no extra padding */
     margin: 0 !important; /* Ensure no extra margin */
 }
