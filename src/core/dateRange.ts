@@ -33,3 +33,9 @@ export function formatDate(date: Date) {
 
     return `${day}.${month}.${year}`;
 }
+
+export function formatHour(date: Date) {
+    const hour = String(date.getHours()).padStart(2, '0');
+
+    return `${hour}:00Uhr`;
+}
