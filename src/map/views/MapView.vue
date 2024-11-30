@@ -6,7 +6,29 @@
         :zoom="15"
         :styles="mapStyles"
     >
-        <Marker v-for="[key, value] in markers" :key="value.title" :options="value" />
+        <Marker
+            v-for="[key, value] in markers"
+            :key="key"
+            :options="value"
+            @click="toggleDetails(key)"
+        />
+
+        <InfoCards
+            v-for="[key, value] in infoWindows"
+            :key="key"
+            :options="{
+                position: {
+                    lat: value.location.latitude,
+                    lng: value.location.longitude,
+                },
+                disableAutoPan: true,
+            }"
+            :parking-garage="
+                parkingGarageStore.parkingGaragesMap.get(key) ??
+                _throw('Parking garage not found:' + key)
+            "
+            :filter="parkingGarageStore.filter"
+        />
     </GoogleMap>
 </template>
 
@@ -18,13 +40,13 @@ import { _throw } from '@/core/_throw';
 import { useParkingGarageStore } from '@/parkingGarage/parkingGarageStore';
 import { sizeScale } from '@/legend/utils/sizeScale';
 import { getColorSaturation } from '@/legend/utils/ordinalScale';
-import { GoogleMap, Marker } from 'vue3-google-map';
+import { GoogleMap, Marker, InfoWindow } from 'vue3-google-map';
 import { googleMapLightModeStyling, googleMapsDarkModeStyling } from '../utils';
 import type { CustomMarker } from '../customMarker';
 import { ParkingGarageName } from '@/parkingGarage/types/parkingGarageNames';
+import InfoCards from '../components/InfoCard.vue';
 
 const props = defineProps<{
-    parkingGarages: ParkingGarage[];
     darkModeOn: boolean;
 }>();
 
@@ -32,6 +54,7 @@ const parkingGarageStore = useParkingGarageStore();
 
 const center = { lat: mainzCoordinates.latitude, lng: mainzCoordinates.longitude };
 const markers = ref(new Map<ParkingGarageName, CustomMarker>());
+const infoWindows = ref(new Map<ParkingGarageName, ParkingGarage>());
 
 const mapStyles = computed(() =>
     props.darkModeOn ? googleMapsDarkModeStyling : googleMapLightModeStyling
@@ -74,6 +97,19 @@ function addMarkerToMap(parkingGarage: ParkingGarage) {
         },
     });
 }
+
+function toggleDetails(p: ParkingGarageName) {
+    if (infoWindows.value?.has(p)) {
+        infoWindows.value?.delete(p);
+
+        return;
+    }
+
+    infoWindows.value?.set(
+        p,
+        parkingGarageStore.parkingGaragesMap.get(p) ?? _throw('Parking garage not found:' + p)
+    );
+}
 </script>
 
 <style>
@@ -81,5 +117,27 @@ function addMarkerToMap(parkingGarage: ParkingGarage) {
     width: 100%;
     min-height: 96vh;
     z-index: 0;
+}
+
+.custom-btn {
+    box-sizing: border-box;
+    background: white;
+    height: 40px;
+    width: 40px;
+    border-radius: 2px;
+    border: 0px;
+    margin: 10px;
+    padding: 0px;
+    font-size: 1.25rem;
+    text-transform: none;
+    appearance: none;
+    cursor: pointer;
+    user-select: none;
+    box-shadow: rgba(0, 0, 0, 0.3) 0px 1px 4px -1px;
+    overflow: hidden;
+}
+
+.gm-ui-hover-effect {
+    display: none !important;
 }
 </style>

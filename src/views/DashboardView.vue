@@ -9,7 +9,7 @@
     <main>
         <div class="grid-container">
             <div class="map">
-                <MapView :parking-garages="parkingGarages" :dark-mode-on="props.darkModeOn" />
+                <MapView :dark-mode-on="props.darkModeOn" />
             </div>
             <div class="menu pr-2">
                 <MenuView
