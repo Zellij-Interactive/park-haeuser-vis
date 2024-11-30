@@ -1,101 +1,144 @@
 <template>
-    <div class="test">
-        <v-btn @click="onButtonClick()">Show Large Circles</v-btn>
-    </div>
-    <div id="map"></div>
+    <GoogleMap
+        api-key="AIzaSyDuGL4qVEPir1UCBucl3-hlMJS7QX3U5Dg"
+        style="width: 100%; height: 100%"
+        :center="center"
+        :zoom="15"
+        :styles="mapStyles"
+    >
+        <Marker
+            v-for="[key, value] in markers"
+            :key="key"
+            :options="value"
+            @click="toggleDetails(key)"
+        />
+
+        <InfoCards
+            v-for="[key, value] in infoWindows"
+            :key="key"
+            :options="{
+                position: {
+                    lat: value.location.latitude,
+                    lng: value.location.longitude,
+                },
+                disableAutoPan: true,
+            }"
+            :parking-garage="
+                parkingGarageStore.parkingGaragesMap.get(key) ??
+                _throw('Parking garage not found:' + key)
+            "
+            :filter="parkingGarageStore.filter"
+        />
+    </GoogleMap>
 </template>
 
 <script setup lang="ts">
-import L from 'leaflet';
-import { onMounted, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { mainzCoordinates } from '@/core/constants';
 import type { ParkingGarage } from '@/parkingGarage/types/parkingGarage';
 import { _throw } from '@/core/_throw';
-import { getColorSaturation } from '@/legend/utils/ordinalScale';
+import { useParkingGarageStore } from '@/parkingGarage/parkingGarageStore';
 import { sizeScale } from '@/legend/utils/sizeScale';
+import { getColorSaturation } from '@/legend/utils/ordinalScale';
+import { GoogleMap, Marker, InfoWindow } from 'vue3-google-map';
+import { googleMapLightModeStyling, googleMapsDarkModeStyling } from '../utils';
+import type { CustomMarker } from '../customMarker';
+import { ParkingGarageName } from '@/parkingGarage/types/parkingGarageNames';
+import InfoCards from '../components/InfoCard.vue';
 
 // Props for parking garages
 const props = defineProps<{
-    parkingGarages: ParkingGarage[];
+    darkModeOn: boolean;
 }>();
 
-// Emit markerClicked event
-const emit = defineEmits(['markerClicked']);
+const parkingGarageStore = useParkingGarageStore();
 
-// Leaflet map and circle pane references
-const map = ref<L.Map | null>(null);
-const circlePane = ref<HTMLElement | null>(null);
+const center = { lat: mainzCoordinates.latitude, lng: mainzCoordinates.longitude };
+const markers = ref(new Map<ParkingGarageName, CustomMarker>());
+const infoWindows = ref(new Map<ParkingGarageName, ParkingGarage>());
 
-// Add large circles to the map (existing functionality)
-function onButtonClick() {
-    if (!map.value) {
-        _throw('Map is not initialized.');
-    }
+const mapStyles = computed(() =>
+    props.darkModeOn ? googleMapsDarkModeStyling : googleMapLightModeStyling
+);
 
-    console.log('Adding large circles for garages:', props.parkingGarages);
+watch(
+    () => parkingGarageStore.filter,
+    (filter) => {
+        // Hide non filter parking garages
+        Object.values(ParkingGarageName)
+            .filter((e) => !parkingGarageStore.filter.parkingGarages.includes(e))
+            .forEach((e) => markers.value.delete(e));
 
-    props.parkingGarages.forEach((parking) => {
-        L.circle([parking.location.latitude, parking.location.longitude], {
-            color: '#000000',
-            fillColor: getColorSaturation(parking.predictions[0]?.prediction || 0),
-            fillOpacity: 0.8,
-            radius: sizeScale(parking.maximalOccupancy),
-            pane: 'circlePane',
-        }).addTo(map.value!);
-    });
-}
+        filter.parkingGarages.forEach(async (name) => {
+            const parkingGarage = await parkingGarageStore.getParkingGarage(name);
 
-// Add smaller interactive circles to the map
-function addMarkers() {
-    if (!map.value) {
-        _throw('Map is not initialized.');
-    }
-
-    props.parkingGarages.forEach((parking) => {
-        const circle = L.circle([parking.location.latitude, parking.location.longitude], {
-            color: 'blue',
-            fillColor: 'lightblue',
-            fillOpacity: 0.6,
-            radius: 150,
-        }).addTo(map.value!);
-
-        // Attach click event to circle
-        circle.on('click', () => {
-            console.log(`Marker clicked: ${parking.name}`);
-            emit('markerClicked', parking);
+            addMarkerToMap(parkingGarage);
         });
+    },
+    { immediate: true, deep: true }
+);
+
+function addMarkerToMap(parkingGarage: ParkingGarage) {
+    markers.value.set(parkingGarage.name, {
+        position: {
+            lat: parkingGarage.location.latitude,
+            lng: parkingGarage.location.longitude,
+        },
+        title: parkingGarage.name,
+        icon: {
+            path: google.maps.SymbolPath.CIRCLE,
+            scale: sizeScale(parkingGarage.maximalOccupancy),
+            fillColor: getColorSaturation(
+                parkingGarage.predictions.get(parkingGarageStore.filter.index)?.prediction ??
+                    _throw('An error has occurred while getting the prediction value')
+            ),
+            fillOpacity: 1.0,
+            strokeColor: '#000000',
+            strokeWeight: 1,
+        },
     });
 }
 
-// Initialize the map and add interactive circles on mount
-onMounted(() => {
-    map.value = L.map('map').setView([mainzCoordinates.latitude, mainzCoordinates.longitude], 13);
+function toggleDetails(p: ParkingGarageName) {
+    if (infoWindows.value?.has(p)) {
+        infoWindows.value?.delete(p);
 
-    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        minZoom: 14.5,
-        maxZoom: 18,
-        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-    }).addTo(map.value!);
+        return;
+    }
 
-    // Create custom pane for larger circles
-    map.value.createPane('circlePane');
-    circlePane.value = map.value.getPane('circlePane') || null;
-
-    // Add smaller interactive circles
-    addMarkers();
-});
+    infoWindows.value?.set(
+        p,
+        parkingGarageStore.parkingGaragesMap.get(p) ?? _throw('Parking garage not found:' + p)
+    );
+}
 </script>
 
 <style>
-.test {
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 1;
-}
 #map {
     width: 100%;
     min-height: 96vh;
     z-index: 0;
+}
+
+.custom-btn {
+    box-sizing: border-box;
+    background: white;
+    height: 40px;
+    width: 40px;
+    border-radius: 2px;
+    border: 0px;
+    margin: 10px;
+    padding: 0px;
+    font-size: 1.25rem;
+    text-transform: none;
+    appearance: none;
+    cursor: pointer;
+    user-select: none;
+    box-shadow: rgba(0, 0, 0, 0.3) 0px 1px 4px -1px;
+    overflow: hidden;
+}
+
+.gm-ui-hover-effect {
+    display: none !important;
 }
 </style>

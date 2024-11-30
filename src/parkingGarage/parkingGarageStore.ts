@@ -3,6 +3,8 @@ import { defineStore } from 'pinia';
 import type { ParkingGarage } from './types/parkingGarage';
 import { parkingGarageService } from './parkingGarageService';
 import type { ParkingGarageName } from './types/parkingGarageNames';
+import { filterMaxDate, filterMinDate, type Filter } from './types/filter';
+import { DateRange } from '@/core/dateRange';
 
 
 export const useParkingGarageStore = defineStore('parking-garage', {
@@ -11,6 +13,12 @@ export const useParkingGarageStore = defineStore('parking-garage', {
 // Keys: ParkingGarageName (unique identifier).
 // Values: ParkingGarage (detailed data about each parking garage).
     state: () => ({
+        filter: {
+            parkingGarages: [],
+            dateRange: new DateRange(filterMinDate, filterMaxDate),
+            showSHAPValues: false,
+            index: filterMinDate.getTime(),
+        } as Filter,
         parkingGaragesMap: new Map<ParkingGarageName, ParkingGarage>(),
     }),
 

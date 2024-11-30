@@ -1,36 +1,29 @@
 <template>
-    <main>
-        <!-- Loading Dialog -->
-        <v-dialog v-model="isLoading" no-click-animation persistent height="46" width="250">
-            <v-card class="d-flex flex-column text-center pt-2">
-                <b class="mb-2">Loading...</b>
-                <v-progress-linear indeterminate></v-progress-linear>
-            </v-card>
-        </v-dialog>
+    <v-dialog v-model="isLoading" no-click-animation persistent height="46" width="250">
+        <v-card class="d-flex flex-column text-center pt-2">
+            <b class="mb-2">Loading...</b>
+            <v-progress-linear indeterminate></v-progress-linear>
+        </v-card>
+    </v-dialog>
 
-        <!-- Layout Grid -->
+    <main>
         <div class="grid-container">
             <!-- Map Section -->
             <div class="map">
-                <MapView
-                    :parking-garages="parkingGarages"
-                    @markerClicked="handleMarkerClick"
+                <MapView :dark-mode-on="props.darkModeOn" />
+            </div>
+            <div class="menu pr-2">
+                <MenuView
+                    :parking-garages-names="parkingGaragesNames"
+                    :dark-mode-on="props.darkModeOn"
+                    @toggle-theme="emit('toggleTheme')"
                 />
             </div>
-
-            <!-- Filter Section -->
-            <div class="filter d-flex justify-center align-center">
-                <FilterView />
+            <div class="legend d-flex justify-end align-end pr-2">
+                <LegendView :dark-mode-on="props.darkModeOn" />
             </div>
-
-            <!-- Legend Section -->
-            <div class="legend d-flex justify-center align-center">
-                <LegendView />
-            </div>
-
-            <!-- Date-Time Filter Section -->
-            <div class="date-time-filter d-flex justify-center align-center">
-                <DateTimeFilterView />
+            <div class="time-line px-2">
+                <TimeLineView />
             </div>
 
             <!-- Bar Chart Section -->
@@ -43,17 +36,31 @@
 
 <script setup lang="ts">
 import MapView from '@/map/views/MapView.vue';
-import FilterView from '@/filter/views/FilterView.vue';
+import MenuView from '@/menu/views/MenuView.vue';
 import LegendView from '@/legend/views/LegendView.vue';
-import DateTimeFilterView from '@/date-time-filter/views/DateTimeFilterView.vue';
 import { useParkingGarageStore } from '@/parkingGarage/parkingGarageStore';
 import type { ParkingGarage } from '@/parkingGarage/types/parkingGarage';
 import { onMounted, ref } from 'vue';
 import { usingIndicator } from '@/core/usingIndicator';
-import BarChart from '@/BarChart/BarChart.vue';
+import {
+    listOfParkingGaragesNames,
+    ParkingGarageName,
+} from '@/parkingGarage/types/parkingGarageNames';
+import TimeLineView from '@/time-line/views/TimeLineView.vue';
+
+const props = defineProps<{
+    darkModeOn: boolean;
+}>();
+
+const emit = defineEmits<{
+    (event: 'toggleTheme'): void;
+}>();
 
 // Reactive Properties
 const parkingGarageStore = useParkingGarageStore();
+
+const parkingGaragesNames: ParkingGarageName[] = listOfParkingGaragesNames;
+
 const parkingGarages = ref<ParkingGarage[]>([]);
 const selectedChartData = ref<{ data: number[]; title: string } | null>(null);
 const isLoading = ref(false);
@@ -81,12 +88,17 @@ function handleMarkerClick(garage: ParkingGarage) {
     grid-area: 1 / 1 / -1 / -1;
     z-index: 0;
 }
-
-.filter {
+.menu {
     grid-row: 1 / 2;
     grid-column: 2 / -1;
     z-index: 1;
-    margin-top: 20px;
+
+    margin-top: 4px;
+    pointer-events: none;
+}
+
+.menu > * {
+    pointer-events: auto;
 }
 
 .legend {
@@ -95,7 +107,7 @@ function handleMarkerClick(garage: ParkingGarage) {
     z-index: 1;
 }
 
-.date-time-filter {
+.time-line {
     grid-row: 3 / -1;
     grid-column: 1 / -1;
     z-index: 1;
@@ -109,17 +121,19 @@ function handleMarkerClick(garage: ParkingGarage) {
 
 .grid-container {
     display: grid;
-    grid-template-columns: 6fr 1fr;
+    grid-template-columns: 6fr 2fr;
     grid-template-rows: 4fr 1fr 1fr;
     height: 100vh;
-    gap: 10px;
-    background-color: #2196f3;
-    padding: 10px;
+
+    background-color: var(--v-teal-darken-3);
 }
 
-.grid-container > div {
-    background-color: rgba(255, 255, 255, 0.7);
-    padding: 20px 0;
-    font-size: 14px;
+.grid-container > div:not(.map) {
+    padding: var(--gap);
+
+    border: 2px solid black;
+}
+.test {
+    border: 2px solid black;
 }
 </style>
