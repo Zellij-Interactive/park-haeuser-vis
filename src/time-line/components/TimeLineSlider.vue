@@ -1,25 +1,70 @@
 <template>
     <div class="slider d-flex flex-column justify-center align-center">
-        <div>
-            <v-btn density="compact" variant="flat">
-                <v-icon @click="startTimer()">mdi-play</v-icon>
-            </v-btn>
-            <v-btn density="compact" variant="flat">
-                <v-icon @click="pauseTimer()">mdi-pause</v-icon>
-            </v-btn>
-            <v-btn density="compact" variant="flat" @click="changeSpeed()" :text="`x${speed}`">
-            </v-btn>
-        </div>
-
         <v-slider
             v-model="currentValue"
-            :max="max"
-            :min="min"
+            :max="maxDateInMilliseconds"
+            :min="minDateInMilliseconds"
             :step="hourInMilliseconds"
             style="width: 100%"
             thumb-label="always"
+            :thumb-size="0"
+            track-color="secondary"
+            track-fill-color="primary"
+            density="compact"
         >
+            <template v-slot:thumb-label="{ modelValue }">
+                <div class="thumb-label-date d-flex justify-center text-secondary">
+                    <span v-text="formatDate(new Date(modelValue))" />
+                    <span v-text="`, ${formatHour(new Date(modelValue))}`" />
+                </div>
+            </template>
+
             <template v-slot:prepend>
+                <div class="test d-flex justify-space-between" :style="{ width: '68px' }">
+                    <v-tooltip v-if="!isPlaying" text="Abspielen" location="top">
+                        <template v-slot:activator="{ props }">
+                            <v-btn
+                                v-bind="props"
+                                density="compact"
+                                variant="text"
+                                icon="mdi-play"
+                                :ripple="false"
+                                @click="startTimer()"
+                            />
+                        </template>
+                    </v-tooltip>
+
+                    <v-tooltip v-else text="Pause" location="top">
+                        <template v-slot:activator="{ props }">
+                            <v-btn
+                                v-bind="props"
+                                density="compact"
+                                variant="text"
+                                icon="mdi-pause"
+                                :ripple="false"
+                                @click="pauseTimer()"
+                            />
+                        </template>
+                    </v-tooltip>
+
+                    <v-tooltip text="Wiedergabegeschwindigkeit" location="top">
+                        <template v-slot:activator="{ props }">
+                            <v-btn
+                                v-bind="props"
+                                class="text-none"
+                                density="compact"
+                                variant="text"
+                                :ripple="false"
+                                @click="changeSpeed()"
+                                :text="`x${speed}`"
+                                icon=""
+                            />
+                        </template>
+                    </v-tooltip>
+                </div>
+            </template>
+
+            <!-- <template v-slot:prepend>
                 <v-text-field
                     density="compact"
                     variant="outlined"
@@ -41,14 +86,14 @@
                 >
                     {{ formatDate(endDate) }}
                 </v-text-field>
-            </template>
+            </template> -->
         </v-slider>
     </div>
 </template>
 
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
-import { formatDate } from '@/core/dateRange';
+import { formatDate, formatHour } from '@/core/dateRange';
 import type { Filter } from '@/parkingGarage/types/filter';
 
 const props = defineProps<{
@@ -62,10 +107,10 @@ const emit = defineEmits<{
 const startDate = computed(() => props.filter.dateRange.startDate);
 const endDate = computed(() => props.filter.dateRange.endDate);
 
-const min = computed(() => startDate.value.getTime());
-const max = computed(() => endDate.value.getTime());
+const minDateInMilliseconds = computed(() => startDate.value.getTime());
+const maxDateInMilliseconds = computed(() => endDate.value.getTime());
 
-const currentValue = ref(min.value);
+const currentValue = ref(minDateInMilliseconds.value);
 
 const hourInMilliseconds = 3600000;
 
@@ -75,28 +120,18 @@ const speed = ref<1 | 2 | 4>(1);
 watch(
     () => currentValue.value,
     (value) => {
-        if (value == max.value && isPlaying.value) {
-            isPlaying.value = false;
-        }
-
-        emit('indexUpdated', currentValue.value);
+        emit('indexUpdated', value);
     }
 );
 
 async function startTimer() {
     isPlaying.value = true;
 
-    while (currentValue.value <= max.value) {
-        if (!isPlaying.value) {
-            break;
-        }
-
+    while (currentValue.value <= maxDateInMilliseconds.value && isPlaying.value) {
         await sleep(100 / speed.value);
 
         currentValue.value += hourInMilliseconds;
     }
-
-    isPlaying.value = false;
 }
 
 function pauseTimer() {
@@ -115,5 +150,12 @@ function sleep(ms: number): Promise<void> {
 <style>
 .slider {
     width: 90%;
+}
+.v-slider-thumb {
+    padding-top: 20px;
+}
+.thumb-label-date {
+    margin-bottom: 2px;
+    width: 120px;
 }
 </style>
