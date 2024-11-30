@@ -1,5 +1,5 @@
 <template>
-    <div class="slider d-flex flex-column justify-center align-center">
+    <div class="test slider d-flex flex-column justify-center align-center">
         <v-slider
             v-model="currentValue"
             :max="maxDateInMilliseconds"
@@ -11,6 +11,7 @@
             track-color="secondary"
             track-fill-color="primary"
             density="compact"
+            hide-details
         >
             <template v-slot:thumb-label="{ modelValue }">
                 <div class="thumb-label-date d-flex justify-center text-secondary">

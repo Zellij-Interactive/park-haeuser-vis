@@ -113,4 +113,7 @@ onMounted(async () => {
 
     border: 2px solid black;
 }
+.test {
+    border: 2px solid black;
+}
 </style>
