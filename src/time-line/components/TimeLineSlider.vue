@@ -20,7 +20,7 @@
             </template>
 
             <template v-slot:prepend>
-                <div class="test d-flex justify-space-between" :style="{ width: '68px' }">
+                <div class="d-flex justify-space-between" :style="{ width: '68px' }">
                     <v-tooltip v-if="!isPlaying" text="Abspielen" location="top">
                         <template v-slot:activator="{ props }">
                             <v-btn
