@@ -243,6 +243,8 @@ function copy(filter: Filter): Filter {
         dateRange: new DateRange(filter.dateRange.startDate, filter.dateRange.endDate),
         showSHAPValues: filter.showSHAPValues,
         index: filter.index,
+        maxShapValue: filter.maxShapValue,
+        minShapValue: filter.minShapValue,
     };
 }
 
