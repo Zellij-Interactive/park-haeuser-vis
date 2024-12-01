@@ -1,6 +1,9 @@
 <template>
     <InfoWindow :options="props.options">
-        <div class="info-window d-flex flex-column px-4 pb-4" :style="{ width: '600px' }">
+        <div
+            class="info-window d-flex flex-column px-4 pb-4"
+            :style="{ width: `${props.filter.showSHAPValues ? '450px' : '230px'}` }"
+        >
             <b class="text-center text-primary pb-4" v-text="props.parkingGarage.name" />
 
             <span><b>Maximale Auslastung:</b> {{ props.parkingGarage.maximalOccupancy }}</span>
@@ -19,14 +22,23 @@
 
             <span>
                 <b>Datum:</b>
-                {{ formatDate(new Date(props.filter.index)) }}</span
-            >
+                {{ formatDate(new Date(props.filter.index)) }}
+            </span>
+
             <span>
                 <b>Uhrzeit:</b>
-                {{ formatHour(new Date(props.filter.index)) }}</span
-            >
+                {{ formatHour(new Date(props.filter.index)) }}
+            </span>
 
-            <BarChart :data="props.parkingGarage.rmse" title="testing" />
+            <span v-if="props.filter.showSHAPValues">
+                <b>SHAP-Werte:</b>
+            </span>
+
+            <BarChart
+                v-if="props.filter.showSHAPValues"
+                :data="shapValues"
+                :filter="props.filter"
+            />
         </div>
     </InfoWindow>
 </template>
@@ -41,6 +53,8 @@ import { formatNumber } from '@/core/formatNumber';
 import { formatDate } from '@/core/dateRange';
 import { formatHour } from '@/core/dateRange';
 import BarChart from './BarChart.vue';
+import { computed } from 'vue';
+import { ShapName, type ShapValue } from '@/parkingGarage/types/shapNames';
 
 const props = defineProps<{
     options: google.maps.InfoWindowOptions;
@@ -48,29 +62,37 @@ const props = defineProps<{
     filter: Filter;
 }>();
 
-const theme = useTheme();
+const shapValues = computed<ShapValue[]>(() => {
+    const prediction = props.parkingGarage.predictions.get(props.filter.index);
+
+    if (prediction == null) {
+        _throw('Prediction not found');
+    }
+
+    return [
+        { name: ShapName.SHAPEducation, value: prediction.shapEducation },
+        {
+            name: ShapName.SHAPServicesSpecialtyRetail,
+            value: prediction.shapServicesSpecialtyRetail,
+        },
+        { name: ShapName.SHAPFinanceInsurance, value: prediction.shapFinanceInsurance },
+        { name: ShapName.SHAPLeisureTime, value: prediction.shapLeisureTime },
+        { name: ShapName.SHAPFoodServices, value: prediction.shapFoodServices },
+        { name: ShapName.SHAPHealth, value: prediction.shapHealth },
+        { name: ShapName.SHAPGrocery, value: prediction.shapGrocery },
+        { name: ShapName.SHAPReligion, value: prediction.shapReligion },
+        { name: ShapName.SHAPShopping, value: prediction.shapShopping },
+        { name: ShapName.SHAPPublicSector, value: prediction.shapPublicSector },
+        { name: ShapName.SHAPTime, value: prediction.shapTime },
+        { name: ShapName.SHAPMonth, value: prediction.shapMonth },
+        { name: ShapName.SHAPOthers, value: prediction.shapOthers },
+    ];
+});
 </script>
 
 <style>
-.info-window > *:not(:first-child) {
+.info-window > *:not(:first-child):not(:last-child) {
     padding-bottom: 4px;
-}
-.custom-btn {
-    box-sizing: border-box;
-    background: white;
-    height: 40px;
-    width: 40px;
-    border-radius: 2px;
-    border: 0px;
-    margin: 10px;
-    padding: 0px;
-    font-size: 1.25rem;
-    text-transform: none;
-    appearance: none;
-    cursor: pointer;
-    user-select: none;
-    box-shadow: rgba(0, 0, 0, 0.3) 0px 1px 4px -1px;
-    overflow: hidden;
 }
 
 /* Hide the default google close button */
