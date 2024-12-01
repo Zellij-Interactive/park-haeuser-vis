@@ -37,5 +37,5 @@ export function formatDate(date: Date) {
 export function formatHour(date: Date) {
     const hour = String(date.getHours()).padStart(2, '0');
 
-    return `${hour}:00Uhr`;
+    return `${hour}:00 Uhr`;
 }

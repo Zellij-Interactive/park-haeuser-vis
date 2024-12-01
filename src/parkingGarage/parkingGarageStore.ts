@@ -6,32 +6,52 @@ import type { ParkingGarageName } from './types/parkingGarageNames';
 import { filterMaxDate, filterMinDate, type Filter } from './types/filter';
 import { DateRange } from '@/core/dateRange';
 
-
 export const useParkingGarageStore = defineStore('parking-garage', {
-//     parkingGaragesMap:
-// A Map object that stores parking garage data.
-// Keys: ParkingGarageName (unique identifier).
-// Values: ParkingGarage (detailed data about each parking garage).
+    //     parkingGaragesMap:
+    // A Map object that stores parking garage data.
+    // Keys: ParkingGarageName (unique identifier).
+    // Values: ParkingGarage (detailed data about each parking garage).
     state: () => ({
         filter: {
             parkingGarages: [],
             dateRange: new DateRange(filterMinDate, filterMaxDate),
             showSHAPValues: false,
             index: filterMinDate.getTime(),
+            maxShapValue: 0,
+            minShapValue: 0,
         } as Filter,
         parkingGaragesMap: new Map<ParkingGarageName, ParkingGarage>(),
     }),
 
     actions: {
-//         Fetches all parking garages from the parkingGarageService.
-// Saves each parking garage to the parkingGaragesMap.
-// Returns the full list of parking garages.
+        //         Fetches all parking garages from the parkingGarageService.
+        // Saves each parking garage to the parkingGaragesMap.
+        // Returns the full list of parking garages.
         async loadAllParkingGarages(): Promise<ParkingGarage[]> {
             const parkingGarages = await parkingGarageService.getAllParkingGarages();
 
+            let globalMax = 0;
+            let globalMin = 0;
+
             parkingGarages.forEach((parkingGarage) => {
                 this.parkingGaragesMap.set(parkingGarage.name, parkingGarage);
+
+                // Update the max and min values
+                parkingGarage.predictions.forEach((prediction) => {
+                    const values = Object.entries(prediction)
+                        .filter(([key]) => key != 'shapSum' && key != 'prediction') // Exclude shapSum
+                        .map(([, value]) => value); // Get the values
+
+                    const localMaxValue = Math.max(...values);
+                    const localMinValue = Math.min(...values);
+
+                    globalMax = localMaxValue > globalMax ? localMaxValue : globalMax;
+                    globalMin = localMinValue < globalMin ? localMinValue : globalMin;
+                });
             });
+
+            this.filter.maxShapValue = globalMax;
+            this.filter.minShapValue = globalMin;
 
             return parkingGarages;
         },
@@ -65,5 +85,3 @@ export const useParkingGarageStore = defineStore('parking-garage', {
         },
     },
 });
-
-
