@@ -1,48 +1,60 @@
 <template>
-    <div ref="chart" class="chart-container"></div>
+    <div ref="chart"></div>
 </template>
 
 <script setup lang="ts">
 import { ref, watch, onMounted } from 'vue';
 import * as d3 from 'd3';
+import { _throw } from '@/core/_throw';
+import type { ShapValue } from '@/parkingGarage/types/shapNames';
+import type { Filter } from '@/parkingGarage/types/filter';
 
 // Props for bar chart data and title
-const props = defineProps<{ data: number[]; title: string }>();
+const props = defineProps<{
+    data: ShapValue[];
+    title?: string;
+    filter: Filter;
+}>();
+
 const chart = ref<HTMLDivElement | null>(null);
 
-function renderHorizontalChart(data: number[], title: string) {
+const width = 430;
+const height = 200;
+
+function renderHorizontalChart(data: ShapValue[], title: string | undefined) {
     if (!chart.value) return;
 
     // Clear previous chart
     d3.select(chart.value).selectAll('*').remove();
 
     // Chart dimensions
-    const margin = { top: 20, right: 20, bottom: 30, left: 60 };
-    const width = 400 - margin.left - margin.right;
-    const height = 200 - margin.top - margin.bottom;
+    const margin = { top: 0, right: 10, bottom: 20, left: 140 };
+
+    const innerWidth = width - margin.left - margin.right;
+    const innerHeight = height - margin.top - margin.bottom;
 
     // Create SVG container
     const svg = d3
         .select(chart.value)
         .append('svg')
-        .attr('width', width + margin.left + margin.right)
-        .attr('height', height + margin.top + margin.bottom)
+        .attr('width', innerWidth + margin.left + margin.right)
+        .attr('height', innerHeight + margin.top + margin.bottom)
         .append('g')
         .attr('transform', `translate(${margin.left},${margin.top})`);
 
     // Y scale (for categories)
-    const y = d3
+    const yScale = d3
         .scaleBand()
-        .domain(data.map((_, i) => i.toString()))
-        .range([0, height])
-        .padding(0.1);
+        .domain(data.map((d, i) => d.name))
+        .range([0, innerHeight])
+        .padding(0.2);
 
     // X scale (for values)
-    const x = d3
+    const xScale = d3
         .scaleLinear()
-        .domain([d3.min(data) || 0, d3.max(data) || 0])
+        .domain([props.filter.minShapValue, props.filter.maxShapValue])
         .nice()
-        .range([0, width]);
+        .range([0, innerWidth]);
 
     // Draw bars
     svg.selectAll('.bar')
@@ -50,25 +62,27 @@ function renderHorizontalChart(data: number[], title: string) {
         .enter()
         .append('rect')
         .attr('class', 'bar')
-        .attr('y', (_, i) => y(i.toString()) || 0)
-        .attr('x', (d) => (d > 0 ? x(0) : x(d)))
-        .attr('width', (d) => Math.abs(x(d) - x(0)))
-        .attr('height', y.bandwidth())
-        .attr('fill', (d) => (d > 0 ? 'steelblue' : 'tomato'));
+        .attr('y', (d, i) => yScale(d.name) || 0)
+        .attr('x', (d) => xScale(Math.min(0, d.value)))
+        .attr('width', (d) => Math.abs(xScale(d.value) - xScale(0)))
+        .attr('height', yScale.bandwidth())
+        .attr('fill', (d) => (d.value > 0 ? 'steelblue' : 'tomato'));
 
     // Add Y axis
-    svg.append('g').call(d3.axisLeft(y));
+    svg.append('g').call(d3.axisLeft(yScale));
 
     // Add X axis
-    svg.append('g').attr('transform', `translate(0,${height})`).call(d3.axisBottom(x));
+    svg.append('g').attr('transform', `translate(0,${innerHeight})`).call(d3.axisBottom(xScale));
 
     // Add title
-    svg.append('text')
-        .attr('x', width / 2)
-        .attr('y', -margin.top / 2)
-        .attr('text-anchor', 'middle')
-        .style('font-size', '14px')
-        .text(title);
+    if (title) {
+        svg.append('text')
+            .attr('x', innerWidth / 2)
+            .attr('y', -margin.top / 2)
+            .attr('text-anchor', 'middle')
+            .style('font-size', '14px')
+            .text(title);
+    }
 }
 
 // Render chart on mount and when data changes
@@ -81,10 +95,6 @@ watch(
 </script>
 
 <style>
-.chart-container {
-    width: 100%;
-    height: 100%;
-}
 .bar {
     opacity: 0.8;
 }
