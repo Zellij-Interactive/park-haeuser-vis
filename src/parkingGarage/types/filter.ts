@@ -6,6 +6,8 @@ export type Filter = {
     dateRange: DateRange;
     showSHAPValues: boolean;
     index: number;
+    maxShapValue: number;
+    minShapValue: number;
 };
 
 export const filterMinDate = new Date('2025-01-01T00:00:00');
