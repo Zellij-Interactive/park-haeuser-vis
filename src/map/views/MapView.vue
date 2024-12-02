@@ -45,6 +45,8 @@ import { googleMapLightModeStyling, googleMapsDarkModeStyling } from '../utils';
 import type { CustomMarker } from '../customMarker';
 import { ParkingGarageName } from '@/parkingGarage/types/parkingGarageNames';
 import InfoCards from '../components/InfoCard.vue';
+import { filter } from 'd3';
+import type { ColorBlindMode } from '@/parkingGarage/types/filter';
 
 // Props for parking garages
 const props = defineProps<{
@@ -64,6 +66,7 @@ const mapStyles = computed(() =>
 watch(
     () => parkingGarageStore.filter,
     (filter) => {
+        console.log(filter.colorBlindMode);
         // Hide non filter parking garages
         Object.values(ParkingGarageName)
             .filter((e) => !parkingGarageStore.filter.parkingGarages.includes(e))
@@ -72,13 +75,13 @@ watch(
         filter.parkingGarages.forEach(async (name) => {
             const parkingGarage = await parkingGarageStore.getParkingGarage(name);
 
-            addMarkerToMap(parkingGarage);
+            addMarkerToMap(parkingGarage, filter.colorBlindMode);
         });
     },
     { immediate: true, deep: true }
 );
 
-function addMarkerToMap(parkingGarage: ParkingGarage) {
+function addMarkerToMap(parkingGarage: ParkingGarage, colorBlindMode?: ColorBlindMode) {
     markers.value.set(parkingGarage.name, {
         position: {
             lat: parkingGarage.location.latitude,
@@ -90,7 +93,8 @@ function addMarkerToMap(parkingGarage: ParkingGarage) {
             scale: sizeScale(parkingGarage.maximalOccupancy),
             fillColor: getColorSaturation(
                 parkingGarage.predictions.get(parkingGarageStore.filter.index)?.prediction ??
-                    _throw('An error has occurred while getting the prediction value')
+                    _throw('An error has occurred while getting the prediction value'),
+                colorBlindMode
             ),
             fillOpacity: 1.0,
             strokeColor: '#000000',
