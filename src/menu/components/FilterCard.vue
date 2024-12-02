@@ -151,6 +151,19 @@
                     hide-details
                 />
 
+                <v-checkbox
+                    v-model="colorBlindModeOn"
+                    label="Colorblind mode"
+                    color="primary"
+                    hide-details
+                />
+
+                <v-radio-group v-if="colorBlindModeOn" v-model="unsavedFilter.colorBlindMode" inline>
+                    <v-radio label="protanopia" value="protanopia"></v-radio>
+                    <v-radio label="deuteranopia" value="deuteranopia"></v-radio>
+                    <v-radio label="tritanopia" value="tritanopia"></v-radio>
+                </v-radio-group>
+
                 <v-card-actions class="justify-center">
                     <v-spacer />
                     <v-btn
@@ -185,7 +198,7 @@ import { DateRange, formatDate } from '@/core/dateRange';
 import type { Filter } from '@/parkingGarage/types/filter';
 import { ParkingGarageName } from '@/parkingGarage/types/parkingGarageNames';
 import { computed, ref, watchEffect } from 'vue';
-import { filterMinDate, filterMaxDate } from '@/parkingGarage/types/filter';
+import { filterMinDate, filterMaxDate, ColorBlindMode } from '@/parkingGarage/types/filter';
 
 const props = defineProps<{
     parkingGaragesNames: ParkingGarageName[];
@@ -212,11 +225,14 @@ const areAllSelected = computed({
     set: (value) => toggleSelectAll(value),
 });
 
+const colorBlindModeOn = ref(false);
+
 const hasChanges = computed(() => {
     return (
         !unsavedFilter.value.dateRange.equals(initialFilter.value.dateRange) ||
         unsavedFilter.value.showSHAPValues != initialFilter.value.showSHAPValues ||
-        unsavedFilter.value.parkingGarages != initialFilter.value.parkingGarages
+        unsavedFilter.value.parkingGarages != initialFilter.value.parkingGarages ||
+        unsavedFilter.value.colorBlindMode != initialFilter.value.colorBlindMode
     );
 });
 
@@ -245,6 +261,7 @@ function copy(filter: Filter): Filter {
         index: filter.index,
         maxShapValue: filter.maxShapValue,
         minShapValue: filter.minShapValue,
+        colorBlindMode: filter.colorBlindMode,
     };
 }
 
