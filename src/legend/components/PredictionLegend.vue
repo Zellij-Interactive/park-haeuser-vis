@@ -1,5 +1,5 @@
 <template>
-    <div class="test pr-2">
+    <div class="pr-2">
         <span>Prediction:</span>
         <div ref="svgSaturationLegendContainer"></div>
     </div>
