@@ -1,5 +1,5 @@
 <template>
-    <div class="pr-2">
+    <div class="test pr-2">
         <span>Prediction:</span>
         <div ref="svgSaturationLegendContainer"></div>
     </div>
@@ -9,9 +9,11 @@
 import { ref, onMounted, watch } from 'vue';
 import * as d3 from 'd3';
 import { colorLegend, colorScale } from '../utils/ordinalScale';
+import type { Filter } from '@/parkingGarage/types/filter';
 
 const props = defineProps<{
     darkModeOn: boolean;
+    filter: Filter;
 }>();
 
 // Reference to the container where the SVG will be rendered
@@ -26,6 +28,13 @@ watch(
     }
 );
 
+watch(
+    () => props.filter,
+    () => {
+        renderLegend();
+    }
+);
+
 function renderLegend() {
     if (!svgSaturationLegend) return;
 
@@ -34,9 +43,10 @@ function renderLegend() {
     svgSaturationLegend.append('g').attr('transform', `translate(5,5)`).call(colorLegend, {
         colorScale,
         rectSize: 20,
-        spacing: 6,
+        spacing: 12,
         textOffset: 40,
         isDarkModeOn: props.darkModeOn,
+        colorBlindMode: props.filter.colorBlindMode,
     });
 }
 
@@ -52,9 +62,10 @@ onMounted(() => {
     svgSaturationLegend.append('g').attr('transform', `translate(5,5)`).call(colorLegend, {
         colorScale,
         rectSize: 20,
-        spacing: 6,
+        spacing: 12,
         textOffset: 40,
         isDarkModeOn: props.darkModeOn,
+        colorBlindMode: props.filter.colorBlindMode,
     });
 });
 </script>
