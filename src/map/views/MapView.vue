@@ -46,7 +46,7 @@ import type { CustomMarker } from '../customMarker';
 import { ParkingGarageName } from '@/parkingGarage/types/parkingGarageNames';
 import InfoCards from '../components/InfoCard.vue';
 import { filter } from 'd3';
-import type { ColorBlindMode } from '@/parkingGarage/types/filter';
+import { ColorBlindMode } from '@/parkingGarage/types/filter';
 
 // Props for parking garages
 const props = defineProps<{
@@ -82,6 +82,16 @@ watch(
 );
 
 function addMarkerToMap(parkingGarage: ParkingGarage, colorBlindMode?: ColorBlindMode) {
+    const prediction = parkingGarage.predictions.get(parkingGarageStore.filter.index)?.prediction;
+
+    if (prediction == null) {
+        _throw('An error has occurred while getting the prediction value');
+    }
+
+    const isPredictionGood =
+        parkingGarage.rmse[Math.floor(parkingGarageStore.filter.date.getHours() / 2)] <=
+        parkingGarageStore.filter.threshold;
+
     markers.value.set(parkingGarage.name, {
         position: {
             lat: parkingGarage.location.latitude,
@@ -91,16 +101,29 @@ function addMarkerToMap(parkingGarage: ParkingGarage, colorBlindMode?: ColorBlin
         icon: {
             path: google.maps.SymbolPath.CIRCLE,
             scale: sizeScale(parkingGarage.maximalOccupancy),
-            fillColor: getColorSaturation(
-                parkingGarage.predictions.get(parkingGarageStore.filter.index)?.prediction ??
-                    _throw('An error has occurred while getting the prediction value'),
-                colorBlindMode
-            ),
+            fillColor: getColorSaturation(prediction, colorBlindMode),
             fillOpacity: 1.0,
-            strokeColor: '#000000',
-            strokeWeight: 1,
+            strokeColor: getBorderColor(isPredictionGood, colorBlindMode),
+            strokeWeight: isPredictionGood ? 1 : 4,
         },
     });
+}
+
+function getBorderColor(isPredictionGood: boolean, colorBlindMode?: ColorBlindMode) {
+    if (isPredictionGood) {
+        return '#000000';
+    }
+
+    switch (colorBlindMode) {
+        case undefined:
+            return '#EB271B';
+        case ColorBlindMode.Protanopia:
+            return '#FFB03B';
+        case ColorBlindMode.Deuteranopia:
+            return '#FEE800';
+        case ColorBlindMode.Tritanopia:
+            return '#027385';
+    }
 }
 
 function toggleDetails(p: ParkingGarageName) {

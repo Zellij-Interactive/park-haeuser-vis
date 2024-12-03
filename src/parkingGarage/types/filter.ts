@@ -5,9 +5,11 @@ export type Filter = {
     parkingGarages: ParkingGarageName[];
     dateRange: DateRange;
     showSHAPValues: boolean;
+    date: Date;
     index: number;
     maxShapValue: number;
     minShapValue: number;
+    threshold: number;
     colorBlindMode?: ColorBlindMode;
 };
 

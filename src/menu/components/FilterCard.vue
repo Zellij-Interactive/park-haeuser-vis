@@ -273,9 +273,11 @@ function copy(filter: Filter): Filter {
         parkingGarages: filter.parkingGarages,
         dateRange: new DateRange(filter.dateRange.startDate, filter.dateRange.endDate),
         showSHAPValues: filter.showSHAPValues,
+        date: filter.date,
         index: filter.index,
         maxShapValue: filter.maxShapValue,
         minShapValue: filter.minShapValue,
+        threshold: filter.threshold,
         colorBlindMode: filter.colorBlindMode,
     };
 }
