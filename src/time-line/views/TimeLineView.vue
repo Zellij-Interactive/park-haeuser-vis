@@ -5,7 +5,12 @@
     >
         <TimeLineSlider
             :filter="parkingGarageStore.filter"
-            @index-updated="(index) => (parkingGarageStore.filter.index = index)"
+            @index-updated="
+                (index) => {
+                    parkingGarageStore.filter.index = index;
+                    parkingGarageStore.filter.date = new Date(index);
+                }
+            "
         />
     </v-card>
 </template>
