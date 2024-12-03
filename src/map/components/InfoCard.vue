@@ -48,7 +48,6 @@ import type { ParkingGarage } from '@/parkingGarage/types/parkingGarage';
 import { _throw } from '@/core/_throw';
 import { InfoWindow } from 'vue3-google-map';
 import type { Filter } from '@/parkingGarage/types/filter';
-import { useTheme } from 'vuetify';
 import { formatNumber } from '@/core/formatNumber';
 import { formatDate } from '@/core/dateRange';
 import { formatHour } from '@/core/dateRange';

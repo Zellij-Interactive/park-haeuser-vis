@@ -148,10 +148,34 @@
                     v-model="unsavedFilter.showSHAPValues"
                     label="SHAP-Werte anzeigen"
                     color="primary"
+                    density="compact"
                     hide-details
                 />
 
-                <v-card-actions class="justify-center">
+                <div class="d-flex justify-space-between align-center">
+                    <v-checkbox
+                        v-model="colorBlindModeOn"
+                        label="Colorblind mode"
+                        color="primary"
+                        density="compact"
+                        hide-details
+                    />
+
+                    <v-select
+                        v-if="colorBlindModeOn"
+                        v-model="unsavedFilter.colorBlindMode"
+                        :items="Object.values(ColorBlindMode)"
+                        density="compact"
+                        variant="solo"
+                        bg-color="secondary"
+                        color="primary"
+                        max-width="250"
+                        flat
+                        hide-details
+                    />
+                </div>
+
+                <v-card-actions class="pt-6">
                     <v-spacer />
                     <v-btn
                         class="flex-grow-1 text-none"
@@ -185,7 +209,7 @@ import { DateRange, formatDate } from '@/core/dateRange';
 import type { Filter } from '@/parkingGarage/types/filter';
 import { ParkingGarageName } from '@/parkingGarage/types/parkingGarageNames';
 import { computed, ref, watchEffect } from 'vue';
-import { filterMinDate, filterMaxDate } from '@/parkingGarage/types/filter';
+import { filterMinDate, filterMaxDate, ColorBlindMode } from '@/parkingGarage/types/filter';
 
 const props = defineProps<{
     parkingGaragesNames: ParkingGarageName[];
@@ -212,11 +236,18 @@ const areAllSelected = computed({
     set: (value) => toggleSelectAll(value),
 });
 
+const colorBlindModeOn = computed({
+    get: () => unsavedFilter.value.colorBlindMode != null,
+    set: (value) =>
+        (unsavedFilter.value.colorBlindMode = value ? ColorBlindMode.Protanopia : undefined),
+});
+
 const hasChanges = computed(() => {
     return (
         !unsavedFilter.value.dateRange.equals(initialFilter.value.dateRange) ||
         unsavedFilter.value.showSHAPValues != initialFilter.value.showSHAPValues ||
-        unsavedFilter.value.parkingGarages != initialFilter.value.parkingGarages
+        unsavedFilter.value.parkingGarages != initialFilter.value.parkingGarages ||
+        unsavedFilter.value.colorBlindMode != initialFilter.value.colorBlindMode
     );
 });
 
@@ -247,6 +278,7 @@ function copy(filter: Filter): Filter {
         maxShapValue: filter.maxShapValue,
         minShapValue: filter.minShapValue,
         threshold: filter.threshold,
+        colorBlindMode: filter.colorBlindMode,
     };
 }
 

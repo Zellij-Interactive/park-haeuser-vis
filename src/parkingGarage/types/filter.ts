@@ -10,7 +10,14 @@ export type Filter = {
     maxShapValue: number;
     minShapValue: number;
     threshold: number;
+    colorBlindMode?: ColorBlindMode;
 };
 
 export const filterMinDate = new Date('2025-01-01T00:00:00');
 export const filterMaxDate = new Date('2025-12-31T23:00:00');
+
+export enum ColorBlindMode {
+    Protanopia = 'protanopia',
+    Deuteranopia = 'deuteranopia',
+    Tritanopia = 'tritanopia',
+}

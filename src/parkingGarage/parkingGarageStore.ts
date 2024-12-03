@@ -21,6 +21,7 @@ export const useParkingGarageStore = defineStore('parking-garage', {
             maxShapValue: 0,
             minShapValue: 0,
             threshold: 8,
+            colorBlindMode: undefined,
         } as Filter,
         parkingGaragesMap: new Map<ParkingGarageName, ParkingGarage>(),
     }),
