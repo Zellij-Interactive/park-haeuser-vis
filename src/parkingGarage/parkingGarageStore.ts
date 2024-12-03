@@ -20,7 +20,7 @@ export const useParkingGarageStore = defineStore('parking-garage', {
             index: filterMinDate.getTime(),
             maxShapValue: 0,
             minShapValue: 0,
-            threshold: 3,
+            threshold: 8,
         } as Filter,
         parkingGaragesMap: new Map<ParkingGarageName, ParkingGarage>(),
     }),
