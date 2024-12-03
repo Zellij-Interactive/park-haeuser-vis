@@ -5,9 +5,11 @@ export type Filter = {
     parkingGarages: ParkingGarageName[];
     dateRange: DateRange;
     showSHAPValues: boolean;
+    date: Date;
     index: number;
     maxShapValue: number;
     minShapValue: number;
+    threshold: number;
 };
 
 export const filterMinDate = new Date('2025-01-01T00:00:00');
