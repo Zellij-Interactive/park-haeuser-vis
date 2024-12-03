@@ -46,7 +46,7 @@ import type { CustomMarker } from '../customMarker';
 import { ParkingGarageName } from '@/parkingGarage/types/parkingGarageNames';
 import InfoCards from '../components/InfoCard.vue';
 import { filter } from 'd3';
-import type { ColorBlindMode } from '@/parkingGarage/types/filter';
+import { ColorBlindMode } from '@/parkingGarage/types/filter';
 
 // Props for parking garages
 const props = defineProps<{
@@ -103,10 +103,27 @@ function addMarkerToMap(parkingGarage: ParkingGarage, colorBlindMode?: ColorBlin
             scale: sizeScale(parkingGarage.maximalOccupancy),
             fillColor: getColorSaturation(prediction, colorBlindMode),
             fillOpacity: 1.0,
-            strokeColor: isPredictionGood ? '#000000' : '#d15e3dff',
+            strokeColor: getBorderColor(isPredictionGood, colorBlindMode),
             strokeWeight: isPredictionGood ? 1 : 4,
         },
     });
+}
+
+function getBorderColor(isPredictionGood: boolean, colorBlindMode?: ColorBlindMode) {
+    if (isPredictionGood) {
+        return '#000000';
+    }
+
+    switch (colorBlindMode) {
+        case undefined:
+            return '#EB271B';
+        case ColorBlindMode.Protanopia:
+            return '#FFB03B';
+        case ColorBlindMode.Deuteranopia:
+            return '#FEE800';
+        case ColorBlindMode.Tritanopia:
+            return '#027385';
+    }
 }
 
 function toggleDetails(p: ParkingGarageName) {
