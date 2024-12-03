@@ -79,6 +79,16 @@ watch(
 );
 
 function addMarkerToMap(parkingGarage: ParkingGarage) {
+    const prediction = parkingGarage.predictions.get(parkingGarageStore.filter.index)?.prediction;
+
+    if (prediction == null) {
+        _throw('An error has occurred while getting the prediction value');
+    }
+
+    const isPredictionGood =
+        parkingGarage.rmse[Math.floor(parkingGarageStore.filter.date.getHours() / 2)] <=
+        parkingGarageStore.filter.threshold;
+
     markers.value.set(parkingGarage.name, {
         position: {
             lat: parkingGarage.location.latitude,
@@ -88,13 +98,10 @@ function addMarkerToMap(parkingGarage: ParkingGarage) {
         icon: {
             path: google.maps.SymbolPath.CIRCLE,
             scale: sizeScale(parkingGarage.maximalOccupancy),
-            fillColor: getColorSaturation(
-                parkingGarage.predictions.get(parkingGarageStore.filter.index)?.prediction ??
-                    _throw('An error has occurred while getting the prediction value')
-            ),
+            fillColor: getColorSaturation(prediction),
             fillOpacity: 1.0,
-            strokeColor: '#000000',
-            strokeWeight: 1,
+            strokeColor: isPredictionGood ? '#000000' : '#d15e3dff',
+            strokeWeight: isPredictionGood ? 1 : 4,
         },
     });
 }
