@@ -1,5 +1,6 @@
 import { _throw } from '@/core/_throw';
 import * as d3 from 'd3';
+import { strokeOpacity } from './ordinalScale';
 
 export const sizeScale: d3.ScalePower<number, number, never> = d3.scaleSqrt();
 
@@ -36,7 +37,8 @@ export const sizeLegend = (
         .merge(groups.select('circle'))
         .attr('r', sizeScale)
         .attr('fill', 'none')
-        .attr('stroke', textAndCirclesColor);
+        .attr('stroke', textAndCirclesColor)
+        .attr('stroke-opacity', strokeOpacity);
 
     groupsEnter
         .append('text')
