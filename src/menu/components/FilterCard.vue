@@ -144,6 +144,20 @@
                     </v-menu>
                 </div>
 
+                <v-slider
+                    v-model="unsavedFilter.threshold"
+                    :max="20"
+                    :min="1"
+                    :step="1"
+                    style="width: 96%"
+                    thumb-label
+                    track-color="secondary"
+                    track-fill-color="primary"
+                    density="compact"
+                    hide-details
+                    label="Vorhersagequalität threshold"
+                />
+
                 <v-checkbox
                     v-model="unsavedFilter.showSHAPValues"
                     label="SHAP-Werte anzeigen"
@@ -209,7 +223,8 @@ import { DateRange, formatDate } from '@/core/dateRange';
 import type { Filter } from '@/parkingGarage/types/filter';
 import { ParkingGarageName } from '@/parkingGarage/types/parkingGarageNames';
 import { computed, ref, watchEffect } from 'vue';
-import { filterMinDate, filterMaxDate, ColorBlindMode } from '@/parkingGarage/types/filter';
+import { filterMinDate, filterMaxDate } from '@/parkingGarage/types/filter';
+import { ColorBlindMode } from '@/legend/utils/colorBlindMode';
 
 const props = defineProps<{
     parkingGaragesNames: ParkingGarageName[];
@@ -247,7 +262,8 @@ const hasChanges = computed(() => {
         !unsavedFilter.value.dateRange.equals(initialFilter.value.dateRange) ||
         unsavedFilter.value.showSHAPValues != initialFilter.value.showSHAPValues ||
         unsavedFilter.value.parkingGarages != initialFilter.value.parkingGarages ||
-        unsavedFilter.value.colorBlindMode != initialFilter.value.colorBlindMode
+        unsavedFilter.value.colorBlindMode != initialFilter.value.colorBlindMode ||
+        unsavedFilter.value.threshold != initialFilter.value.threshold
     );
 });
 

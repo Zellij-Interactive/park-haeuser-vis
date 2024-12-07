@@ -125,7 +125,7 @@ function handleMarkerClick(garage: ParkingGarage) {
 .grid-container {
     display: grid;
     grid-template-columns: 6fr 2fr;
-    grid-template-rows: 4fr 1fr 1fr;
+    grid-template-rows: 4fr 4fr 1fr;
     height: 100vh;
 
     background-color: var(--v-teal-darken-3);

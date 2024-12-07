@@ -1,84 +1,15 @@
 import { _throw } from '@/core/_throw';
-import { ColorBlindMode } from '@/parkingGarage/types/filter';
+import { ColorBlindMode, getColorPalette, paletteLength } from './colorBlindMode';
 import { scaleOrdinal } from 'd3';
 
-// Generate 100 shades
-const defaultPalette = [
-    '#f7fbffff',
-    '#deebf7ff',
-    '#c6dbefff',
-    '#9ecae1ff',
-    '#6baed6ff',
-    '#4292c6ff',
-    '#2171b5ff',
-    '#08519cff',
-    '#083582ff',
-    '#022259ff',
-];
+export const strokeOpacity = 0.4;
+export const strokeWeight = 1;
+export const strokeGap = 4;
 
-const protanopiaPalette = [
-    '#fffcd4ff',
-    '#cde0caff',
-    '#b4d2c6ff',
-    '#82b6bcff',
-    '#69a8b7ff',
-    '#5a93a8ff',
-    '#3d6a89ff',
-    '#2e557aff',
-    '#102b5bff',
-    '#0d2644ff',
-];
-
-const deuteranopiaPalette = [
-    '#eae2bbff',
-    '#e9d7b8ff',
-    '#e8c9b3ff',
-    '#e8baaeff',
-    '#d7aba9ff',
-    '#c59ca4ff',
-    '#a48d9eff',
-    '#827d99ff',
-    '#606d94ff',
-    '#1d4e89ff',
-];
-
-const tritanopiaPalette = [
-    '#fcedfbff',
-    '#f1c1c5ff',
-    '#ecacaaff',
-    '#e18073ff',
-    '#db6a58ff',
-    '#c75c49ff',
-    '#a1412cff',
-    '#8d331dff',
-    '#661800ff',
-    '#510b00ff',
-];
-
-const paletteLength = defaultPalette.length;
-
-export const colorScale: any = (mode: ColorBlindMode) => {
-    switch (mode) {
-        case undefined:
-            return scaleOrdinal()
-                .domain([...Array(paletteLength).keys()].map((key) => key.toString()))
-                .range(defaultPalette);
-        case ColorBlindMode.Protanopia:
-            return scaleOrdinal()
-                .domain([...Array(paletteLength).keys()].map((key) => key.toString()))
-                .range(protanopiaPalette);
-        case ColorBlindMode.Deuteranopia:
-            return scaleOrdinal()
-                .domain([...Array(paletteLength).keys()].map((key) => key.toString()))
-                .range(deuteranopiaPalette);
-        case ColorBlindMode.Tritanopia:
-            return scaleOrdinal()
-                .domain([...Array(paletteLength).keys()].map((key) => key.toString()))
-                .range(tritanopiaPalette);
-        default:
-            _throw('Illegal state.');
-    }
-};
+export const colorScale: any = (mode: ColorBlindMode) =>
+    scaleOrdinal()
+        .domain([...Array(paletteLength).keys()].map((key) => key.toString()))
+        .range(getColorPalette(mode));
 
 export const colorLegend = (
     selection: d3.Selection<SVGGElement, unknown, null, undefined>,
@@ -128,16 +59,5 @@ export function getColorSaturation(prediction: number, colorBlindMode?: ColorBli
 
     const index = Math.min(Math.floor(prediction / (100 / paletteLength)), paletteLength - 1);
 
-    switch (colorBlindMode) {
-        case undefined:
-            return defaultPalette[index];
-        case ColorBlindMode.Protanopia:
-            return protanopiaPalette[index];
-        case ColorBlindMode.Deuteranopia:
-            return deuteranopiaPalette[index];
-        case ColorBlindMode.Tritanopia:
-            return tritanopiaPalette[index];
-        default:
-            _throw('Illegal state.');
-    }
+    return getColorPalette(colorBlindMode)[index];
 }

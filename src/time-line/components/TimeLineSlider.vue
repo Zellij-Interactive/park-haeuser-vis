@@ -152,7 +152,7 @@ function sleep(ms: number): Promise<void> {
 .slider {
     width: 90%;
 }
-.v-slider-thumb {
+.slider .v-slider-thumb {
     padding-top: 20px;
 }
 .thumb-label-date {
