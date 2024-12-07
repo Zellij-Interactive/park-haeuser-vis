@@ -43,7 +43,7 @@ function renderLegend() {
     svgSaturationLegend.append('g').attr('transform', `translate(20,20)`).call(colorLegend, {
         colorScale,
         radius: 12,
-        spacing: 30,
+        spacing: 34,
         textOffset: 24,
         isDarkModeOn: props.darkModeOn,
         colorBlindMode: props.filter.colorBlindMode,
@@ -56,13 +56,13 @@ onMounted(() => {
     svgSaturationLegend = d3
         .select(svgLegendContainer.value)
         .append('svg')
-        .attr('height', 66)
+        .attr('height', 72)
         .attr('width', 200);
 
     svgSaturationLegend.append('g').attr('transform', `translate(20,20)`).call(colorLegend, {
         colorScale,
         radius: 12,
-        spacing: 30,
+        spacing: 34,
         textOffset: 24,
         isDarkModeOn: props.darkModeOn,
         colorBlindMode: props.filter.colorBlindMode,
