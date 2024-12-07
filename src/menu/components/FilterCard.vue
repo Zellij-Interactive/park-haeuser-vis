@@ -223,7 +223,8 @@ import { DateRange, formatDate } from '@/core/dateRange';
 import type { Filter } from '@/parkingGarage/types/filter';
 import { ParkingGarageName } from '@/parkingGarage/types/parkingGarageNames';
 import { computed, ref, watchEffect } from 'vue';
-import { filterMinDate, filterMaxDate, ColorBlindMode } from '@/parkingGarage/types/filter';
+import { filterMinDate, filterMaxDate } from '@/parkingGarage/types/filter';
+import { ColorBlindMode } from '@/legend/utils/colorBlindMode';
 
 const props = defineProps<{
     parkingGaragesNames: ParkingGarageName[];

@@ -1,36 +1,14 @@
 import { _throw } from '@/core/_throw';
-import { ColorBlindMode } from '@/parkingGarage/types/filter';
+import { ColorBlindMode, getBorderColor } from './colorBlindMode';
+import { getColorPalette } from './colorBlindMode';
 import { scaleOrdinal } from 'd3';
-
-const defaultColor = '#c6dbefff';
-const protanopiaColor = '#b4d2c6ff';
-const deuteranopiaColor = '#e8c9b3ff';
-const tritanopiaColor = '#ecacaaff';
 
 const length = 2;
 
-export const colorScale: any = (mode: ColorBlindMode) => {
-    switch (mode) {
-        case undefined:
-            return scaleOrdinal()
-                .domain([...Array(length).keys()].map((key) => key.toString()))
-                .range([defaultColor, defaultColor]);
-        case ColorBlindMode.Protanopia:
-            return scaleOrdinal()
-                .domain([...Array(length).keys()].map((key) => key.toString()))
-                .range([protanopiaColor, protanopiaColor]);
-        case ColorBlindMode.Deuteranopia:
-            return scaleOrdinal()
-                .domain([...Array(length).keys()].map((key) => key.toString()))
-                .range([deuteranopiaColor, deuteranopiaColor]);
-        case ColorBlindMode.Tritanopia:
-            return scaleOrdinal()
-                .domain([...Array(length).keys()].map((key) => key.toString()))
-                .range([tritanopiaColor, tritanopiaColor]);
-        default:
-            _throw('Illegal state.');
-    }
-};
+export const colorScale: any = (mode: ColorBlindMode) =>
+    scaleOrdinal()
+        .domain([...Array(length).keys()].map((key) => key.toString()))
+        .range([getColorPalette(mode)[3], getColorPalette(mode)[3]]);
 
 export const colorLegend = (
     selection: d3.Selection<SVGGElement, unknown, null, undefined>,
@@ -64,18 +42,7 @@ export const colorLegend = (
         })
         .attr('stroke', (d, i) => {
             if (i === 0) return 'black';
-            if (i === 1) {
-                switch (props.colorBlindMode) {
-                    case undefined:
-                        return '#EB271B';
-                    case ColorBlindMode.Protanopia:
-                        return '#FFB03B';
-                    case ColorBlindMode.Deuteranopia:
-                        return '#FEE800';
-                    case ColorBlindMode.Tritanopia:
-                        return '#027385';
-                }
-            }
+            if (i === 1) return getBorderColor(props.colorBlindMode);
             _throw('error setting the color of the border');
         });
 
@@ -91,26 +58,3 @@ export const colorLegend = (
         .attr('x', props.textOffset)
         .attr('fill', textColor);
 };
-
-export function getColorSaturation(prediction: number, colorBlindMode?: ColorBlindMode) {
-    if (prediction < 0 || prediction > 100) {
-        _throw(
-            'Prediction value is out of bounds. Expected range: [0, 100]. Received: ' + prediction
-        );
-    }
-
-    const index = Math.min(Math.floor(prediction / (100 / length)), length - 1);
-
-    switch (colorBlindMode) {
-        case undefined:
-            return defaultColor;
-        case ColorBlindMode.Protanopia:
-            return protanopiaColor;
-        case ColorBlindMode.Deuteranopia:
-            return deuteranopiaColor;
-        case ColorBlindMode.Tritanopia:
-            return tritanopiaColor;
-        default:
-            _throw('Illegal state.');
-    }
-}

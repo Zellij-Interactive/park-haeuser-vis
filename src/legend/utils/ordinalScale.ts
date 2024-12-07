@@ -1,5 +1,5 @@
 import { _throw } from '@/core/_throw';
-import { ColorBlindMode } from '@/parkingGarage/types/filter';
+import { ColorBlindMode, getColorPalette } from './colorBlindMode';
 import { scaleOrdinal } from 'd3';
 
 const defaultPalette = [
@@ -56,28 +56,10 @@ const tritanopiaPalette = [
 
 const paletteLength = defaultPalette.length;
 
-export const colorScale: any = (mode: ColorBlindMode) => {
-    switch (mode) {
-        case undefined:
-            return scaleOrdinal()
-                .domain([...Array(paletteLength).keys()].map((key) => key.toString()))
-                .range(defaultPalette);
-        case ColorBlindMode.Protanopia:
-            return scaleOrdinal()
-                .domain([...Array(paletteLength).keys()].map((key) => key.toString()))
-                .range(protanopiaPalette);
-        case ColorBlindMode.Deuteranopia:
-            return scaleOrdinal()
-                .domain([...Array(paletteLength).keys()].map((key) => key.toString()))
-                .range(deuteranopiaPalette);
-        case ColorBlindMode.Tritanopia:
-            return scaleOrdinal()
-                .domain([...Array(paletteLength).keys()].map((key) => key.toString()))
-                .range(tritanopiaPalette);
-        default:
-            _throw('Illegal state.');
-    }
-};
+export const colorScale: any = (mode: ColorBlindMode) =>
+    scaleOrdinal()
+        .domain([...Array(paletteLength).keys()].map((key) => key.toString()))
+        .range(getColorPalette(mode));
 
 export const colorLegend = (
     selection: d3.Selection<SVGGElement, unknown, null, undefined>,
@@ -127,16 +109,5 @@ export function getColorSaturation(prediction: number, colorBlindMode?: ColorBli
 
     const index = Math.min(Math.floor(prediction / (100 / paletteLength)), paletteLength - 1);
 
-    switch (colorBlindMode) {
-        case undefined:
-            return defaultPalette[index];
-        case ColorBlindMode.Protanopia:
-            return protanopiaPalette[index];
-        case ColorBlindMode.Deuteranopia:
-            return deuteranopiaPalette[index];
-        case ColorBlindMode.Tritanopia:
-            return tritanopiaPalette[index];
-        default:
-            _throw('Illegal state.');
-    }
+    return getColorPalette(colorBlindMode)[index];
 }
