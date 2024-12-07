@@ -11,9 +11,9 @@ export function getBorderColor(colorBlindMode?: ColorBlindMode) {
         case undefined:
             return '#EB271B';
         case ColorBlindMode.Protanopia:
-            return '#FFB03B';
+            return '#164995';
         case ColorBlindMode.Deuteranopia:
-            return '#FEE800';
+            return '#094E81';
         case ColorBlindMode.Tritanopia:
             return '#027385';
     }
@@ -48,29 +48,29 @@ const defaultPalette = [
 ];
 
 const protanopiaPalette = [
-    '#fffcd4ff',
-    '#cde0caff',
-    '#b4d2c6ff',
-    '#82b6bcff',
-    '#69a8b7ff',
-    '#5a93a8ff',
-    '#3d6a89ff',
-    '#2e557aff',
-    '#102b5bff',
-    '#0d2644ff',
+    '#fff5dcff',
+    '#f7e9ccff',
+    '#eedebdff',
+    '#e6d2adff',
+    '#d0c8a0ff',
+    '#bbbd93ff',
+    '#a5b386ff',
+    '#8e9b72ff',
+    '#78835fff',
+    '#616b4bff',
 ];
 
 const deuteranopiaPalette = [
-    '#eae2bbff',
-    '#e9d7b8ff',
-    '#e8c9b3ff',
-    '#e8baaeff',
-    '#d7aba9ff',
-    '#c59ca4ff',
-    '#a48d9eff',
-    '#827d99ff',
-    '#606d94ff',
-    '#1d4e89ff',
+    '#f9d6b3ff',
+    '#e8c29cff',
+    '#d8ae84ff',
+    '#c79a6dff',
+    '#b78165ff',
+    '#a6695cff',
+    '#91595cff',
+    '#7f5158ff',
+    '#734c56ff',
+    '#664755ff',
 ];
 
 const tritanopiaPalette = [
