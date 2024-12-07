@@ -40,7 +40,7 @@ function renderLegend() {
 
     svgSaturationLegend.selectAll('g').remove();
 
-    svgSaturationLegend.append('g').attr('transform', `translate(5,5)`).call(colorLegend, {
+    svgSaturationLegend.append('g').attr('transform', `translate(38,5)`).call(colorLegend, {
         colorScale,
         rectSize: 20,
         spacing: 12,
