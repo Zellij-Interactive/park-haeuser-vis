@@ -6,16 +6,16 @@ export enum ColorBlindMode {
     Tritanopia = 'tritanopia',
 }
 
-export function getBorderColor(colorBlindMode?: ColorBlindMode) {
+export function getBorderColor(darkModeOn: boolean, colorBlindMode?: ColorBlindMode) {
     switch (colorBlindMode) {
         case undefined:
-            return '#EB271B';
+            return darkModeOn ? '#EFB9B4' : '#EE5038';
         case ColorBlindMode.Protanopia:
-            return '#164995';
+            return darkModeOn ? '#929DC9' : '#164995';
         case ColorBlindMode.Deuteranopia:
-            return '#094E81';
+            return darkModeOn ? '#929BCF' : '#094E81';
         case ColorBlindMode.Tritanopia:
-            return '#027385';
+            return darkModeOn ? '#75A5B3' : '#027385';
     }
 }
 
