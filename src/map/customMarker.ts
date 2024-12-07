@@ -9,9 +9,10 @@ export type CustomMarker = {
     icon: {
         path: google.maps.SymbolPath.CIRCLE;
         scale: number;
-        fillColor: string;
+        fillColor?: string;
         fillOpacity: number;
-        strokeColor: string;
-        strokeWeight: number;
+        strokeColor?: string;
+        strokeOpacity?: number;
+        strokeWeight?: number;
     };
 };
