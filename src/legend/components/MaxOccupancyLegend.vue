@@ -47,11 +47,11 @@ onMounted(() => {
         .select(svgCircleAreaLegendContainer.value)
         .append('svg')
         .attr('height', 65)
-        .attr('width', 120);
+        .attr('width', 200);
 
     svgAreaLegend
         .append('g')
-        .attr('transform', `translate(${maxRadius + 5},5)`)
+        .attr('transform', `translate(${maxRadius + 42},5)`)
         .call(sizeLegend, {
             sizeScale,
             textOffset: 40,

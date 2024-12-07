@@ -2,7 +2,6 @@ import { _throw } from '@/core/_throw';
 import { ColorBlindMode } from '@/parkingGarage/types/filter';
 import { scaleOrdinal } from 'd3';
 
-// Generate 100 shades
 const defaultPalette = [
     '#f7fbffff',
     '#deebf7ff',
