@@ -6,6 +6,8 @@
         :zoom="15"
         :styles="mapStyles"
     >
+        <Marker v-for="[key, value] in predictionQualityMarkers" :key="key" :options="value" />
+
         <Marker
             v-for="[key, value] in markers"
             :key="key"
@@ -39,14 +41,19 @@ import type { ParkingGarage } from '@/parkingGarage/types/parkingGarage';
 import { _throw } from '@/core/_throw';
 import { useParkingGarageStore } from '@/parkingGarage/parkingGarageStore';
 import { sizeScale } from '@/legend/utils/sizeScale';
-import { getColorSaturation } from '@/legend/utils/ordinalScale';
+import {
+    getColorSaturation,
+    strokeGap,
+    strokeOpacity,
+    strokeWeight,
+} from '@/legend/utils/ordinalScale';
 import { GoogleMap, Marker, InfoWindow } from 'vue3-google-map';
 import { googleMapLightModeStyling, googleMapsDarkModeStyling } from '../utils';
 import type { CustomMarker } from '../customMarker';
 import { ParkingGarageName } from '@/parkingGarage/types/parkingGarageNames';
 import InfoCards from '../components/InfoCard.vue';
-import { filter } from 'd3';
-import { ColorBlindMode } from '@/parkingGarage/types/filter';
+import { ColorBlindMode, getBorderColor } from '@/legend/utils/colorBlindMode';
+import type { Filter } from '@/parkingGarage/types/filter';
 
 // Props for parking garages
 const props = defineProps<{
@@ -56,7 +63,9 @@ const props = defineProps<{
 const parkingGarageStore = useParkingGarageStore();
 
 const center = { lat: mainzCoordinates.latitude, lng: mainzCoordinates.longitude };
+
 const markers = ref(new Map<ParkingGarageName, CustomMarker>());
+const predictionQualityMarkers = ref(new Map<ParkingGarageName, CustomMarker>());
 const infoWindows = ref(new Map<ParkingGarageName, ParkingGarage>());
 
 const mapStyles = computed(() =>
@@ -64,13 +73,15 @@ const mapStyles = computed(() =>
 );
 
 watch(
-    () => parkingGarageStore.filter,
-    (filter) => {
-        console.log(filter.colorBlindMode);
+    (): [Filter, boolean] => [parkingGarageStore.filter, props.darkModeOn],
+    ([filter, _]) => {
         // Hide non filter parking garages
         Object.values(ParkingGarageName)
             .filter((e) => !parkingGarageStore.filter.parkingGarages.includes(e))
-            .forEach((e) => markers.value.delete(e));
+            .forEach((e) => {
+                markers.value.delete(e);
+                predictionQualityMarkers.value.delete(e);
+            });
 
         filter.parkingGarages.forEach(async (name) => {
             const parkingGarage = await parkingGarageStore.getParkingGarage(name);
@@ -103,27 +114,28 @@ function addMarkerToMap(parkingGarage: ParkingGarage, colorBlindMode?: ColorBlin
             scale: sizeScale(parkingGarage.maximalOccupancy),
             fillColor: getColorSaturation(prediction, colorBlindMode),
             fillOpacity: 1.0,
-            strokeColor: getBorderColor(isPredictionGood, colorBlindMode),
-            strokeWeight: isPredictionGood ? 1 : 4,
+            strokeColor: 'black',
+            strokeOpacity: strokeOpacity,
+            strokeWeight: strokeWeight,
         },
     });
-}
 
-function getBorderColor(isPredictionGood: boolean, colorBlindMode?: ColorBlindMode) {
-    if (isPredictionGood) {
-        return '#000000';
-    }
-
-    switch (colorBlindMode) {
-        case undefined:
-            return '#EB271B';
-        case ColorBlindMode.Protanopia:
-            return '#FFB03B';
-        case ColorBlindMode.Deuteranopia:
-            return '#FEE800';
-        case ColorBlindMode.Tritanopia:
-            return '#027385';
-    }
+    predictionQualityMarkers.value.set(parkingGarage.name, {
+        position: {
+            lat: parkingGarage.location.latitude,
+            lng: parkingGarage.location.longitude,
+        },
+        title: parkingGarage.name,
+        icon: {
+            path: google.maps.SymbolPath.CIRCLE,
+            scale: sizeScale(parkingGarage.maximalOccupancy) + strokeGap,
+            fillOpacity: 0,
+            strokeColor: isPredictionGood
+                ? '#000000'
+                : getBorderColor(props.darkModeOn, colorBlindMode),
+            strokeWeight: isPredictionGood ? 0 : 4,
+        },
+    });
 }
 
 function toggleDetails(p: ParkingGarageName) {
