@@ -32,7 +32,7 @@ function renderLegend() {
 
     svgAreaLegend
         .append('g')
-        .attr('transform', `translate(${maxRadius + 5},5)`)
+        .attr('transform', `translate(${maxRadius + 42},5)`)
         .call(sizeLegend, {
             sizeScale,
             textOffset: 40,
