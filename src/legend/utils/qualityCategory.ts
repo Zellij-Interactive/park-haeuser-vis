@@ -63,7 +63,7 @@ export const colorLegend = (
             _throw('error setting the width of circle');
         })
         .attr('stroke', (d, i) => {
-            if (i === 0) return textColor;
+            if (i === 0) return 'black';
             if (i === 1) {
                 switch (props.colorBlindMode) {
                     case undefined:
