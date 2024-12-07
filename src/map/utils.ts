@@ -18,11 +18,11 @@ export const googleMapLightModeStyling = [
         ],
     },
     {
-        featureType: 'landscape',
-        elementType: 'all',
+        featureType: 'all',
+        elementType: 'labels.icon',
         stylers: [
             {
-                color: '#f9f5ed',
+                visibility: 'off',
             },
         ],
     },
@@ -41,15 +41,6 @@ export const googleMapLightModeStyling = [
         stylers: [
             {
                 color: '#c9c9c9',
-            },
-        ],
-    },
-    {
-        featureType: 'water',
-        elementType: 'all',
-        stylers: [
-            {
-                color: '#aee0f4',
             },
         ],
     },
