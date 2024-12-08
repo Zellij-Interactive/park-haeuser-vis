@@ -68,7 +68,7 @@ function renderHorizontalChart(data: ShapValue[], title: string | undefined) {
         .attr('stroke-opacity', strokeOpacity / 3)
         .attr('x1', 0)
         .attr('y1', (d, i) => yScale(d.name) || 0)
-        .attr('x2', (d) => xScale(props.filter.maxShapValue))
+        .attr('x2', xScale(props.filter.maxShapValue))
         .attr('y2', (d, i) => yScale(d.name) || 0)
         .style('stroke-dasharray', '2, 2');
 
@@ -83,7 +83,7 @@ function renderHorizontalChart(data: ShapValue[], title: string | undefined) {
         .attr('x1', (d, i) => xScale(-25 + i * 5))
         .attr('y1', 0)
         .attr('x2', (d, i) => xScale(-25 + i * 5))
-        .attr('y2', (d) => yScale.bandwidth() * 16 + 5)
+        .attr('y2', yScale.bandwidth() * 16 + 5)
         .style('stroke-dasharray', '2, 2');
 
     // Draw bars
@@ -128,6 +128,14 @@ function renderHorizontalChart(data: ShapValue[], title: string | undefined) {
             .style('font-size', '14px')
             .text(title);
     }
+
+    // Add title
+    // svg.append('text')
+    //     .attr('x', width / 2)
+    //     .attr('y', -margin.top / 2)
+    //     .attr('text-anchor', 'middle')
+    //     .style('font-size', '14px')
+    //     .text('Title');
 }
 
 // Render chart on mount and when data changes
