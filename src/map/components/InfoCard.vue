@@ -2,7 +2,7 @@
     <InfoWindow :options="props.options">
         <div
             class="info-window d-flex flex-column px-4 pb-4"
-            :style="{ width: `${props.filter.showSHAPValues ? '450px' : '230px'}` }"
+            :style="{ width: `${props.filter.showSHAPValues ? '340px' : '230px'}` }"
         >
             <b class="text-center text-primary pb-4" v-text="props.parkingGarage.name" />
 
@@ -38,6 +38,7 @@
                 v-if="props.filter.showSHAPValues"
                 :data="shapValues"
                 :filter="props.filter"
+                :dark-mode-on="props.darkModeOn"
             />
         </div>
     </InfoWindow>
@@ -59,6 +60,7 @@ const props = defineProps<{
     options: google.maps.InfoWindowOptions;
     parkingGarage: ParkingGarage;
     filter: Filter;
+    darkModeOn: boolean;
 }>();
 
 const shapValues = computed<ShapValue[]>(() => {

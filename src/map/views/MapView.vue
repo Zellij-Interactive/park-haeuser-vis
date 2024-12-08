@@ -30,6 +30,7 @@
                 _throw('Parking garage not found:' + key)
             "
             :filter="parkingGarageStore.filter"
+            :dark-mode-on="props.darkModeOn"
         />
     </GoogleMap>
 </template>

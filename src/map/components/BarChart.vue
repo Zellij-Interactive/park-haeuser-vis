@@ -6,19 +6,21 @@
 import { ref, watch, onMounted } from 'vue';
 import * as d3 from 'd3';
 import { _throw } from '@/core/_throw';
-import type { ShapValue } from '@/parkingGarage/types/shapNames';
+import { type ShapValue } from '@/parkingGarage/types/shapNames';
 import type { Filter } from '@/parkingGarage/types/filter';
+import { strokeOpacity } from '@/legend/utils/ordinalScale';
 
 // Props for bar chart data and title
 const props = defineProps<{
     data: ShapValue[];
     title?: string;
     filter: Filter;
+    darkModeOn: boolean;
 }>();
 
 const chart = ref<HTMLDivElement | null>(null);
 
-const width = 430;
+const width = 320;
 const height = 200;
 
 function renderHorizontalChart(data: ShapValue[], title: string | undefined) {
@@ -56,6 +58,34 @@ function renderHorizontalChart(data: ShapValue[], title: string | undefined) {
         .nice()
         .range([0, innerWidth]);
 
+    // Draw horizontal grid lines
+    svg.selectAll('.line')
+        .data(data)
+        .enter()
+        .append('line')
+        .style('stroke-width', 1)
+        .style('stroke', props.darkModeOn ? 'white' : 'black')
+        .attr('stroke-opacity', strokeOpacity / 3)
+        .attr('x1', 0)
+        .attr('y1', (d, i) => yScale(d.name) || 0)
+        .attr('x2', (d) => xScale(props.filter.maxShapValue))
+        .attr('y2', (d, i) => yScale(d.name) || 0)
+        .style('stroke-dasharray', '2, 2');
+
+    // Draw vertical grid lines
+    svg.selectAll('.line')
+        .data(data)
+        .enter()
+        .append('line')
+        .style('stroke-width', 1)
+        .style('stroke', props.darkModeOn ? 'white' : 'black')
+        .attr('stroke-opacity', strokeOpacity / 3)
+        .attr('x1', (d, i) => xScale(-25 + i * 5))
+        .attr('y1', 0)
+        .attr('x2', (d, i) => xScale(-25 + i * 5))
+        .attr('y2', (d) => yScale.bandwidth() * 16 + 5)
+        .style('stroke-dasharray', '2, 2');
+
     // Draw bars
     svg.selectAll('.bar')
         .data(data)
@@ -66,7 +96,22 @@ function renderHorizontalChart(data: ShapValue[], title: string | undefined) {
         .attr('x', (d) => xScale(Math.min(0, d.value)))
         .attr('width', (d) => Math.abs(xScale(d.value) - xScale(0)))
         .attr('height', yScale.bandwidth())
-        .attr('fill', (d) => (d.value > 0 ? 'steelblue' : 'tomato'));
+        .attr('fill', (d) => (d.value > 0 ? 'steelblue' : 'tomato'))
+        .attr('stroke', 'black')
+        .attr('stroke-opacity', strokeOpacity);
+
+    // Draw vertical centered line
+    svg.selectAll('.line')
+        .data(data)
+        .enter()
+        .append('line')
+        .style('stroke-width', 1)
+        .style('stroke', props.darkModeOn ? 'white' : 'black')
+        .attr('stroke-opacity', 1)
+        .attr('x1', (d, i) => xScale(0))
+        .attr('y1', 0)
+        .attr('x2', (d, i) => xScale(0))
+        .attr('y2', (d) => yScale.bandwidth() * 16 + 5);
 
     // Add Y axis
     svg.append('g').call(d3.axisLeft(yScale));
@@ -89,8 +134,8 @@ function renderHorizontalChart(data: ShapValue[], title: string | undefined) {
 onMounted(() => renderHorizontalChart(props.data, props.title));
 
 watch(
-    () => props.data,
-    (newData) => renderHorizontalChart(newData, props.title)
+    (): [ShapValue[], boolean] => [props.data, props.darkModeOn],
+    ([newData, _]) => renderHorizontalChart(newData, props.title)
 );
 </script>
 
