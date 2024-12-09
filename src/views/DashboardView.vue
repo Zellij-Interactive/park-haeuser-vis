@@ -74,16 +74,6 @@ onMounted(async () => {
         parkingGarages.value = await parkingGarageStore.getAllParkingGarage();
     });
 });
-
-// Handle marker click to show bar chart
-function handleMarkerClick(garage: ParkingGarage) {
-    console.log(`Marker clicked: ${garage.name}`); // Debug Log
-
-    selectedChartData.value = {
-        data: garage.rmse, // Replace with real data, e.g., RMSE values from the garage
-        title: `Data for ${garage.name}`,
-    };
-}
 </script>
 
 <style>
