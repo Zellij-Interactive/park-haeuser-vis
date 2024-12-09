@@ -94,7 +94,7 @@
 
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
-import { formatDate, formatHour } from '@/core/dateRange';
+import { formatDate, formatHour, hourInMilliseconds } from '@/core/dateRange';
 import type { Filter } from '@/parkingGarage/types/filter';
 
 const props = defineProps<{
@@ -112,8 +112,6 @@ const minDateInMilliseconds = computed(() => startDate.value.getTime());
 const maxDateInMilliseconds = computed(() => endDate.value.getTime());
 
 const currentValue = ref(minDateInMilliseconds.value);
-
-const hourInMilliseconds = 3600000;
 
 const isPlaying = ref(false);
 const speed = ref<1 | 2 | 4>(1);
