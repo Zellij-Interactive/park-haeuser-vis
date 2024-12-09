@@ -51,7 +51,7 @@
                             class="text-caption align-self-center"
                             data-test="selection-employee-more"
                         >
-                            (+{{ unsavedFilter.parkingGarages.length - 1 }} weitere)
+                            (+{{ unsavedFilter.parkingGarages.length - 2 }} weitere)
                         </span>
                     </template>
 
