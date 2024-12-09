@@ -17,7 +17,8 @@
                 <template v-slot:activator="{ props: tooltipProps }">
                     <v-btn
                         v-bind="{ ...menuProps, ...tooltipProps }"
-                        color="primary"
+                        color="white"
+                        height="40"
                         @click="() => isFilterVisible ?? resetFilter()"
                         ><v-icon>mdi-filter-outline</v-icon>
                     </v-btn>

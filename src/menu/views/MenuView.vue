@@ -1,18 +1,18 @@
 <template>
     <div class="foo d-flex justify-end">
-        <div class="mr-1">
+        <div class="mr-2">
             <v-tooltip
                 :text="`Darstellung: ${props.darkModeOn ? 'Dunkles Design' : 'Helles Design'}`"
                 location="bottom"
             >
                 <template v-slot:activator="{ props }">
-                    <v-btn v-bind="props" @click="() => emit('toggleTheme')" color="primary">
+                    <v-btn v-bind="props" @click="() => emit('toggleTheme')" color="white" height="40">
                         <v-icon>mdi-theme-light-dark</v-icon>
                     </v-btn>
                 </template>
             </v-tooltip>
         </div>
-        <div class="ml-1">
+        <div class="mr-12">
             <FilterCard
                 v-model:filter="parkingGarageStore.filter"
                 :parking-garages-names="props.parkingGaragesNames"
