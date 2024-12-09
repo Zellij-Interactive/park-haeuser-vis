@@ -81,6 +81,11 @@ onMounted(async () => {
     grid-area: 1 / 1 / -1 / -1;
     z-index: 0;
 }
+
+.gm-style-mtc {
+    display: none;
+}
+
 .menu {
     grid-row: 1 / 2;
     grid-column: 2 / -1;
