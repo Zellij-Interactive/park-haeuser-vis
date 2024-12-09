@@ -19,6 +19,21 @@ const props = defineProps<{
 
 const chart = ref<HTMLDivElement | null>(null);
 
+const selectedParkingGarages = computed(() => props.filter.parkingGarages);
+
+const lineColors = [
+    '#0095baff',
+    '#d92b30ff',
+    '#3cccb4ff',
+    '#ab52b3ff',
+    '#ffb259ff',
+    '#ffdf3cff',
+    '#eb82ebff',
+    '#c27c30ff',
+    '#a0d17dff',
+    '#f260a1ff',
+];
+
 // Chart dimensions
 const margin = { top: 70, right: 30, bottom: 40, left: 80 };
 
@@ -40,14 +55,17 @@ const data = computed<{ date: Date; value: number }[]>(() =>
         }))
 );
 
-function click() {
-    console.log(data.value);
-}
-
 watch(
     () => props.filter,
-    () => renderHorizontalChart(data.value, 'test')
+    () => {
+        renderHorizontalChart(data.value, 'test');
+    }
 );
+
+// Render chart on mount and when data changes
+onMounted(() => {
+    renderHorizontalChart(data.value, 'testing');
+});
 
 function renderHorizontalChart(data: { date: Date; value: number }[], title: string | undefined) {
     if (!chart.value) return;
@@ -79,7 +97,7 @@ function renderHorizontalChart(data: { date: Date; value: number }[], title: str
     const yScale = d3
         .scaleLinear()
         .range([innerHeight, 0])
-        .domain([0, d3.max(data, (d) => d.value)]);
+        .domain([0, d3.max(data, (d) => d.value) || 0]);
 
     // Add the x-axis
     svg.append('g')
@@ -105,9 +123,6 @@ function renderHorizontalChart(data: { date: Date; value: number }[], title: str
         .attr('stroke-width', 1)
         .attr('d', line);
 }
-
-// Render chart on mount and when data changes
-onMounted(() => renderHorizontalChart(data.value, 'testing'));
 </script>
 
 <style></style>
