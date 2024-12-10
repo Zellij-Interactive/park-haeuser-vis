@@ -18,7 +18,6 @@
                     <v-btn
                         v-bind="{ ...menuProps, ...tooltipProps }"
                         color="white"
-                        height="40"
                         @click="() => isFilterVisible ?? resetFilter()"
                         ><v-icon>mdi-filter-outline</v-icon>
                     </v-btn>

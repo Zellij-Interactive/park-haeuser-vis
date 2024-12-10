@@ -6,13 +6,13 @@
                 location="bottom"
             >
                 <template v-slot:activator="{ props }">
-                    <v-btn v-bind="props" @click="() => emit('toggleTheme')" color="white" height="40">
+                    <v-btn v-bind="props" @click="() => emit('toggleTheme')" color="white">
                         <v-icon>mdi-theme-light-dark</v-icon>
                     </v-btn>
                 </template>
             </v-tooltip>
         </div>
-        <div class="mr-12">
+        <div>
             <FilterCard
                 v-model:filter="parkingGarageStore.filter"
                 :parking-garages-names="props.parkingGaragesNames"
