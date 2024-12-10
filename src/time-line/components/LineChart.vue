@@ -51,7 +51,7 @@ const lineColors = computed(() =>
 );
 
 // Chart dimensions
-const margin = { top: 70, right: 30, bottom: 40, left: 80 };
+const margin = { top: 20, right: 54, bottom: 34, left: 132 };
 
 const width = 1800;
 const height = 200;
