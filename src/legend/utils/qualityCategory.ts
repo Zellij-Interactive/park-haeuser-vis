@@ -26,7 +26,7 @@ export const colorLegend = (
         .selectAll<SVGGElement, string>('g')
         .data(colorScale(props.colorBlindMode).domain());
 
-    const textColor = props.isDarkModeOn ? 'white' : 'black';
+    const textAndStrokeColor = props.isDarkModeOn ? 'white' : 'black';
 
     const groupsEnter = groups.enter().append('g');
     groupsEnter.merge(groups).attr('transform', (d, i) => `translate(0, ${i * props.spacing})`);
@@ -36,9 +36,9 @@ export const colorLegend = (
         .append('circle')
         .merge(groups.select('circle'))
         .attr('r', props.radius)
-        .attr('fill', colorScale(props.colorBlindMode))
+        .attr('fill', 'none')
         .attr('stroke-width', strokeWeight)
-        .attr('stroke', 'black')
+        .attr('stroke', textAndStrokeColor)
         .attr('stroke-opacity', strokeOpacity);
 
     // Border for prediction quality
@@ -68,5 +68,5 @@ export const colorLegend = (
         })
         .attr('dy', '0.32em')
         .attr('x', props.textOffset)
-        .attr('fill', textColor);
+        .attr('fill', textAndStrokeColor);
 };
