@@ -1,8 +1,6 @@
 <template>
-    <div class="pl-2">
-        <span>Maximale Auslastung:</span>
-        <div ref="svgCircleAreaLegendContainer"></div>
-    </div>
+    <span>Maximale Auslastung:</span>
+    <div ref="svgCircleAreaLegendContainer"></div>
 </template>
 
 <script setup lang="ts">
@@ -32,7 +30,7 @@ function renderLegend() {
 
     svgAreaLegend
         .append('g')
-        .attr('transform', `translate(${maxRadius + 42},5)`)
+        .attr('transform', `translate(${maxRadius + 5},5)`)
         .call(sizeLegend, {
             sizeScale,
             textOffset: 40,
@@ -51,7 +49,7 @@ onMounted(() => {
 
     svgAreaLegend
         .append('g')
-        .attr('transform', `translate(${maxRadius + 42},5)`)
+        .attr('transform', `translate(${maxRadius + 5},5)`)
         .call(sizeLegend, {
             sizeScale,
             textOffset: 40,

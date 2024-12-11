@@ -1,5 +1,5 @@
 <template>
-    <div class="pr-2">
+    <div>
         <span>Qualität der Vorhersage:</span>
         <div ref="svgLegendContainer"></div>
     </div>
