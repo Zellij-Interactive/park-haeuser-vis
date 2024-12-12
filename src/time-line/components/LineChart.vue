@@ -131,18 +131,85 @@ function renderChart() {
 
     // Add the x-axis
     svg.append('g')
-        .attr('transform', `translate(0,${innerHeight})`)
+        .attr('transform', `translate(0,${innerHeight - 5})`)
+        .style('font-size', '14px')
         .call(
             d3
                 .axisBottom(xScale)
                 .ticks(d3.timeMonth.every(1))
                 .tickFormat(d3.timeFormat('%b %Y') as (value: Date | d3.NumberValue) => string)
-        );
+        )
+        .call((g) => g.select('.domain').remove())
+        .selectAll('.tick line')
+        .style('stroke-opacity', 0);
+    svg.selectAll('.tick text').attr('fill', '#777');
 
     // Add the y-axis
-    svg.append('g').call(
-        d3.axisLeft(yScale).tickValues([0, 25, 50, 75, 100]).tickFormat(d3.format('d'))
-    );
+    svg.append('g')
+        .style('font-size', '14px')
+        .call(
+            d3
+                .axisLeft(yScale)
+                .tickValues([0, 25, 50, 75, 100])
+                .tickSize(0)
+                .tickPadding(10)
+                .tickFormat(d3.format('d'))
+        )
+        .call((g) => g.select('.domain').remove())
+        .selectAll('.tick text')
+        .style('fill', '#777')
+        .style('visibility', (d, i, nodes) => {
+            if (i === 0) {
+                return 'hidden';
+            } else {
+                return 'visible';
+            }
+        });
+
+    // Add vertical gridlines
+    svg.selectAll('xGrid')
+        .data(xScale.ticks().slice(1))
+        .join('line')
+        .attr('x1', (d) => xScale(d))
+        .attr('x2', (d) => xScale(d))
+        .attr('y1', 0)
+        .attr('y2', innerHeight)
+        .attr('stroke', '#e0e0e0')
+        .attr('stroke-width', 0.5);
+
+    // Add horizontal gridlines
+
+    svg.selectAll('yGrid')
+        .data(yScale.ticks(5).slice(1))
+        .join('line')
+        .attr('x1', 0)
+        .attr('x2', innerWidth)
+        .attr('y1', (d) => yScale(d))
+        .attr('y2', (d) => yScale(d))
+        .attr('stroke', '#e0e0e0')
+        .attr('stroke-width', 0.5);
+
+    // Add Y-axis label
+    svg.append('text')
+        .attr('transform', 'rotate(-90)')
+        .attr('y', 60 - margin.left)
+        .attr('x', 14 - innerHeight / 2)
+        .attr('dy', '1em')
+        .style('text-anchor', 'middle')
+        .style('font-size', '14px')
+        .style('fill', '#777')
+        .style('font-family', 'sans-serif')
+        .text('Vorhersage');
+
+    // Add the chart title
+    svg.append('text')
+        .attr('class', 'chart-title')
+        .attr('x', margin.left - 115)
+        .attr('y', margin.top - 100)
+        .style('font-size', '24px')
+        .style('font-weight', 'bold')
+        .style('font-family', 'sans-serif')
+        .text('Prison Populations in the US Have Trended Upward Since Summer 2020');
 
     for (let i = 0; i < data.value.length; i++) {
         const currentData = dates.value.map((date, index) => ({
