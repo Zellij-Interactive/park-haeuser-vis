@@ -1,9 +1,11 @@
 <template>
     <!-- Loading Dialog -->
-    <v-dialog v-model="isLoading" no-click-animation persistent height="46" width="250">
-        <v-card class="d-flex flex-column text-center pt-2">
-            <b class="mb-2">Loading...</b>
-            <v-progress-linear indeterminate></v-progress-linear>
+    <v-dialog v-model="isLoading" no-click-animation persistent height="200" width="600">
+        <v-card rounded="lg" elevation="4">
+            <div class="d-flex flex-column align-center">
+                <img src="../../public/logo.png" class="pa-4" width="560" />
+                <v-progress-circular indeterminate color="grey"></v-progress-circular>
+            </div>
         </v-card>
     </v-dialog>
 
@@ -65,7 +67,6 @@ const parkingGarageStore = useParkingGarageStore();
 const parkingGaragesNames: ParkingGarageName[] = listOfParkingGaragesNames;
 
 const parkingGarages = ref<ParkingGarage[]>([]);
-const selectedChartData = ref<{ data: number[]; title: string } | null>(null);
 const isLoading = ref(false);
 
 // Load parking garages on component mount
