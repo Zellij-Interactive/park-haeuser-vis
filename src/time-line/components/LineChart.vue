@@ -75,6 +75,15 @@ const data = computed<number[][]>(() => {
     return data;
 });
 
+const max = computed(() => {
+    let localMax = 40;
+    data.value.forEach((values) =>
+        values.forEach((value) => (localMax = localMax < value ? value : localMax))
+    );
+
+    return localMax;
+});
+
 const dates = computed<Date[]>(() => {
     const dates: Date[] = [];
 
@@ -127,7 +136,7 @@ function renderChart() {
     const xScale = d3.scaleTime().range([0, innerWidth]).domain(extent);
 
     // Y scale (for values)
-    const yScale = d3.scaleLinear().range([innerHeight, 0]).domain([0, 100]);
+    const yScale = d3.scaleLinear().range([innerHeight, 0]).domain([0, max.value]);
 
     // Add the x-axis
     svg.append('g')
@@ -150,7 +159,7 @@ function renderChart() {
         .call(
             d3
                 .axisLeft(yScale)
-                .tickValues([0, 25, 50, 75, 100])
+                .ticks(max.value / 20)
                 .tickSize(0)
                 .tickPadding(10)
                 .tickFormat(d3.format('d'))
