@@ -27,7 +27,7 @@ export const useParkingGarageStore = defineStore('parking-garage', {
     }),
 
     actions: {
-        //         Fetches all parking garages from the parkingGarageService.
+        // Fetches all parking garages from the parkingGarageService.
         // Saves each parking garage to the parkingGaragesMap.
         // Returns the full list of parking garages.
         async loadAllParkingGarages(): Promise<ParkingGarage[]> {
@@ -55,6 +55,8 @@ export const useParkingGarageStore = defineStore('parking-garage', {
 
             this.filter.maxShapValue = globalMax;
             this.filter.minShapValue = globalMin;
+
+            await new Promise((resolve) => setTimeout(resolve, 3000));
 
             return parkingGarages;
         },
