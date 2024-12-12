@@ -208,7 +208,7 @@ function renderChart() {
         .style('font-size', '14px')
         .style('fill', '#777')
         .style('font-family', 'sans-serif')
-        .text('Vorhersage');
+        .text('Auslastung Pred.');
 
     // Add the chart title
     svg.append('text')
