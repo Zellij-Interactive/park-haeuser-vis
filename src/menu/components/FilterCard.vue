@@ -105,6 +105,10 @@
                             :min="filterMinDate"
                             :max="filterMaxDate"
                             @update:modelValue="isStartDatePickerVisible = false"
+                            :allowed-dates="
+                                (date: any) =>
+                                    date.getTime() <= unsavedFilter.dateRange.endDate.getTime()
+                            "
                         ></v-date-picker>
                     </v-menu>
 
@@ -140,6 +144,10 @@
                             :min="filterMinDate"
                             :max="filterMaxDate"
                             @update:modelValue="isEndDatePickerVisible = false"
+                            :allowed-dates="
+                                (date: any) =>
+                                    date.getTime() >= unsavedFilter.dateRange.startDate.getTime()
+                            "
                         ></v-date-picker>
                     </v-menu>
                 </div>
