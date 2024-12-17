@@ -1,5 +1,5 @@
 <template>
-    <div class="slider d-flex flex-column justify-center align-center">
+    <div class="test slider d-flex flex-column justify-center align-center">
         <v-slider
             v-model="currentValue"
             :max="maxDateInMilliseconds"
@@ -17,51 +17,6 @@
                 <div class="thumb-label-date d-flex justify-center text-secondary">
                     <span v-text="formatDate(new Date(modelValue))" />
                     <span v-text="`, ${formatHour(new Date(modelValue))}`" />
-                </div>
-            </template>
-
-            <template v-slot:prepend>
-                <div class="d-flex justify-space-between" :style="{ width: '68px' }">
-                    <v-tooltip v-if="!isPlaying" text="Abspielen" location="top">
-                        <template v-slot:activator="{ props }">
-                            <v-btn
-                                v-bind="props"
-                                density="compact"
-                                variant="text"
-                                icon="mdi-play"
-                                :ripple="false"
-                                @click="startTimer()"
-                            />
-                        </template>
-                    </v-tooltip>
-
-                    <v-tooltip v-else text="Pause" location="top">
-                        <template v-slot:activator="{ props }">
-                            <v-btn
-                                v-bind="props"
-                                density="compact"
-                                variant="text"
-                                icon="mdi-pause"
-                                :ripple="false"
-                                @click="pauseTimer()"
-                            />
-                        </template>
-                    </v-tooltip>
-
-                    <v-tooltip text="Wiedergabegeschwindigkeit" location="top">
-                        <template v-slot:activator="{ props }">
-                            <v-btn
-                                v-bind="props"
-                                class="text-none"
-                                density="compact"
-                                variant="text"
-                                :ripple="false"
-                                @click="changeSpeed()"
-                                :text="`x${speed}`"
-                                icon=""
-                            />
-                        </template>
-                    </v-tooltip>
                 </div>
             </template>
 
@@ -89,6 +44,49 @@
                 </v-text-field>
             </template> -->
         </v-slider>
+
+        <div class="d-flex justify-space-between pb-2" :style="{ width: '68px' }">
+            <v-tooltip v-if="!isPlaying" text="Abspielen" location="top">
+                <template v-slot:activator="{ props }">
+                    <v-btn
+                        v-bind="props"
+                        density="compact"
+                        variant="text"
+                        icon="mdi-play"
+                        :ripple="false"
+                        @click="startTimer()"
+                    />
+                </template>
+            </v-tooltip>
+
+            <v-tooltip v-else text="Pause" location="top">
+                <template v-slot:activator="{ props }">
+                    <v-btn
+                        v-bind="props"
+                        density="compact"
+                        variant="text"
+                        icon="mdi-pause"
+                        :ripple="false"
+                        @click="pauseTimer()"
+                    />
+                </template>
+            </v-tooltip>
+
+            <v-tooltip text="Wiedergabegeschwindigkeit" location="top">
+                <template v-slot:activator="{ props }">
+                    <v-btn
+                        v-bind="props"
+                        class="text-none"
+                        density="compact"
+                        variant="text"
+                        :ripple="false"
+                        @click="changeSpeed()"
+                        :text="`x${speed}`"
+                        icon=""
+                    />
+                </template>
+            </v-tooltip>
+        </div>
     </div>
 </template>
 
@@ -148,7 +146,7 @@ function sleep(ms: number): Promise<void> {
 
 <style>
 .slider {
-    width: 90%;
+    padding-left: 40px;
 }
 .slider .v-slider-thumb {
     padding-top: 20px;

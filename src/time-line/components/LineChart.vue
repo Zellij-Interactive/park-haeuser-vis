@@ -51,9 +51,9 @@ const lineColors = computed(() =>
 );
 
 // Chart dimensions
-const margin = { top: 20, right: 54, bottom: 34, left: 132 };
+const margin = { top: 50, right: 0, bottom: 20, left: 40 };
 
-const width = 1800;
+const width = 1700;
 const height = 200;
 
 const data = computed<number[][]>(() => {
@@ -98,6 +98,8 @@ const dates = computed<Date[]>(() => {
     return dates;
 });
 
+const differenceInDays = computed(() => props.filter.dateRange.getDifferenceInDays());
+
 watch(
     () => [props.darkModeOn, props.filter],
     () => {
@@ -111,6 +113,7 @@ onMounted(() => {
 });
 
 function renderChart() {
+    console.log(differenceInDays.value);
     if (!chart.value) return;
 
     // Clear previous chart
@@ -156,6 +159,7 @@ function renderChart() {
     // Add the y-axis
     svg.append('g')
         .style('font-size', '14px')
+        .attr('transform', `translate(0,0)`)
         .call(
             d3
                 .axisLeft(yScale)
@@ -175,7 +179,7 @@ function renderChart() {
             }
         });
 
-    // Add vertical gridlines
+    // Add vertical grid lines
     svg.selectAll('xGrid')
         .data(xScale.ticks().slice(1))
         .join('line')
@@ -186,8 +190,7 @@ function renderChart() {
         .attr('stroke', '#e0e0e0')
         .attr('stroke-width', 0.5);
 
-    // Add horizontal gridlines
-
+    // Add horizontal grid lines
     svg.selectAll('yGrid')
         .data(yScale.ticks(5).slice(1))
         .join('line')
@@ -199,26 +202,26 @@ function renderChart() {
         .attr('stroke-width', 0.5);
 
     // Add Y-axis label
-    svg.append('text')
-        .attr('transform', 'rotate(-90)')
-        .attr('y', 60 - margin.left)
-        .attr('x', 14 - innerHeight / 2)
-        .attr('dy', '1em')
-        .style('text-anchor', 'middle')
-        .style('font-size', '14px')
-        .style('fill', '#777')
-        .style('font-family', 'sans-serif')
-        .text('Auslastung Pred.');
+    // svg.append('text')
+    //     .attr('transform', 'rotate(-90)')
+    //     .attr('y', 40 - margin.left)
+    //     .attr('x', 14 - innerHeight / 2)
+    //     .attr('dy', '1em')
+    //     .style('text-anchor', 'middle')
+    //     .style('font-size', '14px')
+    //     .style('fill', '#777')
+    //     .style('font-family', 'sans-serif')
+    //     .text('Auslastung Pred.');
 
     // Add the chart title
     svg.append('text')
-        .attr('class', 'chart-title')
-        .attr('x', margin.left - 115)
-        .attr('y', margin.top - 100)
-        .style('font-size', '24px')
+        .attr('x', margin.left - 60)
+        .attr('y', margin.top - 70)
+        .attr('fill', props.darkModeOn ? 'white' : 'black')
+        .style('font-size', '16px')
         .style('font-weight', 'bold')
         .style('font-family', 'sans-serif')
-        .text('Prison Populations in the US Have Trended Upward Since Summer 2020');
+        .text('Parkhausauslastung Vorhersage');
 
     for (let i = 0; i < data.value.length; i++) {
         const currentData = dates.value.map((date, index) => ({
