@@ -1,5 +1,5 @@
 <template>
-    <div class="test slider d-flex flex-column justify-center align-center">
+    <div class="slider d-flex flex-column justify-center align-center">
         <v-slider
             v-model="currentValue"
             :max="maxDateInMilliseconds"
@@ -97,6 +97,7 @@ import type { Filter } from '@/parkingGarage/types/filter';
 
 const props = defineProps<{
     filter: Filter;
+    isFilterOn: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -113,6 +114,15 @@ const currentValue = ref(minDateInMilliseconds.value);
 
 const isPlaying = ref(false);
 const speed = ref<1 | 2 | 4>(1);
+
+watch(
+    () => props.isFilterOn,
+    (value) => {
+        if (value) {
+            pauseTimer();
+        }
+    }
+);
 
 watch(
     () => currentValue.value,

@@ -1,5 +1,5 @@
 <template>
-    <div class="foo d-flex justify-end">
+    <div class="d-flex justify-end">
         <div class="mr-2">
             <v-tooltip
                 :text="`Darstellung: ${props.darkModeOn ? 'Dunkles Design' : 'Helles Design'}`"
@@ -16,6 +16,7 @@
             <FilterCard
                 v-model:filter="parkingGarageStore.filter"
                 :parking-garages-names="props.parkingGaragesNames"
+                @filter-clicked="() => emit('filter-clicked')"
             />
         </div>
     </div>
@@ -35,6 +36,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
     (event: 'toggleTheme'): void;
+    (event: 'filter-clicked'): void;
 }>();
 </script>
 

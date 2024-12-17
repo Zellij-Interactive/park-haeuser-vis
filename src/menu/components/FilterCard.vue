@@ -18,7 +18,12 @@
                     <v-btn
                         v-bind="{ ...menuProps, ...tooltipProps }"
                         color="white"
-                        @click="() => isFilterVisible ?? resetFilter()"
+                        @click="
+                            () => {
+                                isFilterVisible ?? resetFilter();
+                                emit('filter-clicked');
+                            }
+                        "
                         ><v-icon>mdi-filter-outline</v-icon>
                     </v-btn>
                 </template>
@@ -241,6 +246,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
     (event: 'update:filter', filter: Filter): void;
+    (event: 'filter-clicked'): void;
 }>();
 
 const initialFilter = ref<Filter>(props.filter);

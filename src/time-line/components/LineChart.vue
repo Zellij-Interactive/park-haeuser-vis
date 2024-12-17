@@ -113,7 +113,6 @@ onMounted(() => {
 });
 
 function renderChart() {
-    console.log(differenceInDays.value);
     if (!chart.value) return;
 
     // Clear previous chart

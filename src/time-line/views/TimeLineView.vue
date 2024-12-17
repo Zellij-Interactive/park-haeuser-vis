@@ -12,6 +12,7 @@
 
             <TimeLineSlider
                 :filter="parkingGarageStore.filter"
+                :is-filter-on="isFilterOn"
                 @index-updated="
                     (index) => {
                         parkingGarageStore.filter.index = index;
@@ -30,6 +31,7 @@ import LineChart from '../components/LineChart.vue';
 
 const props = defineProps<{
     darkModeOn: boolean;
+    isFilterOn: boolean;
 }>();
 
 const parkingGarageStore = useParkingGarageStore();
