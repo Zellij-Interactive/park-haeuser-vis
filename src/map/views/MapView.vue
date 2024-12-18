@@ -30,6 +30,7 @@
                 _throw('Parking garage not found:' + key)
             "
             :filter="parkingGarageStore.filter"
+            :dark-mode-on="props.darkModeOn"
         />
     </GoogleMap>
 </template>
@@ -177,7 +178,9 @@ function toggleDetails(p: ParkingGarageName) {
     overflow: hidden;
 }
 
-.gm-ui-hover-effect {
+.gm-ui-hover-effect,
+.gm-fullscreen-control,
+.gm-style-mtc {
     display: none !important;
 }
 </style>

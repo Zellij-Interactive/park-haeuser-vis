@@ -1,12 +1,12 @@
 <template>
-    <v-card class="pa-4" elevation="1" rounded="lg">
+    <v-card class="pa-2" elevation="1" rounded="lg">
         <div class="justify-space-between">
             <MaxOccupancyLegend :dark-mode-on="props.darkModeOn" />
-            <PredictionLegend
+            <PredictionQualityLegend
                 :dark-mode-on="props.darkModeOn"
                 :filter="parkingGarageStore.filter"
             />
-            <PredictionQualityLegend
+            <PredictionLegend
                 :dark-mode-on="props.darkModeOn"
                 :filter="parkingGarageStore.filter"
             />

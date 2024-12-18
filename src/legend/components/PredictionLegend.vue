@@ -1,5 +1,5 @@
 <template>
-    <div class="pr-2">
+    <div>
         <span>Vorhersage:</span>
         <div ref="svgSaturationLegendContainer"></div>
     </div>

@@ -2,6 +2,8 @@ import { _throw } from './_throw';
 import { differenceInDays } from 'date-fns';
 import { startOfDay } from 'date-fns';
 
+export const hourInMilliseconds = 3600000;
+
 export class DateRange {
     startDate: Date;
     endDate: Date;

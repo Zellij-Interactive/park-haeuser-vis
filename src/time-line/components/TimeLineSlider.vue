@@ -20,51 +20,6 @@
                 </div>
             </template>
 
-            <template v-slot:prepend>
-                <div class="d-flex justify-space-between" :style="{ width: '68px' }">
-                    <v-tooltip v-if="!isPlaying" text="Abspielen" location="top">
-                        <template v-slot:activator="{ props }">
-                            <v-btn
-                                v-bind="props"
-                                density="compact"
-                                variant="text"
-                                icon="mdi-play"
-                                :ripple="false"
-                                @click="startTimer()"
-                            />
-                        </template>
-                    </v-tooltip>
-
-                    <v-tooltip v-else text="Pause" location="top">
-                        <template v-slot:activator="{ props }">
-                            <v-btn
-                                v-bind="props"
-                                density="compact"
-                                variant="text"
-                                icon="mdi-pause"
-                                :ripple="false"
-                                @click="pauseTimer()"
-                            />
-                        </template>
-                    </v-tooltip>
-
-                    <v-tooltip text="Wiedergabegeschwindigkeit" location="top">
-                        <template v-slot:activator="{ props }">
-                            <v-btn
-                                v-bind="props"
-                                class="text-none"
-                                density="compact"
-                                variant="text"
-                                :ripple="false"
-                                @click="changeSpeed()"
-                                :text="`x${speed}`"
-                                icon=""
-                            />
-                        </template>
-                    </v-tooltip>
-                </div>
-            </template>
-
             <!-- <template v-slot:prepend>
                 <v-text-field
                     density="compact"
@@ -89,16 +44,118 @@
                 </v-text-field>
             </template> -->
         </v-slider>
+
+        <div class="d-flex justify-space-between pb-2" :style="{ width: '68px' }">
+            <v-tooltip v-if="!isPlaying" text="Abspielen" location="top">
+                <template v-slot:activator="{ props }">
+                    <v-btn v-bind="props" variant="flat" :ripple="false" @click="startTimer()">
+                        <v-icon>mdi-play</v-icon>
+                    </v-btn>
+                </template>
+            </v-tooltip>
+
+            <v-tooltip v-else text="Pause" location="top">
+                <template v-slot:activator="{ props }">
+                    <v-btn v-bind="props" variant="flat" :ripple="false" @click="pauseTimer()">
+                        <v-icon>mdi-pause</v-icon>
+                    </v-btn>
+                </template>
+            </v-tooltip>
+
+            <v-tooltip text="Wiedergabegeschwindigkeit" location="top">
+                <template v-slot:activator="{ props: tooltipProps }">
+                    <v-menu location="center">
+                        <template v-slot:activator="{ props: menuProps }">
+                            <v-btn
+                                v-bind="{ ...menuProps, ...tooltipProps }"
+                                class="text-none"
+                                variant="text"
+                                :ripple="false"
+                            >
+                                {{ `x${speed}` }}
+                            </v-btn>
+                        </template>
+                        <v-btn-toggle v-model="speed">
+                            <v-btn
+                                class="text-none"
+                                :ripple="false"
+                                :base-color="speed == 0.25 ? 'grey-lighten-2' : 'white'"
+                                variant="flat"
+                                text="0.25"
+                                @click="changeSpeed(0.25)"
+                            />
+
+                            <v-btn
+                                class="text-none"
+                                :ripple="false"
+                                :base-color="speed == 0.5 ? 'grey-lighten-2' : 'white'"
+                                variant="flat"
+                                text="0.50"
+                                @click="changeSpeed(0.5)"
+                            />
+
+                            <v-btn
+                                class="text-none"
+                                :ripple="false"
+                                :base-color="speed == 0.75 ? 'grey-lighten-2' : 'white'"
+                                variant="flat"
+                                text="0.75"
+                                @click="changeSpeed(0.75)"
+                            />
+
+                            <v-btn
+                                class="text-none"
+                                :ripple="false"
+                                :base-color="speed == 1 ? 'grey-lighten-2' : 'white'"
+                                variant="flat"
+                                text="1"
+                                @click="changeSpeed(1)"
+                            />
+
+                            <v-btn
+                                class="text-none"
+                                :ripple="false"
+                                :base-color="speed == 2 ? 'grey-lighten-2' : 'white'"
+                                variant="flat"
+                                text="2"
+                                @click="changeSpeed(2)"
+                            />
+
+                            <v-btn
+                                class="text-none"
+                                :ripple="false"
+                                :base-color="speed == 4 ? 'grey-lighten-2' : 'white'"
+                                variant="flat"
+                                text="4"
+                                @click="changeSpeed(4)"
+                            />
+
+                            <v-btn
+                                class="text-none"
+                                :ripple="false"
+                                :base-color="speed == 8 ? 'grey-lighten-2' : 'white'"
+                                variant="flat"
+                                text="8"
+                                @click="changeSpeed(8)"
+                            />
+                        </v-btn-toggle>
+                    </v-menu>
+                </template>
+            </v-tooltip>
+        </div>
     </div>
 </template>
 
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
-import { formatDate, formatHour } from '@/core/dateRange';
+import { formatDate, formatHour, hourInMilliseconds } from '@/core/dateRange';
 import type { Filter } from '@/parkingGarage/types/filter';
+import { _throw } from '@/core/_throw';
+import { text } from 'd3';
 
 const props = defineProps<{
     filter: Filter;
+    isFilterOn: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -113,10 +170,17 @@ const maxDateInMilliseconds = computed(() => endDate.value.getTime());
 
 const currentValue = ref(minDateInMilliseconds.value);
 
-const hourInMilliseconds = 3600000;
-
 const isPlaying = ref(false);
-const speed = ref<1 | 2 | 4>(1);
+const speed = ref<0.25 | 0.5 | 0.75 | 1 | 2 | 4 | 8>(1);
+
+watch(
+    () => props.isFilterOn,
+    (value) => {
+        if (value) {
+            pauseTimer();
+        }
+    }
+);
 
 watch(
     () => currentValue.value,
@@ -139,8 +203,20 @@ function pauseTimer() {
     isPlaying.value = false;
 }
 
-function changeSpeed() {
-    speed.value = speed.value == 4 ? 1 : ((speed.value * 2) as 1 | 2 | 4);
+function changeSpeed(value: number) {
+    if (
+        value != 0.25 &&
+        value != 0.5 &&
+        value != 0.75 &&
+        value != 1 &&
+        value != 2 &&
+        value != 4 &&
+        value != 8
+    ) {
+        _throw('Invalid speed value.');
+    }
+
+    speed.value = value;
 }
 
 function sleep(ms: number): Promise<void> {
@@ -150,7 +226,7 @@ function sleep(ms: number): Promise<void> {
 
 <style>
 .slider {
-    width: 90%;
+    padding-left: 40px;
 }
 .slider .v-slider-thumb {
     padding-top: 20px;

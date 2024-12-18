@@ -1,9 +1,11 @@
 <template>
     <!-- Loading Dialog -->
-    <v-dialog v-model="isLoading" no-click-animation persistent height="46" width="250">
-        <v-card class="d-flex flex-column text-center pt-2">
-            <b class="mb-2">Loading...</b>
-            <v-progress-linear indeterminate></v-progress-linear>
+    <v-dialog v-model="isLoading" no-click-animation persistent height="200" width="600">
+        <v-card rounded="lg" elevation="4">
+            <div class="d-flex flex-column align-center">
+                <img src="../../public/logo.png" class="pa-4" width="560" />
+                <v-progress-circular indeterminate color="grey"></v-progress-circular>
+            </div>
         </v-card>
     </v-dialog>
 
@@ -21,6 +23,7 @@
                     :parking-garages-names="parkingGaragesNames"
                     :dark-mode-on="props.darkModeOn"
                     @toggle-theme="emit('toggleTheme')"
+                    @filter-clicked="isFilterOn = !isFilterOn"
                 />
             </div>
 
@@ -31,7 +34,7 @@
 
             <!-- Time-Line Section -->
             <div class="time-line px-2">
-                <TimeLineView />
+                <TimeLineView :dark-mode-on="props.darkModeOn" :is-filter-on="isFilterOn" />
             </div>
         </div>
     </main>
@@ -65,8 +68,8 @@ const parkingGarageStore = useParkingGarageStore();
 const parkingGaragesNames: ParkingGarageName[] = listOfParkingGaragesNames;
 
 const parkingGarages = ref<ParkingGarage[]>([]);
-const selectedChartData = ref<{ data: number[]; title: string } | null>(null);
 const isLoading = ref(false);
+const isFilterOn = ref(false);
 
 // Load parking garages on component mount
 onMounted(async () => {
@@ -74,16 +77,6 @@ onMounted(async () => {
         parkingGarages.value = await parkingGarageStore.getAllParkingGarage();
     });
 });
-
-// Handle marker click to show bar chart
-function handleMarkerClick(garage: ParkingGarage) {
-    console.log(`Marker clicked: ${garage.name}`); // Debug Log
-
-    selectedChartData.value = {
-        data: garage.rmse, // Replace with real data, e.g., RMSE values from the garage
-        title: `Data for ${garage.name}`,
-    };
-}
 </script>
 
 <style>
@@ -91,6 +84,7 @@ function handleMarkerClick(garage: ParkingGarage) {
     grid-area: 1 / 1 / -1 / -1;
     z-index: 0;
 }
+
 .menu {
     grid-row: 1 / 2;
     grid-column: 2 / -1;
@@ -125,7 +119,7 @@ function handleMarkerClick(garage: ParkingGarage) {
 .grid-container {
     display: grid;
     grid-template-columns: 6fr 2fr;
-    grid-template-rows: 4fr 4fr 1fr;
+    grid-template-rows: 4fr 1fr 2fr;
     height: 100vh;
 
     background-color: var(--v-teal-darken-3);
@@ -133,10 +127,5 @@ function handleMarkerClick(garage: ParkingGarage) {
 
 .grid-container > div:not(.map) {
     padding: var(--gap);
-
-    border: 2px solid black;
-}
-.test {
-    border: 2px solid black;
 }
 </style>

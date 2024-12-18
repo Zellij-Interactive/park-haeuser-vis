@@ -1,21 +1,22 @@
 <template>
-    <div class="foo d-flex justify-end">
-        <div class="mr-1">
+    <div class="d-flex justify-end">
+        <div class="mr-2">
             <v-tooltip
                 :text="`Darstellung: ${props.darkModeOn ? 'Dunkles Design' : 'Helles Design'}`"
                 location="bottom"
             >
                 <template v-slot:activator="{ props }">
-                    <v-btn v-bind="props" @click="() => emit('toggleTheme')" color="primary">
+                    <v-btn v-bind="props" @click="() => emit('toggleTheme')" color="white">
                         <v-icon>mdi-theme-light-dark</v-icon>
                     </v-btn>
                 </template>
             </v-tooltip>
         </div>
-        <div class="ml-1">
+        <div>
             <FilterCard
                 v-model:filter="parkingGarageStore.filter"
                 :parking-garages-names="props.parkingGaragesNames"
+                @filter-clicked="() => emit('filter-clicked')"
             />
         </div>
     </div>
@@ -35,6 +36,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
     (event: 'toggleTheme'): void;
+    (event: 'filter-clicked'): void;
 }>();
 </script>
 

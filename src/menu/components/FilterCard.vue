@@ -17,8 +17,13 @@
                 <template v-slot:activator="{ props: tooltipProps }">
                     <v-btn
                         v-bind="{ ...menuProps, ...tooltipProps }"
-                        color="primary"
-                        @click="() => isFilterVisible ?? resetFilter()"
+                        color="white"
+                        @click="
+                            () => {
+                                isFilterVisible ?? resetFilter();
+                                emit('filter-clicked');
+                            }
+                        "
                         ><v-icon>mdi-filter-outline</v-icon>
                     </v-btn>
                 </template>
@@ -51,7 +56,7 @@
                             class="text-caption align-self-center"
                             data-test="selection-employee-more"
                         >
-                            (+{{ unsavedFilter.parkingGarages.length - 1 }} weitere)
+                            (+{{ unsavedFilter.parkingGarages.length - 2 }} weitere)
                         </span>
                     </template>
 
@@ -105,6 +110,10 @@
                             :min="filterMinDate"
                             :max="filterMaxDate"
                             @update:modelValue="isStartDatePickerVisible = false"
+                            :allowed-dates="
+                                (date: any) =>
+                                    date.getTime() <= unsavedFilter.dateRange.endDate.getTime()
+                            "
                         ></v-date-picker>
                     </v-menu>
 
@@ -140,6 +149,10 @@
                             :min="filterMinDate"
                             :max="filterMaxDate"
                             @update:modelValue="isEndDatePickerVisible = false"
+                            :allowed-dates="
+                                (date: any) =>
+                                    date.getTime() >= unsavedFilter.dateRange.startDate.getTime()
+                            "
                         ></v-date-picker>
                     </v-menu>
                 </div>
@@ -233,6 +246,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
     (event: 'update:filter', filter: Filter): void;
+    (event: 'filter-clicked'): void;
 }>();
 
 const initialFilter = ref<Filter>(props.filter);
