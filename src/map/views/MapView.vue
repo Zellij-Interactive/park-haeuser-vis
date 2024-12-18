@@ -3,7 +3,7 @@
         api-key="AIzaSyDuGL4qVEPir1UCBucl3-hlMJS7QX3U5Dg"
         style="width: 100%; height: 100%"
         :center="center"
-        :zoom="15"
+        :zoom="14"
         :styles="mapStyles"
     >
         <Marker v-for="[key, value] in predictionQualityMarkers" :key="key" :options="value" />

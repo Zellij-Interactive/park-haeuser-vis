@@ -1,6 +1,6 @@
 import type { Coordinates } from '@/parkingGarage/types/marker';
 
 export const mainzCoordinates: Coordinates = {
-    latitude: 49.99884914202581,
-    longitude: 8.270668594250038,
+    latitude: 49.99451792039509,
+    longitude: 8.269209494438382,
 };
