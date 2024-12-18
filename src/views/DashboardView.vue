@@ -23,6 +23,7 @@
                     :parking-garages-names="parkingGaragesNames"
                     :dark-mode-on="props.darkModeOn"
                     @toggle-theme="emit('toggleTheme')"
+                    @filter-clicked="isFilterOn = !isFilterOn"
                 />
             </div>
 
@@ -33,7 +34,7 @@
 
             <!-- Time-Line Section -->
             <div class="time-line px-2">
-                <TimeLineView :dark-mode-on="props.darkModeOn" />
+                <TimeLineView :dark-mode-on="props.darkModeOn" :is-filter-on="isFilterOn" />
             </div>
         </div>
     </main>
@@ -68,6 +69,7 @@ const parkingGaragesNames: ParkingGarageName[] = listOfParkingGaragesNames;
 
 const parkingGarages = ref<ParkingGarage[]>([]);
 const isLoading = ref(false);
+const isFilterOn = ref(false);
 
 // Load parking garages on component mount
 onMounted(async () => {
