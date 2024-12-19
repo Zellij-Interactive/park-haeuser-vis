@@ -17,7 +17,9 @@
                 <template v-slot:activator="{ props: tooltipProps }">
                     <v-btn
                         v-bind="{ ...menuProps, ...tooltipProps }"
-                        color="white"
+                        class="border-thin"
+                        elevation="0"
+                        :ripple="false"
                         @click="
                             () => {
                                 isFilterVisible ?? resetFilter();
@@ -30,7 +32,7 @@
             </v-tooltip>
         </template>
 
-        <v-card class="pa-4 card" rounded="lg" elevation="1">
+        <v-card class="pa-3 card border-thin" rounded="lg" elevation="0">
             <div class="d-flex flex-column card-elements">
                 <v-select
                     v-model="unsavedFilter.parkingGarages"

@@ -6,7 +6,13 @@
                 location="bottom"
             >
                 <template v-slot:activator="{ props }">
-                    <v-btn v-bind="props" @click="() => emit('toggleTheme')" color="white">
+                    <v-btn
+                        v-bind="props"
+                        class="border-thin"
+                        elevation="0"
+                        :ripple="false"
+                        @click="() => emit('toggleTheme')"
+                    >
                         <v-icon>mdi-theme-light-dark</v-icon>
                     </v-btn>
                 </template>

@@ -1,6 +1,7 @@
 <template>
     <v-card
-        class="fill-height fill-width d-flex flex-column justify-center align-center"
+        class="fill-height fill-width d-flex flex-column justify-center align-center border-thin"
+        elevation="0"
         rounded="lg"
     >
         <div>
