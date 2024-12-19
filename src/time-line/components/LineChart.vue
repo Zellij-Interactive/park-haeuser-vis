@@ -53,7 +53,7 @@ const lineColors = computed(() =>
 // Chart dimensions
 const margin = { top: 50, right: 0, bottom: 20, left: 40 };
 
-const width = 1700;
+const width = 1700
 const height = 200;
 
 const data = computed<number[][]>(() => {
