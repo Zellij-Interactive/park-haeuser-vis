@@ -75,56 +75,19 @@
                                 {{ `x${speed}` }}
                             </v-btn>
                         </template>
-                        <v-btn-toggle v-model="speed">
-                            <v-btn
-                                value="0.25"
-                                class="text-none"
-                                :ripple="false"
-                                variant="flat"
-                                text="0.25"
-                            />
-                            <v-btn
-                                value="0.50"
-                                class="text-none"
-                                :ripple="false"
-                                variant="flat"
-                                text="0.50"
-                            />
-                            <v-btn
-                                value="0.75"
-                                class="text-none"
-                                :ripple="false"
-                                variant="flat"
-                                text="0.75"
-                            />
-                            <v-btn
-                                value="1"
-                                class="text-none"
-                                :ripple="false"
-                                variant="flat"
-                                text="1"
-                            />
-                            <v-btn
-                                value="2"
-                                class="text-none"
-                                :ripple="false"
-                                variant="flat"
-                                text="2"
-                            />
-                            <v-btn
-                                value="4"
-                                class="text-none"
-                                :ripple="false"
-                                variant="flat"
-                                text="4"
-                            />
-                            <v-btn
-                                value="8"
-                                class="text-none"
-                                :ripple="false"
-                                variant="flat"
-                                text="8"
-                            />
+                        <v-btn-toggle
+                            v-model="speed"
+                            class="text-none"
+                            :ripple="false"
+                            variant="flat"
+                        >
+                            <v-btn value="0.25" text="0.25" />
+                            <v-btn value="0.50" text="0.50" />
+                            <v-btn value="0.75" text="0.75" />
+                            <v-btn value="1" text="1" />
+                            <v-btn value="2" text="2" />
+                            <v-btn value="4" text="4" />
+                            <v-btn value="8" text="8" />
                         </v-btn-toggle>
                     </v-menu>
                 </template>
