@@ -1,7 +1,7 @@
 <template>
     <!-- Loading Dialog -->
     <v-dialog v-model="isLoading" no-click-animation persistent height="200" width="600">
-        <v-card rounded="lg" elevation="4">
+        <v-card rounded="lg" elevation="0" class="border-thin">
             <div class="d-flex flex-column align-center">
                 <img src="../../public/logo.png" class="pa-4" width="560" />
                 <v-progress-circular indeterminate color="grey"></v-progress-circular>
@@ -18,7 +18,14 @@
             </div>
 
             <!-- Filter Section -->
-            <div class="menu pr-2">
+            <div class="left-side pr-2">
+                <v-card v-if="!isLoading" class="border-thin" elevation="0">
+                    <span>TODO ...</span>
+                </v-card>
+            </div>
+
+            <!-- Filter Section -->
+            <div class="menu pr-2" v-if="!isLoading">
                 <MenuView
                     :parking-garages-names="parkingGaragesNames"
                     :dark-mode-on="props.darkModeOn"
@@ -28,12 +35,12 @@
             </div>
 
             <!-- Legend Section -->
-            <div class="legend d-flex justify-end align-end pr-2">
+            <div v-if="!isLoading" class="legend d-flex justify-end align-end pr-2">
                 <LegendView :dark-mode-on="props.darkModeOn" />
             </div>
 
             <!-- Time-Line Section -->
-            <div class="time-line px-2">
+            <div v-if="!isLoading" class="time-line px-2">
                 <TimeLineView :dark-mode-on="props.darkModeOn" :is-filter-on="isFilterOn" />
             </div>
         </div>
@@ -80,14 +87,27 @@ onMounted(async () => {
 </script>
 
 <style>
+.grid-container > div {
+    border: 2px red solid;
+}
+
 .map {
     grid-area: 1 / 1 / -1 / -1;
     z-index: 0;
 }
 
+.left-side {
+    grid-row: 1 / 3;
+    grid-column: 1 / 2;
+    z-index: 1;
+
+    margin-top: 4px;
+    pointer-events: none;
+}
+
 .menu {
     grid-row: 1 / 2;
-    grid-column: 2 / -1;
+    grid-column: 3 / -1;
     z-index: 1;
 
     margin-top: 4px;
@@ -100,7 +120,7 @@ onMounted(async () => {
 
 .legend {
     grid-row: 2 / 3;
-    grid-column: 2 / -1;
+    grid-column: 3 / -1;
     z-index: 1;
 }
 
@@ -118,7 +138,7 @@ onMounted(async () => {
 
 .grid-container {
     display: grid;
-    grid-template-columns: 6fr 2fr;
+    grid-template-columns: 2fr 6fr 2fr;
     grid-template-rows: 4fr 1fr 2fr;
     height: 100vh;
 
