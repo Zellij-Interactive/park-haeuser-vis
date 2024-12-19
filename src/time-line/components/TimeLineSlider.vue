@@ -75,69 +75,14 @@
                                 {{ `x${speed}` }}
                             </v-btn>
                         </template>
-                        <v-btn-toggle v-model="speed">
-                            <v-btn
-                                class="text-none"
-                                :ripple="false"
-                                :base-color="speed == 0.25 ? 'grey-lighten-2' : 'white'"
-                                variant="flat"
-                                text="0.25"
-                                @click="changeSpeed(0.25)"
-                            />
-
-                            <v-btn
-                                class="text-none"
-                                :ripple="false"
-                                :base-color="speed == 0.5 ? 'grey-lighten-2' : 'white'"
-                                variant="flat"
-                                text="0.50"
-                                @click="changeSpeed(0.5)"
-                            />
-
-                            <v-btn
-                                class="text-none"
-                                :ripple="false"
-                                :base-color="speed == 0.75 ? 'grey-lighten-2' : 'white'"
-                                variant="flat"
-                                text="0.75"
-                                @click="changeSpeed(0.75)"
-                            />
-
-                            <v-btn
-                                class="text-none"
-                                :ripple="false"
-                                :base-color="speed == 1 ? 'grey-lighten-2' : 'white'"
-                                variant="flat"
-                                text="1"
-                                @click="changeSpeed(1)"
-                            />
-
-                            <v-btn
-                                class="text-none"
-                                :ripple="false"
-                                :base-color="speed == 2 ? 'grey-lighten-2' : 'white'"
-                                variant="flat"
-                                text="2"
-                                @click="changeSpeed(2)"
-                            />
-
-                            <v-btn
-                                class="text-none"
-                                :ripple="false"
-                                :base-color="speed == 4 ? 'grey-lighten-2' : 'white'"
-                                variant="flat"
-                                text="4"
-                                @click="changeSpeed(4)"
-                            />
-
-                            <v-btn
-                                class="text-none"
-                                :ripple="false"
-                                :base-color="speed == 8 ? 'grey-lighten-2' : 'white'"
-                                variant="flat"
-                                text="8"
-                                @click="changeSpeed(8)"
-                            />
+                        <v-btn-toggle v-model="toggleSpeed">
+                            <v-btn class="text-none" :ripple="false" variant="flat" text="0.25" />
+                            <v-btn class="text-none" :ripple="false" variant="flat" text="0.50" />
+                            <v-btn class="text-none" :ripple="false" variant="flat" text="0.75" />
+                            <v-btn class="text-none" :ripple="false" variant="flat" text="1" />
+                            <v-btn class="text-none" :ripple="false" variant="flat" text="2" />
+                            <v-btn class="text-none" :ripple="false" variant="flat" text="4" />
+                            <v-btn class="text-none" :ripple="false" variant="flat" text="8" />
                         </v-btn-toggle>
                     </v-menu>
                 </template>
@@ -151,7 +96,6 @@ import { computed, ref, watch } from 'vue';
 import { formatDate, formatHour, hourInMilliseconds } from '@/core/dateRange';
 import type { Filter } from '@/parkingGarage/types/filter';
 import { _throw } from '@/core/_throw';
-import { text } from 'd3';
 
 const props = defineProps<{
     filter: Filter;
@@ -171,7 +115,10 @@ const maxDateInMilliseconds = computed(() => endDate.value.getTime());
 const currentValue = ref(minDateInMilliseconds.value);
 
 const isPlaying = ref(false);
-const speed = ref<0.25 | 0.5 | 0.75 | 1 | 2 | 4 | 8>(1);
+
+const toggleSpeed = ref(3);
+const availableSpeeds = [0.25, 0.5, 0.75, 1, 2, 4, 8] as const;
+const speed = computed<0.25 | 0.5 | 0.75 | 1 | 2 | 4 | 8>(() => availableSpeeds[toggleSpeed.value]);
 
 watch(
     () => props.isFilterOn,
@@ -201,22 +148,6 @@ async function startTimer() {
 
 function pauseTimer() {
     isPlaying.value = false;
-}
-
-function changeSpeed(value: number) {
-    if (
-        value != 0.25 &&
-        value != 0.5 &&
-        value != 0.75 &&
-        value != 1 &&
-        value != 2 &&
-        value != 4 &&
-        value != 8
-    ) {
-        _throw('Invalid speed value.');
-    }
-
-    speed.value = value;
 }
 
 function sleep(ms: number): Promise<void> {
