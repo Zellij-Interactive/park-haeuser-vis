@@ -75,14 +75,56 @@
                                 {{ `x${speed}` }}
                             </v-btn>
                         </template>
-                        <v-btn-toggle v-model="toggleSpeed">
-                            <v-btn class="text-none" :ripple="false" variant="flat" text="0.25" />
-                            <v-btn class="text-none" :ripple="false" variant="flat" text="0.50" />
-                            <v-btn class="text-none" :ripple="false" variant="flat" text="0.75" />
-                            <v-btn class="text-none" :ripple="false" variant="flat" text="1" />
-                            <v-btn class="text-none" :ripple="false" variant="flat" text="2" />
-                            <v-btn class="text-none" :ripple="false" variant="flat" text="4" />
-                            <v-btn class="text-none" :ripple="false" variant="flat" text="8" />
+                        <v-btn-toggle v-model="speed">
+                            <v-btn
+                                value="0.25"
+                                class="text-none"
+                                :ripple="false"
+                                variant="flat"
+                                text="0.25"
+                            />
+                            <v-btn
+                                value="0.50"
+                                class="text-none"
+                                :ripple="false"
+                                variant="flat"
+                                text="0.50"
+                            />
+                            <v-btn
+                                value="0.75"
+                                class="text-none"
+                                :ripple="false"
+                                variant="flat"
+                                text="0.75"
+                            />
+                            <v-btn
+                                value="1"
+                                class="text-none"
+                                :ripple="false"
+                                variant="flat"
+                                text="1"
+                            />
+                            <v-btn
+                                value="2"
+                                class="text-none"
+                                :ripple="false"
+                                variant="flat"
+                                text="2"
+                            />
+                            <v-btn
+                                value="4"
+                                class="text-none"
+                                :ripple="false"
+                                variant="flat"
+                                text="4"
+                            />
+                            <v-btn
+                                value="8"
+                                class="text-none"
+                                :ripple="false"
+                                variant="flat"
+                                text="8"
+                            />
                         </v-btn-toggle>
                     </v-menu>
                 </template>
@@ -116,9 +158,7 @@ const currentValue = ref(minDateInMilliseconds.value);
 
 const isPlaying = ref(false);
 
-const toggleSpeed = ref(3);
-const availableSpeeds = [0.25, 0.5, 0.75, 1, 2, 4, 8] as const;
-const speed = computed<0.25 | 0.5 | 0.75 | 1 | 2 | 4 | 8>(() => availableSpeeds[toggleSpeed.value]);
+const speed = ref('1');
 
 watch(
     () => props.isFilterOn,
@@ -140,7 +180,7 @@ async function startTimer() {
     isPlaying.value = true;
 
     while (currentValue.value <= maxDateInMilliseconds.value && isPlaying.value) {
-        await sleep(100 / speed.value);
+        await sleep(100 / parseFloat(speed.value));
 
         currentValue.value += hourInMilliseconds;
     }
