@@ -1,5 +1,5 @@
 <template>
-    <span>Maximale Auslastung:</span>
+    <span>Maximale Belegung:</span>
     <div ref="svgCircleAreaLegendContainer"></div>
 </template>
 
