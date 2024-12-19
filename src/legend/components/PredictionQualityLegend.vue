@@ -56,7 +56,7 @@ onMounted(() => {
     svgSaturationLegend = d3
         .select(svgLegendContainer.value)
         .append('svg')
-        .attr('height', 72)
+        .attr('height', 40)
         .attr('width', 200);
 
     svgSaturationLegend.append('g').attr('transform', `translate(20,20)`).call(colorLegend, {

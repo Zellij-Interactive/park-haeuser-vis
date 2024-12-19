@@ -4,7 +4,7 @@ import { getColorPalette } from './colorBlindMode';
 import { scaleOrdinal } from 'd3';
 import { strokeGap, strokeOpacity, strokeWeight } from './ordinalScale';
 
-const length = 2;
+const length = 1;
 
 export const colorScale: any = (mode: ColorBlindMode) =>
     scaleOrdinal()
@@ -48,13 +48,11 @@ export const colorLegend = (
         .attr('r', props.radius + strokeGap)
         .attr('fill', 'none')
         .attr('stroke-width', (d, i) => {
-            if (i === 0) return 0;
-            if (i === 1) return 4;
+            if (i === 0) return 4;
             _throw('error setting the width of circle');
         })
         .attr('stroke', (d, i) => {
-            if (i === 0) return 'black';
-            if (i === 1) return getBorderColor(props.isDarkModeOn, props.colorBlindMode);
+            if (i == 0) return getBorderColor(props.isDarkModeOn, props.colorBlindMode);
             _throw('error setting the color of the border');
         });
 
@@ -62,8 +60,7 @@ export const colorLegend = (
         .append('text')
         .merge(groups.select('text'))
         .text((d, i) => {
-            if (i === 0) return 'Korrekte Vorhersage';
-            if (i === 1) return 'Falsche Vorhersage';
+            if (i == 0) return 'Schlechte Vorhersage';
             _throw('error setting the text');
         })
         .attr('dy', '0.32em')
