@@ -80,6 +80,7 @@
                             class="text-none"
                             :ripple="false"
                             variant="flat"
+                            mandatory
                         >
                             <v-btn value="0.25" text="0.25" />
                             <v-btn value="0.50" text="0.50" />
