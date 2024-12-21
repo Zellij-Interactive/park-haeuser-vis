@@ -6,13 +6,13 @@
 import { ref, watch, onMounted } from 'vue';
 import * as d3 from 'd3';
 import { _throw } from '@/core/_throw';
-import { type ShapValue } from '@/parkingGarage/types/shapNames';
+import { type SHAPValue } from '@/parkingGarage/types/shapNames';
 import type { Filter } from '@/parkingGarage/types/filter';
 import { strokeOpacity } from '@/legend/utils/ordinalScale';
 
 // Props for bar chart data and title
 const props = defineProps<{
-    data: ShapValue[];
+    data: SHAPValue[];
     title?: string;
     filter: Filter;
     darkModeOn: boolean;
@@ -23,7 +23,7 @@ const chart = ref<HTMLDivElement | null>(null);
 const width = 320;
 const height = 200;
 
-function renderHorizontalChart(data: ShapValue[], title: string | undefined) {
+function renderHorizontalChart(data: SHAPValue[], title: string | undefined) {
     if (!chart.value) return;
 
     // Clear previous chart
@@ -142,7 +142,7 @@ function renderHorizontalChart(data: ShapValue[], title: string | undefined) {
 onMounted(() => renderHorizontalChart(props.data, props.title));
 
 watch(
-    (): [ShapValue[], boolean] => [props.data, props.darkModeOn],
+    (): [SHAPValue[], boolean] => [props.data, props.darkModeOn],
     ([newData, _]) => renderHorizontalChart(newData, props.title)
 );
 </script>

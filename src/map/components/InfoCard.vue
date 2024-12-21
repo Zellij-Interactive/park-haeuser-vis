@@ -59,7 +59,7 @@ import { formatDate } from '@/core/dateRange';
 import { formatHour } from '@/core/dateRange';
 import BarChart from './BarChart.vue';
 import { computed } from 'vue';
-import { ShapName, type ShapValue } from '@/parkingGarage/types/shapNames';
+import { ShapName, type SHAPValue } from '@/parkingGarage/types/shapNames';
 
 const props = defineProps<{
     options: google.maps.InfoWindowOptions;
@@ -68,7 +68,7 @@ const props = defineProps<{
     darkModeOn: boolean;
 }>();
 
-const shapValues = computed<ShapValue[]>(() => {
+const shapValues = computed<SHAPValue[]>(() => {
     const prediction = props.parkingGarage.predictions.get(props.filter.index);
 
     if (prediction == null) {
@@ -76,22 +76,22 @@ const shapValues = computed<ShapValue[]>(() => {
     }
 
     return [
-        { name: ShapName.SHAPEducation, value: prediction.shapEducation },
+        { name: ShapName.shapEducation, value: prediction.shapEducation },
         {
-            name: ShapName.SHAPServicesSpecialtyRetail,
+            name: ShapName.shapServicesSpecialtyRetail,
             value: prediction.shapServicesSpecialtyRetail,
         },
-        { name: ShapName.SHAPFinanceInsurance, value: prediction.shapFinanceInsurance },
-        { name: ShapName.SHAPLeisureTime, value: prediction.shapLeisureTime },
-        { name: ShapName.SHAPFoodServices, value: prediction.shapFoodServices },
-        { name: ShapName.SHAPHealth, value: prediction.shapHealth },
-        { name: ShapName.SHAPGrocery, value: prediction.shapGrocery },
-        { name: ShapName.SHAPReligion, value: prediction.shapReligion },
-        { name: ShapName.SHAPShopping, value: prediction.shapShopping },
-        { name: ShapName.SHAPPublicSector, value: prediction.shapPublicSector },
-        { name: ShapName.SHAPTime, value: prediction.shapTime },
-        { name: ShapName.SHAPMonth, value: prediction.shapMonth },
-        { name: ShapName.SHAPOthers, value: prediction.shapOthers },
+        { name: ShapName.shapFinanceInsurance, value: prediction.shapFinanceInsurance },
+        { name: ShapName.shapLeisureTime, value: prediction.shapLeisureTime },
+        { name: ShapName.shapFoodServices, value: prediction.shapFoodServices },
+        { name: ShapName.shapHealth, value: prediction.shapHealth },
+        { name: ShapName.shapGrocery, value: prediction.shapGrocery },
+        { name: ShapName.shapReligion, value: prediction.shapReligion },
+        { name: ShapName.shapShopping, value: prediction.shapShopping },
+        { name: ShapName.shapPublicSector, value: prediction.shapPublicSector },
+        { name: ShapName.shapTime, value: prediction.shapTime },
+        { name: ShapName.shapMonth, value: prediction.shapMonth },
+        { name: ShapName.shapOthers, value: prediction.shapOthers },
     ];
 });
 </script>
