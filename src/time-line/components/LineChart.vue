@@ -1,4 +1,15 @@
 <template>
+    <div v-if="props.dataToDisplay == 'shap'" class="d-flex">
+        <v-checkbox
+            v-for="shapKey of shapKeysArray"
+            v-model="selectedShaps"
+            :label="ShapName[shapKey]"
+            :value="shapKey"
+            :ripple="false"
+            density="compact"
+            multiple
+        />
+    </div>
     <div ref="chart"></div>
 </template>
 
@@ -10,48 +21,61 @@ import type { Filter } from '@/parkingGarage/types/filter';
 import type { ParkingGarage } from '@/parkingGarage/types/parkingGarage';
 import { ParkingGarageName } from '@/parkingGarage/types/parkingGarageNames';
 import { hourInMilliseconds } from '@/core/dateRange';
+import { ShapName } from '@/parkingGarage/types/shapNames';
 
 // Props for bar chart data and title
 const props = defineProps<{
     parkingGarages: Map<ParkingGarageName, ParkingGarage>;
     filter: Filter;
     darkModeOn: boolean;
+    dataToDisplay: 'prediction' | 'shap';
 }>();
+
+type ShapKey = Exclude<keyof typeof ShapName, 'shapSum'>;
+const shapKeysArray: ShapKey[] = Object.keys(ShapName).filter(
+    (key) => key !== 'shapSum'
+) as ShapKey[];
 
 const chart = ref<HTMLDivElement | null>(null);
 
-const selectedParkingGarages = computed(() => props.filter.parkingGarages);
+const selectedShaps = ref<ShapKey[]>([]);
 
 const lineColors = computed(() =>
     props.darkModeOn
         ? [
-              '#26b6ffff',
-              '#e65154ff',
-              '#67e6d1ff',
-              '#cd76d6ff',
-              '#ffca8cff',
-              '#fff2b3ff',
-              '#ff8cd9ff',
-              '#d99d5bff',
-              '#c8f2a9ff',
-              '#d4b8ffff',
+              '#33b1ff',
+              '#fa4d56',
+              '#8a3ffc',
+              '#007d79',
+              '#6fdc8c',
+              '#ff7eb6',
+              '#d2a106',
+              '#4589ff',
+              '#08bdba',
+              '#d4bbff',
+              '#ba4e00',
+              '#d12771',
+              '#bae6ff',
           ]
         : [
-              '#0095baff',
-              '#d92b30ff',
-              '#3cccb4ff',
-              '#ab52b3ff',
-              '#ffb259ff',
-              '#ffdf3cff',
-              '#eb82ebff',
-              '#c27c30ff',
-              '#a0d17dff',
-              '#f260a1ff',
+              '#1192e8',
+              '#fa4d56',
+              '#6929c4',
+              '#005d5d',
+              '#198038',
+              '#b28600',
+              '#9f1853',
+              '#570408',
+              '#8a3800',
+              '#ee538b',
+              '#009d9a',
+              '#a56eff',
+              '#012749',
           ]
 );
 
 // Chart dimensions
-const margin = { top: 50, right: 0, bottom: 20, left: 40 };
+const margin = { top: 10, right: 0, bottom: 30, left: 40 };
 
 const width = 1700;
 const height = 200;
@@ -60,28 +84,61 @@ const data = computed<number[][]>(() => {
     let i = 0;
     const data: number[][] = [];
 
-    props.filter.parkingGarages.forEach((name) => {
-        data[i] = Array.from(props.parkingGarages.get(name)?.predictions.entries() ?? [])
-            .filter(
-                ([key, _]) =>
-                    key >= props.filter.dateRange.startDate.getTime() &&
-                    key <= props.filter.dateRange.endDate.getTime()
-            )
-            .map(([_, value]) => value.prediction);
+    if (props.dataToDisplay == 'prediction') {
+        props.filter.parkingGarages.forEach((name) => {
+            data[i] = Array.from(props.parkingGarages.get(name)?.predictions.entries() ?? [])
+                .filter(
+                    ([key, _]) =>
+                        key >= props.filter.dateRange.startDate.getTime() &&
+                        key <= props.filter.dateRange.endDate.getTime()
+                )
+                .map(([_, value]) => value.prediction);
 
-        i++;
-    });
+            i++;
+        });
+    } else if (props.dataToDisplay == 'shap') {
+        const dataMap = extractData(selectedShaps.value);
+
+        for (const index in selectedShaps.value) {
+            data[index] = dataMap.get(selectedShaps.value[index]) ?? [];
+        }
+
+        // data[0] = Array.from(
+        //     props.parkingGarages.get(ParkingGarageName.CityPort)?.predictions.entries() ?? []
+        // )
+        //     .filter(
+        //         ([key, _]) =>
+        //             key >= props.filter.dateRange.startDate.getTime() &&
+        //             key <= props.filter.dateRange.endDate.getTime()
+        //     )
+        //     .map(([_, value]) => value.shapFoodServices);
+
+        // data[1] = Array.from(
+        //     props.parkingGarages.get(ParkingGarageName.CityPort)?.predictions.entries() ?? []
+        // )
+        //     .filter(
+        //         ([key, _]) =>
+        //             key >= props.filter.dateRange.startDate.getTime() &&
+        //             key <= props.filter.dateRange.endDate.getTime()
+        //     )
+        //     .map(([_, value]) => value.shapEducation);
+    }
 
     return data;
 });
 
-const max = computed(() => {
-    let localMax = 40;
+const minMax = computed(() => {
+    let localMin = 0;
+    let localMax = 0;
+
     data.value.forEach((values) =>
-        values.forEach((value) => (localMax = localMax < value ? value : localMax))
+        values.forEach((value) => {
+            localMin = localMin < value ? localMin : value;
+            localMax = localMax < value ? value : localMax;
+        })
     );
 
-    return localMax;
+    return { min: localMin, max: localMax };
 });
 
 const dates = computed<Date[]>(() => {
@@ -98,10 +155,8 @@ const dates = computed<Date[]>(() => {
     return dates;
 });
 
-const differenceInDays = computed(() => props.filter.dateRange.getDifferenceInDays());
-
 watch(
-    () => [props.darkModeOn, props.filter],
+    () => [props.darkModeOn, props.filter, props.dataToDisplay, selectedShaps.value],
     () => {
         renderChart();
     }
@@ -138,7 +193,10 @@ function renderChart() {
     const xScale = d3.scaleTime().range([0, innerWidth]).domain(extent);
 
     // Y scale (for values)
-    const yScale = d3.scaleLinear().range([innerHeight, 0]).domain([0, max.value]);
+    const yScale = d3
+        .scaleLinear()
+        .range([innerHeight, 0])
+        .domain([minMax.value.min, minMax.value.max]);
 
     // Add the x-axis
     svg.append('g')
@@ -162,7 +220,11 @@ function renderChart() {
         .call(
             d3
                 .axisLeft(yScale)
-                .ticks(max.value / 20)
+                .ticks(
+                    props.dataToDisplay == 'prediction'
+                        ? (minMax.value.max - minMax.value.min) / 20
+                        : (minMax.value.max - minMax.value.min) / 2
+                )
                 .tickSize(0)
                 .tickPadding(10)
                 .tickFormat(d3.format('d'))
@@ -213,14 +275,14 @@ function renderChart() {
     //     .text('Auslastung Pred.');
 
     // Add the chart title
-    svg.append('text')
-        .attr('x', margin.left - 60)
-        .attr('y', margin.top - 70)
-        .attr('fill', props.darkModeOn ? 'white' : 'black')
-        .style('font-size', '16px')
-        .style('font-weight', 'bold')
-        .style('font-family', 'sans-serif')
-        .text('Parkhausauslastung Vorhersage');
+    // svg.append('text')
+    //     .attr('x', margin.left - 60)
+    //     .attr('y', margin.top - 70)
+    //     .attr('fill', props.darkModeOn ? 'white' : 'black')
+    //     .style('font-size', '16px')
+    //     .style('font-weight', 'bold')
+    //     .style('font-family', 'sans-serif')
+    //     .text('Parkhausauslastung Vorhersage');
 
     for (let i = 0; i < data.value.length; i++) {
         const currentData = dates.value.map((date, index) => ({
@@ -254,6 +316,26 @@ function renderLines(
         .attr('stroke', color)
         .attr('stroke-width', 1)
         .attr('d', line);
+}
+
+function extractData(property: ShapKey[]): Map<string, number[]> {
+    const map = new Map<string, number[]>();
+
+    Array.from(props.parkingGarages.get(ParkingGarageName.CityPort)?.predictions.entries() ?? [])
+        .filter(
+            ([key]) =>
+                key >= props.filter.dateRange.startDate.getTime() &&
+                key <= props.filter.dateRange.endDate.getTime()
+        )
+        .forEach(([_, value]) =>
+            property.forEach((name) => {
+                const values = map.get(name) ?? [];
+                values.push(value[name]);
+                map.set(name, values);
+            })
+        );
+
+    return map;
 }
 </script>
 
