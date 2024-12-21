@@ -1,12 +1,28 @@
 <template>
-    <div v-if="props.dataToDisplay == 'shap'" class="d-flex">
+    <div class="d-flex">
         <v-checkbox
+            v-if="props.dataToDisplay == 'prediction'"
+            v-for="parkingGarage of props.parkingGarages.keys()"
+            v-model="selectedParkingGarages"
+            :key="parkingGarage"
+            :label="parkingGarage"
+            :value="parkingGarage"
+            :ripple="false"
+            :disabled="!props.filter.parkingGarages.includes(parkingGarage)"
+            density="compact"
+            hide-details
+            multiple
+        />
+        <v-checkbox
+            v-else
             v-for="shapKey of shapKeysArray"
             v-model="selectedShaps"
+            :key="shapKey"
             :label="ShapName[shapKey]"
             :value="shapKey"
             :ripple="false"
             density="compact"
+            hide-details
             multiple
         />
     </div>
@@ -22,6 +38,7 @@ import type { ParkingGarage } from '@/parkingGarage/types/parkingGarage';
 import { ParkingGarageName } from '@/parkingGarage/types/parkingGarageNames';
 import { hourInMilliseconds } from '@/core/dateRange';
 import { ShapName } from '@/parkingGarage/types/shapNames';
+import { listOfParkingGaragesNames } from '@/parkingGarage/types/parkingGarageNames';
 
 // Props for bar chart data and title
 const props = defineProps<{
@@ -32,12 +49,14 @@ const props = defineProps<{
 }>();
 
 type ShapKey = Exclude<keyof typeof ShapName, 'shapSum'>;
+
 const shapKeysArray: ShapKey[] = Object.keys(ShapName).filter(
     (key) => key !== 'shapSum'
 ) as ShapKey[];
 
 const chart = ref<HTMLDivElement | null>(null);
 
+const selectedParkingGarages = ref<ParkingGarageName[]>([]);
 const selectedShaps = ref<ShapKey[]>([]);
 
 const lineColors = computed(() =>
@@ -85,7 +104,7 @@ const data = computed<number[][]>(() => {
     const data: number[][] = [];
 
     if (props.dataToDisplay == 'prediction') {
-        props.filter.parkingGarages.forEach((name) => {
+        selectedParkingGarages.value.forEach((name) => {
             data[i] = Array.from(props.parkingGarages.get(name)?.predictions.entries() ?? [])
                 .filter(
                     ([key, _]) =>
@@ -156,7 +175,13 @@ const dates = computed<Date[]>(() => {
 });
 
 watch(
-    () => [props.darkModeOn, props.filter, props.dataToDisplay, selectedShaps.value],
+    () => [
+        props.darkModeOn,
+        props.filter,
+        props.dataToDisplay,
+        selectedParkingGarages.value,
+        selectedShaps.value,
+    ],
     () => {
         renderChart();
     }

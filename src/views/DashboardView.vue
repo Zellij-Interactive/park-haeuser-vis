@@ -87,7 +87,7 @@ onMounted(async () => {
 </script>
 
 <style>
-.grid-container > div {
+.test > * {
     border: 2px red solid;
 }
 

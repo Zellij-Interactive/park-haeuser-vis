@@ -1,10 +1,10 @@
 <template>
     <v-card
-        class="fill-height fill-width d-flex flex-column justify-center align-center border-thin"
+        class="d-flex flex-column justify-center align-center border-thin"
         elevation="0"
         rounded="lg"
     >
-        <div class="d-flex flex-column align-center">
+        <div class="d-flex flex-column justify-center align-center">
             <v-btn-toggle
                 v-model="dataDisplayed"
                 density="compact"
