@@ -12,7 +12,7 @@ export const parkingGarageService = {
     async getAllParkingGarages(): Promise<ParkingGarage[]> {
         const parkingGarages: ParkingGarage[] = [];
 
-        for (const name of Object.values(ParkingGarageName)) {
+        for (const name of Object.values(ParkingGarageName).sort((a, b) => a.localeCompare(b))) {
             parkingGarages.push(await this.getParkingGarage(name));
         }
         return parkingGarages;
