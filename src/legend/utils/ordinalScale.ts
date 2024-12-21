@@ -2,9 +2,9 @@ import { _throw } from '@/core/_throw';
 import { ColorBlindMode, getColorPalette, paletteLength } from '../../core/colors';
 import { scaleOrdinal } from 'd3';
 
-export const strokeOpacity = 0.4;
-export const strokeWeight = 1;
-export const strokeGap = 4;
+export const strokeOpacity = 0.8;
+export const strokeWeight = 2;
+export const strokeGap = 6;
 
 export const colorScale: any = (mode: ColorBlindMode) =>
     scaleOrdinal()
