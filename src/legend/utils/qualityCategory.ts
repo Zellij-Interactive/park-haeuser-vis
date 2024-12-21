@@ -2,7 +2,7 @@ import { _throw } from '@/core/_throw';
 import { ColorBlindMode, getBorderColor } from '../../core/colors';
 import { getColorPalette } from '../../core/colors';
 import { scaleOrdinal } from 'd3';
-import { strokeGap, strokeOpacity, strokeWeight } from './ordinalScale';
+import { strokeGap, strokeOpacity, strokeWeight } from './constants';
 
 const length = 1;
 

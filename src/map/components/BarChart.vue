@@ -8,7 +8,7 @@ import * as d3 from 'd3';
 import { _throw } from '@/core/_throw';
 import { type SHAPValue } from '@/parkingGarage/types/shapNames';
 import type { Filter } from '@/parkingGarage/types/filter';
-import { strokeOpacity } from '@/legend/utils/ordinalScale';
+import { strokeOpacity } from '@/legend/utils/constants';
 
 // Props for bar chart data and title
 const props = defineProps<{

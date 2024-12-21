@@ -42,19 +42,15 @@ import type { ParkingGarage } from '@/parkingGarage/types/parkingGarage';
 import { _throw } from '@/core/_throw';
 import { useParkingGarageStore } from '@/parkingGarage/parkingGarageStore';
 import { sizeScale } from '@/legend/utils/sizeScale';
-import {
-    getColorSaturation,
-    strokeGap,
-    strokeOpacity,
-    strokeWeight,
-} from '@/legend/utils/ordinalScale';
-import { GoogleMap, Marker, InfoWindow } from 'vue3-google-map';
+import { getColorSaturation } from '@/legend/utils/ordinalScale';
+import { GoogleMap, Marker } from 'vue3-google-map';
 import { googleMapLightModeStyling, googleMapsDarkModeStyling } from '../utils';
 import type { CustomMarker } from '../customMarker';
 import { ParkingGarageName } from '@/parkingGarage/types/parkingGarageNames';
 import InfoCards from '../components/InfoCard.vue';
 import { ColorBlindMode, getBorderColor } from '@/core/colors';
 import type { Filter } from '@/parkingGarage/types/filter';
+import { strokeGap, strokeOpacity, strokeWeight } from '@/legend/utils/constants';
 
 // Props for parking garages
 const props = defineProps<{
