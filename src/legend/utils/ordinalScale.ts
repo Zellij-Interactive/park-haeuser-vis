@@ -1,5 +1,5 @@
 import { _throw } from '@/core/_throw';
-import { ColorBlindMode, getColorPalette, paletteLength } from './colorBlindMode';
+import { ColorBlindMode, getColorPalette, paletteLength } from '../../core/colors';
 import { scaleOrdinal } from 'd3';
 
 export const strokeOpacity = 0.4;

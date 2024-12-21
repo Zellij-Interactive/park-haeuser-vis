@@ -1,6 +1,6 @@
 import { _throw } from '@/core/_throw';
-import { ColorBlindMode, getBorderColor } from './colorBlindMode';
-import { getColorPalette } from './colorBlindMode';
+import { ColorBlindMode, getBorderColor } from '../../core/colors';
+import { getColorPalette } from '../../core/colors';
 import { scaleOrdinal } from 'd3';
 import { strokeGap, strokeOpacity, strokeWeight } from './ordinalScale';
 

@@ -1,6 +1,6 @@
 import type { DateRange } from '@/core/dateRange';
 import type { ParkingGarageName } from './parkingGarageNames';
-import type { ColorBlindMode } from '@/legend/utils/colorBlindMode';
+import type { ColorBlindMode } from '@/core/colors';
 
 export type Filter = {
     parkingGarages: ParkingGarageName[];

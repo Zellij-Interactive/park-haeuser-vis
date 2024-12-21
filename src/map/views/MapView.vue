@@ -53,7 +53,7 @@ import { googleMapLightModeStyling, googleMapsDarkModeStyling } from '../utils';
 import type { CustomMarker } from '../customMarker';
 import { ParkingGarageName } from '@/parkingGarage/types/parkingGarageNames';
 import InfoCards from '../components/InfoCard.vue';
-import { ColorBlindMode, getBorderColor } from '@/legend/utils/colorBlindMode';
+import { ColorBlindMode, getBorderColor } from '@/core/colors';
 import type { Filter } from '@/parkingGarage/types/filter';
 
 // Props for parking garages

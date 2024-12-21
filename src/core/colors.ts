@@ -34,20 +34,20 @@ export function getColorPalette(mode?: ColorBlindMode): string[] {
     }
 }
 
-const defaultPalette = [
-    '#f7fbffff',
-    '#deebf7ff',
-    '#c6dbefff',
-    '#9ecae1ff',
-    '#6baed6ff',
-    '#4292c6ff',
-    '#2171b5ff',
-    '#08519cff',
-    '#083582ff',
-    '#022259ff',
+export const defaultPalette = [
+    '#edf5ff',
+    '#d0e2ff',
+    '#a6c8ff',
+    '#78a9ff',
+    '#4589ff',
+    '#0f62fe',
+    '#0043ce',
+    '#002d9c',
+    '#001d6c',
+    '#001141',
 ];
 
-const protanopiaPalette = [
+export const protanopiaPalette = [
     '#fff5dcff',
     '#f7e9ccff',
     '#eedebdff',
@@ -60,7 +60,7 @@ const protanopiaPalette = [
     '#616b4bff',
 ];
 
-const deuteranopiaPalette = [
+export const deuteranopiaPalette = [
     '#f9d6b3ff',
     '#e8c29cff',
     '#d8ae84ff',
