@@ -63,19 +63,22 @@
                     </template>
 
                     <template v-slot:prepend-item>
-                        <v-checkbox
-                            v-model="areAllSelected"
-                            label="Alle auswählen"
-                            color="primary"
-                            :indeterminate="
-                                computed(
-                                    () =>
-                                        unsavedFilter.parkingGarages.length > 0 &&
-                                        unsavedFilter.parkingGarages.length < 10
-                                ).value
-                            "
-                            hide-details
-                        />
+                        <v-list-item>
+                            <v-checkbox
+                                v-model="areAllSelected"
+                                label="Alle auswählen"
+                                color="primary"
+                                :indeterminate="
+                                    computed(
+                                        () =>
+                                            unsavedFilter.parkingGarages.length > 0 &&
+                                            unsavedFilter.parkingGarages.length < 10
+                                    ).value
+                                "
+                                hide-details
+                            />
+                            <v-divider />
+                        </v-list-item>
                     </template>
                 </v-select>
 
