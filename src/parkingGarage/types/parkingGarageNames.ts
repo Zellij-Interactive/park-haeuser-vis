@@ -1,6 +1,7 @@
 import { _throw } from '@/core/_throw';
 
 export enum ParkingGarageName {
+    Augustusplatz = 'Augustusplatz',
     Bleiche = 'Bleiche',
     Cinestar = 'Cinestar',
     CityPort = 'CityPort',
@@ -10,7 +11,6 @@ export enum ParkingGarageName {
     RoemischesTheater = 'RoemischesTheater',
     Schillerplatz = 'Schillerplatz',
     Taubertsberg = 'Taubertsberg',
-    Augustusplatz = 'Augustusplatz',
 }
 
 export const listOfParkingGaragesNames = Object.values(ParkingGarageName).sort((a, b) =>
