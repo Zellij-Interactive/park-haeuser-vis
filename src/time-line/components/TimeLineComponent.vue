@@ -38,7 +38,7 @@
             </v-btn-toggle>
         </div>
 
-        <div ref="chart"></div>
+        <div class="pr-1" ref="chart"></div>
 
         <div class="labels d-flex flex-column">
             <v-checkbox
@@ -544,11 +544,10 @@ function extractData(property: ShapKey[]): Map<string, number[]> {
     grid-template-columns: 8fr 40px 1fr;
     grid-template-rows: 2fr 1fr;
 
-    max-height: 306px;
+    max-height: 310px;
 }
 
 .timeline-container > * {
-    padding: var(--gap);
 }
 
 .chart {
@@ -564,7 +563,7 @@ function extractData(property: ShapKey[]): Map<string, number[]> {
 }
 
 .buttons .v-btn-group {
-    min-width: 310px !important;
+    min-width: 300px !important;
 }
 
 .labels {

@@ -1,5 +1,27 @@
 <template>
     <div class="slider d-flex flex-column justify-center align-center">
+        <v-slider
+            v-model="currentValue"
+            :max="selectedRangeInMilliseconds[1]"
+            :min="selectedRangeInMilliseconds[0]"
+            :step="hourInMilliseconds"
+            style="width: 100%"
+            :thumb-size="0"
+            class="time-player"
+            thumb-label="always"
+            track-color="secondary"
+            track-fill-color="primary"
+            density="compact"
+            hide-details
+        >
+            <template v-slot:thumb-label="{ modelValue }">
+                <div class="thumb-label-date d-flex justify-center text-secondary">
+                    <span v-text="formatDate(new Date(modelValue))" />
+                    <span v-text="`, ${formatHour(new Date(modelValue))}`" />
+                </div>
+            </template>
+        </v-slider>
+
         <v-range-slider
             v-model="selectedRangeInMilliseconds"
             strict
@@ -42,32 +64,16 @@
             </template>
         </v-range-slider>
 
-        <v-slider
-            v-model="currentValue"
-            :max="selectedRangeInMilliseconds[1]"
-            :min="selectedRangeInMilliseconds[0]"
-            :step="hourInMilliseconds"
-            style="width: 100%"
-            :thumb-size="0"
-            class="pt-3 time-player"
-            thumb-label="always"
-            track-color="secondary"
-            track-fill-color="primary"
-            density="compact"
-            hide-details
-        >
-            <template v-slot:thumb-label="{ modelValue }">
-                <div class="thumb-label-date d-flex justify-center text-secondary">
-                    <span v-text="formatDate(new Date(modelValue))" />
-                    <span v-text="`, ${formatHour(new Date(modelValue))}`" />
-                </div>
-            </template>
-        </v-slider>
-
         <div class="d-flex justify-space-between pb-2" :style="{ width: '68px' }">
             <v-tooltip v-if="!isPlaying" text="Abspielen" location="top">
                 <template v-slot:activator="{ props }">
-                    <v-btn v-bind="props" variant="flat" :ripple="false" @click="startTimer()">
+                    <v-btn
+                        v-bind="props"
+                        variant="flat"
+                        density="compact"
+                        :ripple="false"
+                        @click="startTimer()"
+                    >
                         <v-icon>mdi-play</v-icon>
                     </v-btn>
                 </template>
@@ -75,7 +81,13 @@
 
             <v-tooltip v-else text="Pause" location="top">
                 <template v-slot:activator="{ props }">
-                    <v-btn v-bind="props" variant="flat" :ripple="false" @click="pauseTimer()">
+                    <v-btn
+                        v-bind="props"
+                        variant="flat"
+                        density="compact"
+                        :ripple="false"
+                        @click="pauseTimer()"
+                    >
                         <v-icon>mdi-pause</v-icon>
                     </v-btn>
                 </template>
@@ -88,6 +100,7 @@
                             <v-btn
                                 v-bind="{ ...menuProps, ...tooltipProps }"
                                 class="text-none"
+                                density="compact"
                                 variant="text"
                                 :ripple="false"
                             >
@@ -97,6 +110,7 @@
                         <v-btn-toggle
                             v-model="speed"
                             class="text-none"
+                            density="compact"
                             :ripple="false"
                             variant="flat"
                             mandatory
