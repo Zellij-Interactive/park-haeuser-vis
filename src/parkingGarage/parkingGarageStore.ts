@@ -15,6 +15,7 @@ export const useParkingGarageStore = defineStore('parking-garage', {
         filter: {
             parkingGarages: [],
             dateRange: new DateRange(filterMinDate, filterMaxDate),
+            selectedRange: new DateRange(filterMinDate, filterMaxDate),
             showSHAPValues: false,
             date: filterMinDate,
             index: filterMinDate.getTime(),

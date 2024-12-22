@@ -5,6 +5,7 @@ import type { ColorBlindMode } from '@/core/colors';
 export type Filter = {
     parkingGarages: ParkingGarageName[];
     dateRange: DateRange;
+    selectedRange: DateRange;
     showSHAPValues: boolean;
     date: Date;
     index: number;

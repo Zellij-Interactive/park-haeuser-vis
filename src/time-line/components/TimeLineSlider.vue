@@ -126,7 +126,6 @@ import { computed, ref, watch } from 'vue';
 import { formatDate, formatHour, hourInMilliseconds } from '@/core/dateRange';
 import type { Filter } from '@/parkingGarage/types/filter';
 import { _throw } from '@/core/_throw';
-import { VAlert } from 'vuetify/components';
 
 const props = defineProps<{
     filter: Filter;
@@ -135,6 +134,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
     (event: 'indexUpdated', index: number): void;
+    (event: 'selectedDateRangeUpdated', startIndex: number, endIndex: number): void;
 }>();
 
 const startDate = computed(() => props.filter.dateRange.startDate);
@@ -177,6 +177,8 @@ watch(
 watch(
     () => selectedRangeInMilliseconds.value,
     (value) => {
+        emit('selectedDateRangeUpdated', value[0], value[1]);
+
         if (currentValue.value < value[0] || currentValue.value > value[1]) {
             currentValue.value = value[0];
         }

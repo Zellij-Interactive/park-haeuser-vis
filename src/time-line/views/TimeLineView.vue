@@ -15,6 +15,14 @@
                     parkingGarageStore.filter.date = new Date(index);
                 }
             "
+            @selected-range-updated="
+                (startIndex: number, endIndex: number) => {
+                    parkingGarageStore.filter.selectedRange = new DateRange(
+                        new Date(startIndex),
+                        new Date(endIndex)
+                    );
+                }
+            "
         />
     </v-card>
 </template>
@@ -22,6 +30,7 @@
 <script setup lang="ts">
 import { useParkingGarageStore } from '@/parkingGarage/parkingGarageStore';
 import TimeLineComponent from '../components/TimeLineComponent.vue';
+import { DateRange } from '@/core/dateRange';
 
 const props = defineProps<{
     darkModeOn: boolean;

@@ -128,6 +128,10 @@
             :filter="props.filter"
             :is-filter-on="props.isFilterOn"
             @index-updated="(index) => emit('indexUpdated', index)"
+            @selected-range-updated="
+                (startIndex: number, endIndex: number) =>
+                    emit('selectedDateRangeUpdated', startIndex, endIndex)
+            "
         />
     </div>
 </template>
@@ -153,6 +157,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
     (event: 'indexUpdated', index: number): void;
+    (event: 'selectedDateRangeUpdated', startIndex: number, endIndex: number): void;
 }>();
 
 type ShapKey = Exclude<keyof typeof ShapName, 'shapSum'>;
