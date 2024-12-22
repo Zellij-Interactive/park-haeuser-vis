@@ -23,12 +23,26 @@
         </v-card>
     </div>
 
-    <div class="test timeline-container">
-        <div class="chart" ref="chart"></div>
+    <div class="timeline-container">
+        <div class="buttons d-flex flex-column justify-center align-center">
+            <v-btn-toggle
+                v-model="dataToDisplay"
+                class="buttons"
+                density="compact"
+                divided
+                mandatory
+                style="transform: rotate(90deg)"
+            >
+                <v-btn value="prediction" text="Vorhersage" style="flex: 1" />
+                <v-btn value="shap" text="SHAP-Werte" style="flex: 1" />
+            </v-btn-toggle>
+        </div>
 
-        <div class="labels d-flex flex-column" ref="testing">
+        <div ref="chart"></div>
+
+        <div class="labels d-flex flex-column">
             <v-checkbox
-                v-if="props.dataToDisplay == 'prediction'"
+                v-if="dataToDisplay == 'prediction'"
                 v-for="(parkingGarage, index) of Array.from(props.parkingGarages.keys()).filter(
                     (p) =>
                         props.filter.parkingGarages.includes(p) &&
@@ -52,7 +66,7 @@
                 </template>
             </v-checkbox>
             <v-checkbox
-                v-if="props.dataToDisplay == 'prediction'"
+                v-if="dataToDisplay == 'prediction'"
                 v-for="(parkingGarage, index) of Array.from(props.parkingGarages.keys()).filter(
                     (p) =>
                         props.filter.parkingGarages.includes(p) &&
@@ -72,7 +86,7 @@
             </v-checkbox>
 
             <v-checkbox
-                v-if="props.dataToDisplay == 'shap'"
+                v-if="dataToDisplay == 'shap'"
                 v-for="(shapKey, index) of selectedShaps"
                 v-model="selectedShaps"
                 :key="shapKey"
@@ -93,7 +107,7 @@
                 </template>
             </v-checkbox>
             <v-checkbox
-                v-if="props.dataToDisplay == 'shap'"
+                v-if="dataToDisplay == 'shap'"
                 v-for="(shapKey, index) of unselectedShaps"
                 v-model="selectedShaps"
                 :key="shapKey"
@@ -134,7 +148,6 @@ const props = defineProps<{
     parkingGarages: Map<ParkingGarageName, ParkingGarage>;
     filter: Filter;
     darkModeOn: boolean;
-    dataToDisplay: 'prediction' | 'shap';
     isFilterOn: boolean;
 }>();
 
@@ -150,17 +163,19 @@ const shapKeysArray: ShapKey[] = Object.keys(ShapName).filter(
 
 const chart = ref<HTMLDivElement | null>(null);
 
+const dataToDisplay = ref<'prediction' | 'shap'>('prediction');
+
 const tooltipData = ref({
     x: 0,
     y: 0,
     date: new Date(),
     shapValue: 0,
 });
-
 const isCursorIn = ref(false);
 
 const selectedParkingGarages = ref<ParkingGarageName[]>([]);
 const selectedShaps = ref<ShapKey[]>([]);
+
 const unselectedShaps = computed<ShapKey[]>(() =>
     shapKeysArray.filter((shap) => !selectedShaps.value.includes(shap))
 );
@@ -202,14 +217,14 @@ const lineColors = computed(() =>
 // Chart dimensions
 const margin = { top: 10, right: 0, bottom: 30, left: 40 };
 
-const width = 1700;
+const width = 1650;
 const height = 200;
 
 const data = computed<number[][]>(() => {
     let i = 0;
     const data: number[][] = [];
 
-    if (props.dataToDisplay == 'prediction') {
+    if (dataToDisplay.value == 'prediction') {
         selectedParkingGarages.value.forEach((name) => {
             data[i] = Array.from(props.parkingGarages.get(name)?.predictions.entries() ?? [])
                 .filter(
@@ -221,7 +236,7 @@ const data = computed<number[][]>(() => {
 
             i++;
         });
-    } else if (props.dataToDisplay == 'shap') {
+    } else if (dataToDisplay.value == 'shap') {
         const dataMap = extractData(selectedShaps.value);
 
         for (const index in selectedShaps.value) {
@@ -264,7 +279,7 @@ watch(
     () => [
         props.darkModeOn,
         props.filter,
-        props.dataToDisplay,
+        dataToDisplay.value,
         selectedParkingGarages.value,
         selectedShaps.value,
     ],
@@ -335,7 +350,7 @@ function renderChart() {
             d3
                 .axisLeft(yScale)
                 .ticks(
-                    props.dataToDisplay == 'prediction'
+                    dataToDisplay.value == 'prediction'
                         ? (minMax.value.max - minMax.value.min) / 20
                         : (minMax.value.max - minMax.value.min) / 2
                 )
@@ -368,7 +383,7 @@ function renderChart() {
     // Add horizontal grid lines
     svg.selectAll('yGrid')
         .data(
-            props.dataToDisplay == 'prediction'
+            dataToDisplay.value == 'prediction'
                 ? yScale.ticks(5).slice(1)
                 : yScale.ticks(10).slice(1)
         )
@@ -521,7 +536,7 @@ function extractData(property: ShapKey[]): Map<string, number[]> {
 <style>
 .timeline-container {
     display: grid;
-    grid-template-columns: 6fr 1fr;
+    grid-template-columns: 8fr 40px 1fr;
     grid-template-rows: 2fr 1fr;
 
     max-height: 306px;
@@ -537,9 +552,19 @@ function extractData(property: ShapKey[]): Map<string, number[]> {
     z-index: 0;
 }
 
+.buttons {
+    grid-row: 1 / -1;
+    grid-column: 2 / 3;
+    z-index: 1;
+}
+
+.buttons .v-btn-group {
+    min-width: 310px !important;
+}
+
 .labels {
     grid-row: 1 / -1;
-    grid-column: 2 / -1;
+    grid-column: 3 / -1;
     z-index: 1;
 
     overflow: auto;
