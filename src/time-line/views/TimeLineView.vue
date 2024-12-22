@@ -15,8 +15,8 @@
                     parkingGarageStore.filter.date = new Date(index);
                 }
             "
-            @selected-range-updated="
-                (startIndex: number, endIndex: number) => {
+            @selected-date-range-updated="
+                (startIndex, endIndex) => {
                     parkingGarageStore.filter.selectedRange = new DateRange(
                         new Date(startIndex),
                         new Date(endIndex)

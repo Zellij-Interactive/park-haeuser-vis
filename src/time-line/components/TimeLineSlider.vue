@@ -176,11 +176,11 @@ watch(
 
 watch(
     () => selectedRangeInMilliseconds.value,
-    (value) => {
-        emit('selectedDateRangeUpdated', value[0], value[1]);
+    ([startIndex, endIndex]) => {
+        emit('selectedDateRangeUpdated', startIndex, endIndex);
 
-        if (currentValue.value < value[0] || currentValue.value > value[1]) {
-            currentValue.value = value[0];
+        if (currentValue.value < startIndex || currentValue.value > endIndex) {
+            currentValue.value = startIndex;
         }
     }
 );

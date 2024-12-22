@@ -128,9 +128,8 @@
             :filter="props.filter"
             :is-filter-on="props.isFilterOn"
             @index-updated="(index) => emit('indexUpdated', index)"
-            @selected-range-updated="
-                (startIndex: number, endIndex: number) =>
-                    emit('selectedDateRangeUpdated', startIndex, endIndex)
+            @selected-date-range-updated="
+                (startIndex, endIndex) => emit('selectedDateRangeUpdated', startIndex, endIndex)
             "
         />
     </div>
@@ -234,8 +233,8 @@ const data = computed<number[][]>(() => {
             data[i] = Array.from(props.parkingGarages.get(name)?.predictions.entries() ?? [])
                 .filter(
                     ([key, _]) =>
-                        key >= props.filter.dateRange.startDate.getTime() &&
-                        key <= props.filter.dateRange.endDate.getTime()
+                        key >= props.filter.selectedRange.startDate.getTime() &&
+                        key <= props.filter.selectedRange.endDate.getTime()
                 )
                 .map(([_, value]) => value.prediction);
 
@@ -270,8 +269,8 @@ const dates = computed<Date[]>(() => {
     const dates: Date[] = [];
 
     for (
-        let currentIndex = props.filter.dateRange.startDate.getTime();
-        currentIndex < props.filter.dateRange.endDate.getTime();
+        let currentIndex = props.filter.selectedRange.startDate.getTime();
+        currentIndex < props.filter.selectedRange.endDate.getTime();
         currentIndex += hourInMilliseconds
     ) {
         dates.push(new Date(currentIndex));
@@ -290,7 +289,8 @@ watch(
     ],
     () => {
         renderChart();
-    }
+    },
+    { deep: true }
 );
 
 // Render chart on mount and when data changes
@@ -523,8 +523,8 @@ function extractData(property: ShapKey[]): Map<string, number[]> {
     Array.from(props.parkingGarages.get(ParkingGarageName.CityPort)?.predictions.entries() ?? [])
         .filter(
             ([key]) =>
-                key >= props.filter.dateRange.startDate.getTime() &&
-                key <= props.filter.dateRange.endDate.getTime()
+                key >= props.filter.selectedRange.startDate.getTime() &&
+                key <= props.filter.selectedRange.endDate.getTime()
         )
         .forEach(([_, value]) =>
             property.forEach((name) => {

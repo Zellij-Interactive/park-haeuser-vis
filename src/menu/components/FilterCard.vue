@@ -314,6 +314,7 @@ function copy(filter: Filter): Filter {
     return {
         parkingGarages: filter.parkingGarages,
         dateRange: new DateRange(filter.dateRange.startDate, filter.dateRange.endDate),
+        selectedRange: new DateRange(filter.selectedRange.startDate, filter.selectedRange.endDate),
         showSHAPValues: filter.showSHAPValues,
         date: filter.date,
         index: filter.index,
