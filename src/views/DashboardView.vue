@@ -141,8 +141,6 @@ onMounted(async () => {
     grid-template-columns: 2fr 6fr 2fr;
     grid-template-rows: 4fr 1fr 2fr;
     height: 100vh;
-
-    background-color: var(--v-teal-darken-3);
 }
 
 .grid-container > div:not(.map) {

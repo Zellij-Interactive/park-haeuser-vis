@@ -23,10 +23,10 @@
         </v-card>
     </div>
 
-    <div class="test d-flex">
-        <div ref="chart"></div>
+    <div class="test timeline-container">
+        <div class="chart" ref="chart"></div>
 
-        <div class="d-flex flex-column" ref="testing">
+        <div class="labels d-flex flex-column" ref="testing">
             <v-checkbox
                 v-if="props.dataToDisplay == 'prediction'"
                 v-for="(parkingGarage, index) of Array.from(props.parkingGarages.keys()).filter(
@@ -102,33 +102,44 @@
                 density="compact"
                 hide-details
                 multiple
-                class="small-checkbox"
             >
                 <template #label>
                     <span class="text-caption" v-text="ShapName[shapKey]" />
                 </template>
             </v-checkbox>
         </div>
+
+        <TimeLineSlider
+            class="timeline-slider"
+            :filter="props.filter"
+            :is-filter-on="props.isFilterOn"
+            @index-updated="(index) => emit('indexUpdated', index)"
+        />
     </div>
 </template>
 
 <script setup lang="ts">
-import { ref, watch, onMounted, computed } from 'vue';
-import * as d3 from 'd3';
-import { _throw } from '@/core/_throw';
 import type { Filter } from '@/parkingGarage/types/filter';
 import type { ParkingGarage } from '@/parkingGarage/types/parkingGarage';
 import { ParkingGarageName } from '@/parkingGarage/types/parkingGarageNames';
+import TimeLineSlider from './TimeLineSlider.vue';
+import { ref, watch, onMounted, computed } from 'vue';
+import * as d3 from 'd3';
+import { _throw } from '@/core/_throw';
 import { hourInMilliseconds } from '@/core/dateRange';
 import { ShapName } from '@/parkingGarage/types/shapNames';
 import { formatDate, formatHour } from '@/core/dateRange';
 
-// Props for bar chart data and title
 const props = defineProps<{
     parkingGarages: Map<ParkingGarageName, ParkingGarage>;
     filter: Filter;
     darkModeOn: boolean;
     dataToDisplay: 'prediction' | 'shap';
+    isFilterOn: boolean;
+}>();
+
+const emit = defineEmits<{
+    (event: 'indexUpdated', index: number): void;
 }>();
 
 type ShapKey = Exclude<keyof typeof ShapName, 'shapSum'>;
@@ -216,26 +227,6 @@ const data = computed<number[][]>(() => {
         for (const index in selectedShaps.value) {
             data[index] = dataMap.get(selectedShaps.value[index]) ?? [];
         }
-
-        // data[0] = Array.from(
-        //     props.parkingGarages.get(ParkingGarageName.CityPort)?.predictions.entries() ?? []
-        // )
-        //     .filter(
-        //         ([key, _]) =>
-        //             key >= props.filter.dateRange.startDate.getTime() &&
-        //             key <= props.filter.dateRange.endDate.getTime()
-        //     )
-        //     .map(([_, value]) => value.shapFoodServices);
-
-        // data[1] = Array.from(
-        //     props.parkingGarages.get(ParkingGarageName.CityPort)?.predictions.entries() ?? []
-        // )
-        //     .filter(
-        //         ([key, _]) =>
-        //             key >= props.filter.dateRange.startDate.getTime() &&
-        //             key <= props.filter.dateRange.endDate.getTime()
-        //     )
-        //     .map(([_, value]) => value.shapEducation);
     }
 
     return data;
@@ -528,6 +519,40 @@ function extractData(property: ShapKey[]): Map<string, number[]> {
 </script>
 
 <style>
+.timeline-container {
+    display: grid;
+    grid-template-columns: 6fr 1fr;
+    grid-template-rows: 2fr 1fr;
+
+    max-height: 306px;
+}
+
+.timeline-container > * {
+    padding: var(--gap);
+}
+
+.chart {
+    grid-row: 1 / 2;
+    grid-column: 1 / 2;
+    z-index: 0;
+}
+
+.labels {
+    grid-row: 1 / -1;
+    grid-column: 2 / -1;
+    z-index: 1;
+
+    overflow: auto;
+}
+
+.timeline-slider {
+    grid-row: 2 / -1;
+    grid-column: 1 / 2;
+    z-index: 1;
+
+    padding-left: 40px;
+}
+
 .rect {
     pointer-events: all;
     fill-opacity: 0;
@@ -539,9 +564,5 @@ function extractData(property: ShapKey[]): Map<string, number[]> {
     position: absolute;
     opacity: 0.7;
     z-index: 2;
-}
-
-.small-checkbox {
-    font-size: 12px; /* Adjust label font size */
 }
 </style>

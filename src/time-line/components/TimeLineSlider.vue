@@ -160,9 +160,6 @@ function sleep(ms: number): Promise<void> {
 </script>
 
 <style>
-.slider {
-    padding-left: 40px;
-}
 .slider .v-slider-thumb {
     padding-top: 20px;
 }
