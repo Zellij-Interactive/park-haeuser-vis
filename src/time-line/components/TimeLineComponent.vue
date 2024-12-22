@@ -490,8 +490,8 @@ function renderLines(
         // Add transition for the circle radius
         circle.transition().duration(50).attr('r', 5);
 
-        tooltipData.value.x = xCoord + 160;
-        tooltipData.value.y = yCoord + 80;
+        tooltipData.value.x = event.pageX + 8;
+        tooltipData.value.y = yCoord + 10;
         tooltipData.value.date = d.date;
         tooltipData.value.shapValue = d.value;
 
