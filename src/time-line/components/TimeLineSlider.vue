@@ -22,10 +22,8 @@
             </template>
 
             <template v-slot:prepend>
-                <v-btn
-                    class="range-dates"
-                    density="compact"
-                    variant="flat"
+                <span
+                    class="text-caption"
                     v-text="
                         `${formatDate(new Date(selectedRangeInMilliseconds[0]))}, ${formatHour(new Date(selectedRangeInMilliseconds[0]))}`
                     "
@@ -34,10 +32,8 @@
             </template>
 
             <template v-slot:append>
-                <v-btn
-                    class="range-dates"
-                    density="compact"
-                    variant="flat"
+                <span
+                    class="text-caption"
                     v-text="
                         `${formatDate(new Date(selectedRangeInMilliseconds[1]))}, ${formatHour(new Date(selectedRangeInMilliseconds[1]))}`
                     "
@@ -210,9 +206,5 @@ function sleep(ms: number): Promise<void> {
 .thumb-label-date {
     margin-bottom: 2px;
     width: 120px;
-}
-.range-dates {
-    height: 22px !important;
-    width: 180px;
 }
 </style>
