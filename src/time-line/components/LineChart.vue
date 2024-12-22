@@ -1,5 +1,28 @@
 <template>
-    <div class="d-flex">
+    <div
+        v-if="isCursorIn"
+        class="tooltip"
+        :style="{
+            left: `${tooltipData.x}px`,
+            top: `${tooltipData.y}px`,
+        }"
+    >
+        <v-card class="tooltip-text pa-1">
+            <div>
+                <b>SHAP-Wert: </b>
+                <span v-text="tooltipData.shapValue" />
+            </div>
+            <div>
+                <b>Uhrzeit: </b>
+                <span v-text="formatHour(tooltipData.date)" />
+            </div>
+            <div>
+                <b>Datum: </b>
+                <span v-text="formatDate(tooltipData.date)" />
+            </div>
+        </v-card>
+    </div>
+    <div class="d-flex" ref="testing">
         <v-checkbox
             v-if="props.dataToDisplay == 'prediction'"
             v-for="parkingGarage of props.parkingGarages.keys()"
@@ -38,7 +61,7 @@ import type { ParkingGarage } from '@/parkingGarage/types/parkingGarage';
 import { ParkingGarageName } from '@/parkingGarage/types/parkingGarageNames';
 import { hourInMilliseconds } from '@/core/dateRange';
 import { ShapName } from '@/parkingGarage/types/shapNames';
-import { listOfParkingGaragesNames } from '@/parkingGarage/types/parkingGarageNames';
+import { formatDate, formatHour } from '@/core/dateRange';
 
 // Props for bar chart data and title
 const props = defineProps<{
@@ -55,6 +78,15 @@ const shapKeysArray: ShapKey[] = Object.keys(ShapName).filter(
 ) as ShapKey[];
 
 const chart = ref<HTMLDivElement | null>(null);
+
+const tooltipData = ref({
+    x: 0,
+    y: 0,
+    date: new Date(),
+    shapValue: 0,
+});
+
+const isCursorIn = ref(false);
 
 const selectedParkingGarages = ref<ParkingGarageName[]>([]);
 const selectedShaps = ref<ShapKey[]>([]);
@@ -195,11 +227,14 @@ onMounted(() => {
 function renderChart() {
     if (!chart.value) return;
 
+    const innerWidth = width - margin.left - margin.right;
+    const innerHeight = height - margin.top - margin.bottom;
+
     // Clear previous chart
     d3.select(chart.value).selectAll('*').remove();
 
-    const innerWidth = width - margin.left - margin.right;
-    const innerHeight = height - margin.top - margin.bottom;
+    // Create tooltip
+    const tooltip = d3.select('body').append('div').attr('class', 'tooltip');
 
     // Create SVG container
     const svg = d3
@@ -278,7 +313,11 @@ function renderChart() {
 
     // Add horizontal grid lines
     svg.selectAll('yGrid')
-        .data(yScale.ticks(5).slice(1))
+        .data(
+            props.dataToDisplay == 'prediction'
+                ? yScale.ticks(5).slice(1)
+                : yScale.ticks(10).slice(1)
+        )
         .join('line')
         .attr('x1', 0)
         .attr('x2', innerWidth)
@@ -315,7 +354,7 @@ function renderChart() {
             value: data.value[i][index],
         }));
 
-        renderLines(svg, xScale, yScale, currentData, lineColors.value[i]);
+        renderLines(svg, xScale, yScale, tooltip, currentData, lineColors.value[i]);
     }
 }
 
@@ -323,6 +362,7 @@ function renderLines(
     svg: d3.Selection<SVGGElement, unknown, null, undefined>,
     xScale: d3.ScaleTime<number, number, never>,
     yScale: d3.ScaleLinear<number, number, never>,
+    tooltip: d3.Selection<HTMLDivElement, unknown, HTMLElement, any>,
     data: { date: Date; value: number }[],
     color: string
 ) {
@@ -339,8 +379,68 @@ function renderLines(
         .datum(data)
         .attr('fill', 'none')
         .attr('stroke', color)
-        .attr('stroke-width', 1)
+        .attr('stroke-width', 2)
         .attr('d', line);
+
+    // Add a circle element
+    const circle = svg
+        .append('circle')
+        .attr('r', 0)
+        .attr('fill', 'steelblue')
+        .style('stroke', 'white')
+        .attr('opacity', 0.7)
+        .style('pointer-events', 'none');
+
+    // create a listening rectangle
+    const listeningRect = svg
+        .append('rect')
+        .attr('width', innerWidth)
+        .attr('height', innerHeight)
+        .attr('opacity', 0);
+
+    // create the mouse move function
+    listeningRect.on('mousemove', function (event) {
+        const [xCoord, yCoord] = d3.pointer(event, this);
+        const bisectDate = d3.bisector((d: { date: Date }) => d.date).left;
+        const x0 = xScale.invert(xCoord);
+        const i = bisectDate(data, x0, 1);
+        const d0 = data[i - 1];
+        const d1 = data[i];
+        const d = x0.getTime() - d0.date.getTime() > d1.date.getTime() - x0.getTime() ? d1 : d0;
+        const xPos = xScale(d.date);
+        const yPos = yScale(d.value);
+
+        // Update the circle position
+        circle.attr('cx', xPos).attr('cy', yPos);
+
+        // Add transition for the circle radius
+        circle.transition().duration(50).attr('r', 5);
+
+        tooltipData.value.x = xCoord + 160;
+        tooltipData.value.y = yCoord + 80;
+        tooltipData.value.date = d.date;
+        tooltipData.value.shapValue = d.value;
+
+        // Add in our tooltip
+        // tooltip
+        //     .style('display', 'block')
+        //     .style('left', `${xPos}px`)
+        //     .style('top', `${yPos}px`)
+        //     .style('position', 'absolute')
+        //     .html(
+        //         `<strong>Date:</strong>${formatDate(d.date)}<br><strong>Wert:</strong> ${d.value !== undefined ? d.value : 'N/A'}`
+        //     );
+
+        isCursorIn.value = true;
+
+        // listening rectangle mouse leave function
+        listeningRect.on('mouseleave', function () {
+            isCursorIn.value = false;
+            circle.transition().duration(50).attr('r', 0);
+
+            tooltip.style('display', 'none');
+        });
+    });
 }
 
 function extractData(property: ShapKey[]): Map<string, number[]> {
@@ -364,4 +464,17 @@ function extractData(property: ShapKey[]): Map<string, number[]> {
 }
 </script>
 
-<style></style>
+<style>
+.rect {
+    pointer-events: all;
+    fill-opacity: 0;
+    stroke-opacity: 0;
+    z-index: 1;
+}
+
+.tooltip {
+    position: absolute;
+    opacity: 0.7;
+    z-index: 2;
+}
+</style>
