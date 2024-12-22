@@ -245,6 +245,7 @@ import { ParkingGarageName } from '@/parkingGarage/types/parkingGarageNames';
 import { computed, ref, watchEffect } from 'vue';
 import { filterMinDate, filterMaxDate } from '@/parkingGarage/types/filter';
 import { ColorBlindMode } from '@/core/colors';
+import { addHours } from 'date-fns';
 
 const props = defineProps<{
     parkingGaragesNames: ParkingGarageName[];
@@ -291,6 +292,10 @@ const hasChanges = computed(() => {
 watchEffect(() => keepFilterUpdated());
 
 function onApplyClick() {
+    unsavedFilter.value.dateRange = new DateRange(
+        new Date(unsavedFilter.value.dateRange.startDate),
+        addHours(new Date(unsavedFilter.value.dateRange.endDate), 23)
+    );
     emit('update:filter', unsavedFilter.value);
 
     initialFilter.value = copy(unsavedFilter.value);
