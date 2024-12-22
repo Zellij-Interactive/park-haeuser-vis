@@ -547,9 +547,6 @@ function extractData(property: ShapKey[]): Map<string, number[]> {
     max-height: 310px;
 }
 
-.timeline-container > * {
-}
-
 .chart {
     grid-row: 1 / 2;
     grid-column: 1 / 2;
