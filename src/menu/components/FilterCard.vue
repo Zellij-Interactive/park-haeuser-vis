@@ -171,6 +171,8 @@
                     thumb-label
                     track-color="secondary"
                     track-fill-color="primary"
+                    thumb-color="primary"
+                    :thumb-size="12"
                     density="compact"
                     hide-details
                     label="Vorhersagequalität threshold"

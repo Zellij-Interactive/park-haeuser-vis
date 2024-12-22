@@ -1,13 +1,61 @@
 <template>
     <div class="slider d-flex flex-column justify-center align-center">
-        <v-slider
-            v-model="currentValue"
+        <v-range-slider
+            v-model="selectedRangeInMilliseconds"
+            strict
             :max="maxDateInMilliseconds"
             :min="minDateInMilliseconds"
             :step="hourInMilliseconds"
             style="width: 100%"
-            thumb-label="always"
+            :thumb-label="true"
+            :thumb-size="12"
+            track-color="secondary"
+            track-fill-color="primary"
+            thumb-color="primary"
+            density="compact"
+            hide-details
+        >
+            <template v-slot:thumb-label="{ modelValue }">
+                <div class="thumb-label-date d-flex justify-center text-secondary">
+                    <span v-text="formatDate(new Date(modelValue))" />
+                    <span v-text="`, ${formatHour(new Date(modelValue))}`" />
+                </div>
+            </template>
+
+            <template v-slot:prepend>
+                <v-btn
+                    class="range-dates"
+                    density="compact"
+                    variant="flat"
+                    v-text="
+                        `${formatDate(new Date(selectedRangeInMilliseconds[0]))}, ${formatHour(new Date(selectedRangeInMilliseconds[0]))}`
+                    "
+                    hide-details
+                />
+            </template>
+
+            <template v-slot:append>
+                <v-btn
+                    class="range-dates"
+                    density="compact"
+                    variant="flat"
+                    v-text="
+                        `${formatDate(new Date(selectedRangeInMilliseconds[1]))}, ${formatHour(new Date(selectedRangeInMilliseconds[1]))}`
+                    "
+                    hide-details
+                />
+            </template>
+        </v-range-slider>
+
+        <v-slider
+            v-model="currentValue"
+            :max="selectedRangeInMilliseconds[1]"
+            :min="selectedRangeInMilliseconds[0]"
+            :step="hourInMilliseconds"
+            style="width: 100%"
             :thumb-size="0"
+            class="time-player"
+            thumb-label="always"
             track-color="secondary"
             track-fill-color="primary"
             density="compact"
@@ -19,30 +67,6 @@
                     <span v-text="`, ${formatHour(new Date(modelValue))}`" />
                 </div>
             </template>
-
-            <!-- <template v-slot:prepend>
-                <v-text-field
-                    density="compact"
-                    variant="outlined"
-                    style="max-width: 120px"
-                    hide-details
-                    readonly
-                >
-                    {{ formatDate(startDate) }}
-                </v-text-field>
-            </template>
-
-            <template v-slot:append>
-                <v-text-field
-                    density="compact"
-                    variant="outlined"
-                    style="max-width: 120px"
-                    hide-details
-                    readonly
-                >
-                    {{ formatDate(endDate) }}
-                </v-text-field>
-            </template> -->
         </v-slider>
 
         <div class="d-flex justify-space-between pb-2" :style="{ width: '68px' }">
@@ -102,6 +126,7 @@ import { computed, ref, watch } from 'vue';
 import { formatDate, formatHour, hourInMilliseconds } from '@/core/dateRange';
 import type { Filter } from '@/parkingGarage/types/filter';
 import { _throw } from '@/core/_throw';
+import { VAlert } from 'vuetify/components';
 
 const props = defineProps<{
     filter: Filter;
@@ -117,6 +142,8 @@ const endDate = computed(() => props.filter.dateRange.endDate);
 
 const minDateInMilliseconds = computed(() => startDate.value.getTime());
 const maxDateInMilliseconds = computed(() => endDate.value.getTime());
+
+const selectedRangeInMilliseconds = ref([minDateInMilliseconds.value, maxDateInMilliseconds.value]);
 
 const currentValue = ref(minDateInMilliseconds.value);
 
@@ -140,6 +167,22 @@ watch(
     }
 );
 
+watch(
+    () => props.filter.dateRange,
+    (value) => {
+        selectedRangeInMilliseconds.value = [value.startDate.getTime(), value.endDate.getTime()];
+    }
+);
+
+watch(
+    () => selectedRangeInMilliseconds.value,
+    (value) => {
+        if (currentValue.value < value[0] || currentValue.value > value[1]) {
+            currentValue.value = value[0];
+        }
+    }
+);
+
 async function startTimer() {
     isPlaying.value = true;
 
@@ -160,11 +203,15 @@ function sleep(ms: number): Promise<void> {
 </script>
 
 <style>
-.slider .v-slider-thumb {
+.time-player .v-slider-thumb {
     padding-top: 20px;
 }
 .thumb-label-date {
     margin-bottom: 2px;
     width: 120px;
+}
+.range-dates {
+    height: 22px !important;
+    width: 180px;
 }
 </style>
