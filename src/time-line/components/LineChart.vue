@@ -22,34 +22,94 @@
             </div>
         </v-card>
     </div>
-    <div class="d-flex" ref="testing">
-        <v-checkbox
-            v-if="props.dataToDisplay == 'prediction'"
-            v-for="parkingGarage of props.parkingGarages.keys()"
-            v-model="selectedParkingGarages"
-            :key="parkingGarage"
-            :label="parkingGarage"
-            :value="parkingGarage"
-            :ripple="false"
-            :disabled="!props.filter.parkingGarages.includes(parkingGarage)"
-            density="compact"
-            hide-details
-            multiple
-        />
-        <v-checkbox
-            v-else
-            v-for="shapKey of shapKeysArray"
-            v-model="selectedShaps"
-            :key="shapKey"
-            :label="ShapName[shapKey]"
-            :value="shapKey"
-            :ripple="false"
-            density="compact"
-            hide-details
-            multiple
-        />
+
+    <div class="test d-flex">
+        <div ref="chart"></div>
+
+        <div class="d-flex flex-column" ref="testing">
+            <v-checkbox
+                v-if="props.dataToDisplay == 'prediction'"
+                v-for="(parkingGarage, index) of Array.from(props.parkingGarages.keys()).filter(
+                    (p) =>
+                        props.filter.parkingGarages.includes(p) &&
+                        selectedParkingGarages.includes(p)
+                )"
+                v-model="selectedParkingGarages"
+                :key="parkingGarage"
+                :value="parkingGarage"
+                :ripple="false"
+                :color="lineColors[index]"
+                density="compact"
+                hide-details
+                multiple
+            >
+                <template #label>
+                    <span
+                        class="text-caption"
+                        :style="{ color: lineColors[index] }"
+                        v-text="parkingGarage"
+                    />
+                </template>
+            </v-checkbox>
+            <v-checkbox
+                v-if="props.dataToDisplay == 'prediction'"
+                v-for="(parkingGarage, index) of Array.from(props.parkingGarages.keys()).filter(
+                    (p) =>
+                        props.filter.parkingGarages.includes(p) &&
+                        !selectedParkingGarages.includes(p)
+                )"
+                v-model="selectedParkingGarages"
+                :key="parkingGarage"
+                :value="parkingGarage"
+                :ripple="false"
+                density="compact"
+                hide-details
+                multiple
+            >
+                <template #label>
+                    <span class="text-caption" v-text="parkingGarage" />
+                </template>
+            </v-checkbox>
+
+            <v-checkbox
+                v-if="props.dataToDisplay == 'shap'"
+                v-for="(shapKey, index) of selectedShaps"
+                v-model="selectedShaps"
+                :key="shapKey"
+                :label="ShapName[shapKey]"
+                :value="shapKey"
+                :ripple="false"
+                :color="lineColors[index]"
+                density="compact"
+                hide-details
+                multiple
+            >
+                <template #label>
+                    <span
+                        class="text-caption"
+                        :style="{ color: lineColors[index] }"
+                        v-text="ShapName[shapKey]"
+                    />
+                </template>
+            </v-checkbox>
+            <v-checkbox
+                v-if="props.dataToDisplay == 'shap'"
+                v-for="(shapKey, index) of unselectedShaps"
+                v-model="selectedShaps"
+                :key="shapKey"
+                :value="shapKey"
+                :ripple="false"
+                density="compact"
+                hide-details
+                multiple
+                class="small-checkbox"
+            >
+                <template #label>
+                    <span class="text-caption" v-text="ShapName[shapKey]" />
+                </template>
+            </v-checkbox>
+        </div>
     </div>
-    <div ref="chart"></div>
 </template>
 
 <script setup lang="ts">
@@ -90,6 +150,9 @@ const isCursorIn = ref(false);
 
 const selectedParkingGarages = ref<ParkingGarageName[]>([]);
 const selectedShaps = ref<ShapKey[]>([]);
+const unselectedShaps = computed<ShapKey[]>(() =>
+    shapKeysArray.filter((shap) => !selectedShaps.value.includes(shap))
+);
 
 const lineColors = computed(() =>
     props.darkModeOn
@@ -476,5 +539,9 @@ function extractData(property: ShapKey[]): Map<string, number[]> {
     position: absolute;
     opacity: 0.7;
     z-index: 2;
+}
+
+.small-checkbox {
+    font-size: 12px; /* Adjust label font size */
 }
 </style>
