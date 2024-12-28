@@ -10,6 +10,20 @@
     </v-dialog>
 
     <main>
+        <div
+            v-if="!isLoading && parkingGarageStore.filter.parkingGarages.length == 0"
+            class="info d-flex justify-center pt-4"
+        >
+            <v-card rounded="lg" elevation="0" class="border-thin">
+                <v-alert
+                    text="Wählen Sie Parkhäuser aus, um die zugehörigen Daten zu visualisieren und analysieren."
+                    type="info"
+                    variant="tonal"
+                    closable
+                />
+            </v-card>
+        </div>
+
         <!-- Layout Grid -->
         <div class="grid-container">
             <!-- Map Section -->
@@ -41,7 +55,10 @@
             </div>
 
             <!-- Time-Line Section -->
-            <div v-if="!isLoading" class="time-line px-2">
+            <div
+                v-if="!isLoading && parkingGarageStore.filter.parkingGarages.length > 0"
+                class="time-line px-2"
+            >
                 <TimeLineView :dark-mode-on="props.darkModeOn" :is-filter-on="isFilterOn" />
             </div>
         </div>
@@ -54,7 +71,7 @@ import MenuView from '@/menu/views/MenuView.vue';
 import LegendView from '@/legend/views/LegendView.vue';
 import { useParkingGarageStore } from '@/parkingGarage/parkingGarageStore';
 import type { ParkingGarage } from '@/parkingGarage/types/parkingGarage';
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { usingIndicator } from '@/core/usingIndicator';
 import {
     listOfParkingGaragesNames,
@@ -88,6 +105,13 @@ onMounted(async () => {
 </script>
 
 <style>
+.info {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1;
+}
+
 .test > * {
     border: 2px red solid;
 }
