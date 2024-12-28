@@ -176,7 +176,10 @@ function toggleDetails(p: ParkingGarageName) {
 
 .gm-ui-hover-effect,
 .gm-fullscreen-control,
-.gm-style-mtc {
+.gm-style-mtc,
+.gm-svpc,
+.gmnoprint,
+.gm-style-cc {
     display: none !important;
 }
 </style>
