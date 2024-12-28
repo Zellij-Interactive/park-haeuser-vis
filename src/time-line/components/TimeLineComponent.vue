@@ -34,7 +34,12 @@
                 style="transform: rotate(90deg)"
             >
                 <v-btn value="prediction" text="Vorhersage" style="flex: 1" />
-                <v-btn value="shap" text="SHAP-Werte" style="flex: 1" />
+                <v-btn
+                    v-if="selectedParkingGarages.length > 0"
+                    value="shap"
+                    text="SHAP-Werte"
+                    style="flex: 1"
+                />
             </v-btn-toggle>
         </div>
 
@@ -124,10 +129,6 @@
         </div>
 
         <TimeLineSlider
-            v-if="
-                (selectedParkingGarages.length > 0 && dataToDisplay == 'prediction') ||
-                (selectedShaps.length > 0 && dataToDisplay == 'shap')
-            "
             class="timeline-slider"
             :filter="props.filter"
             :is-filter-on="props.isFilterOn"
@@ -136,7 +137,14 @@
                 (startIndex, endIndex) => emit('selectedDateRangeUpdated', startIndex, endIndex)
             "
         />
-        <div v-else class="timeline-slider d-flex justify-center align-center">
+
+        <div
+            v-if="
+                (selectedParkingGarages.length == 0 && dataToDisplay == 'prediction') ||
+                (selectedShaps.length == 0 && dataToDisplay == 'shap')
+            "
+            class="info d-flex justify-center align-center"
+        >
             <v-alert
                 v-if="dataToDisplay == 'prediction'"
                 text="Wählen Sie Parkhäuser aus, um die Daten anzuzeigen."

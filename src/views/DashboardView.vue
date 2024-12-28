@@ -12,7 +12,7 @@
     <main>
         <div
             v-if="!isLoading && parkingGarageStore.filter.parkingGarages.length == 0"
-            class="info d-flex justify-center pt-4"
+            class="info d-flex justify-center"
         >
             <v-card rounded="lg" elevation="0" class="border-thin">
                 <v-alert
@@ -109,6 +109,7 @@ onMounted(async () => {
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
+    padding-top: calc(var(--gap) * 2);
     z-index: 1;
 }
 
