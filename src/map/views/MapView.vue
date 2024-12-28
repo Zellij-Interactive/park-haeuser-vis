@@ -111,7 +111,7 @@ function addMarkerToMap(parkingGarage: ParkingGarage, colorBlindMode?: ColorBlin
             scale: sizeScale(parkingGarage.maximalOccupancy),
             fillColor: getColorSaturation(prediction, colorBlindMode),
             fillOpacity: 0.8,
-            strokeColor: getColorSaturation(props.darkModeOn ? 0 : 100, colorBlindMode),
+            strokeColor: getColorSaturation(100, colorBlindMode),
             strokeOpacity: strokeOpacity,
             strokeWeight: strokeWeight,
         },

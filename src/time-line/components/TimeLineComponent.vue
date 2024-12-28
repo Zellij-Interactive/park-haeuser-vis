@@ -124,6 +124,10 @@
         </div>
 
         <TimeLineSlider
+            v-if="
+                (selectedParkingGarages.length > 0 && dataToDisplay == 'prediction') ||
+                (selectedShaps.length > 0 && dataToDisplay == 'shap')
+            "
             class="timeline-slider"
             :filter="props.filter"
             :is-filter-on="props.isFilterOn"
@@ -132,6 +136,25 @@
                 (startIndex, endIndex) => emit('selectedDateRangeUpdated', startIndex, endIndex)
             "
         />
+        <div v-else class="timeline-slider d-flex justify-center align-center">
+            <v-alert
+                v-if="dataToDisplay == 'prediction'"
+                text="Wählen Sie Parkhäuser aus, um die Daten anzuzeigen."
+                type="info"
+                variant="tonal"
+                max-width="500"
+                max-height="60"
+            ></v-alert>
+
+            <v-alert
+                v-if="dataToDisplay == 'shap'"
+                text="Wählen Sie SHAP-Werte aus, um die Daten anzuzeigen."
+                type="info"
+                variant="tonal"
+                max-width="500"
+                max-height="60"
+            ></v-alert>
+        </div>
     </div>
 </template>
 
@@ -456,14 +479,15 @@ function renderLines(
         .attr('stroke-width', 2)
         .attr('d', line);
 
-    // Add a circle element
-    const circle = svg
-        .append('circle')
-        .attr('r', 0)
-        .attr('fill', 'steelblue')
-        .style('stroke', 'white')
-        .attr('opacity', 0.7)
-        .style('pointer-events', 'none');
+    // Add a cursor line element
+    const cursorLine = svg
+        .append('line')
+        .style('stroke', 'grey')
+        .style('stroke-width', 2)
+        .attr('x1', 0)
+        .attr('y1', 0)
+        .attr('x2', 0)
+        .attr('y2', 0);
 
     // create a listening rectangle
     const listeningRect = svg
@@ -484,11 +508,17 @@ function renderLines(
         const xPos = xScale(d.date);
         const yPos = yScale(d.value);
 
-        // Update the circle position
-        circle.attr('cx', xPos).attr('cy', yPos);
+        // Update the cursor line position
+        cursorLine
+            .transition()
+            .duration(50)
+            .attr('x1', xScale(d.date))
+            .attr('y1', 0)
+            .attr('x2', xScale(d.date))
+            .attr('y2', yScale(minMax.value.min));
 
         // Add transition for the circle radius
-        circle.transition().duration(50).attr('r', 5);
+        //circle.transition().duration(50).attr('r', 5);
 
         tooltipData.value.x = event.pageX + 8;
         tooltipData.value.y = yCoord + 10;
@@ -510,7 +540,13 @@ function renderLines(
         // listening rectangle mouse leave function
         listeningRect.on('mouseleave', function () {
             isCursorIn.value = false;
-            circle.transition().duration(50).attr('r', 0);
+            cursorLine
+                .transition()
+                .duration(50)
+                .attr('x1', 0)
+                .attr('y1', 0)
+                .attr('x2', 0)
+                .attr('y2', 0);
 
             tooltip.style('display', 'none');
         });
@@ -544,7 +580,7 @@ function extractData(property: ShapKey[]): Map<string, number[]> {
     grid-template-columns: 8fr 40px 1fr;
     grid-template-rows: 2fr 1fr;
 
-    max-height: 310px;
+    max-height: 308px;
 }
 
 .chart {
@@ -590,5 +626,23 @@ function extractData(property: ShapKey[]): Map<string, number[]> {
     position: absolute;
     opacity: 0.7;
     z-index: 2;
+}
+
+/* scrollbar styling */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    border-radius: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 8px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
 }
 </style>

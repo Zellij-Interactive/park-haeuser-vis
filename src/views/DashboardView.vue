@@ -19,9 +19,7 @@
 
             <!-- Filter Section -->
             <div class="left-side pr-2">
-                <v-card v-if="!isLoading" class="border-thin" elevation="0">
-                    <span>TODO ...</span>
-                </v-card>
+                <v-card v-if="!isLoading" class="border-thin" elevation="0"> </v-card>
             </div>
 
             <!-- Filter Section -->
@@ -35,7 +33,10 @@
             </div>
 
             <!-- Legend Section -->
-            <div v-if="!isLoading" class="legend d-flex justify-end align-end pr-2">
+            <div
+                v-if="!isLoading && parkingGarageStore.filter.parkingGarages.length > 0"
+                class="legend d-flex justify-end align-end pr-2"
+            >
                 <LegendView :dark-mode-on="props.darkModeOn" />
             </div>
 
