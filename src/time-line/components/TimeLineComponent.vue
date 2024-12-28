@@ -574,7 +574,7 @@ function extractData(property: ShapKey[]): Map<string, number[]> {
 }
 </script>
 
-<style>
+<style scoped>
 .timeline-container {
     display: grid;
     grid-template-columns: 8fr 40px 1fr;
