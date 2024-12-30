@@ -10,7 +10,7 @@
         <v-card class="tooltip-text pa-1">
             <div>
                 <b>SHAP-Wert: </b>
-                <span v-text="tooltipData.shapValue" />
+                <span v-text="tooltipData.shapValue.toFixed(2)" />
             </div>
             <div>
                 <b>Uhrzeit: </b>
@@ -45,87 +45,103 @@
 
         <div class="pr-1" ref="chart"></div>
 
-        <div class="labels d-flex flex-column">
-            <v-checkbox
-                v-if="dataToDisplay == 'prediction'"
-                v-for="(parkingGarage, index) of Array.from(props.parkingGarages.keys()).filter(
-                    (p) =>
-                        props.filter.parkingGarages.includes(p) &&
-                        selectedParkingGarages.includes(p)
-                )"
-                v-model="selectedParkingGarages"
-                :key="parkingGarage"
-                :value="parkingGarage"
-                :ripple="false"
-                :color="lineColors[index]"
-                density="compact"
-                hide-details
-                multiple
-            >
-                <template #label>
-                    <span
-                        class="text-caption"
-                        :style="{ color: lineColors[index] }"
-                        v-text="parkingGarage"
-                    />
-                </template>
-            </v-checkbox>
-            <v-checkbox
-                v-if="dataToDisplay == 'prediction'"
-                v-for="(parkingGarage, index) of Array.from(props.parkingGarages.keys()).filter(
-                    (p) =>
-                        props.filter.parkingGarages.includes(p) &&
-                        !selectedParkingGarages.includes(p)
-                )"
-                v-model="selectedParkingGarages"
-                :key="parkingGarage"
-                :value="parkingGarage"
-                :ripple="false"
-                density="compact"
-                hide-details
-                multiple
-            >
-                <template #label>
-                    <span class="text-caption" v-text="parkingGarage" />
-                </template>
-            </v-checkbox>
+        <div class="labels d-flex flex-column pa-2">
+            <div v-if="dataToDisplay == 'prediction'">
+                <v-checkbox
+                    v-for="(parkingGarage, index) of Array.from(props.parkingGarages.keys()).filter(
+                        (p) =>
+                            props.filter.parkingGarages.includes(p) &&
+                            selectedParkingGarages.includes(p)
+                    )"
+                    v-model="selectedParkingGarages"
+                    :key="parkingGarage"
+                    :value="parkingGarage"
+                    :ripple="false"
+                    :color="lineColors[index]"
+                    density="compact"
+                    hide-details
+                    multiple
+                >
+                    <template #label>
+                        <span
+                            class="text-caption"
+                            :style="{ color: lineColors[index] }"
+                            v-text="parkingGarage"
+                        />
+                    </template>
+                </v-checkbox>
+                <v-checkbox
+                    v-for="(parkingGarage, index) of Array.from(props.parkingGarages.keys()).filter(
+                        (p) =>
+                            props.filter.parkingGarages.includes(p) &&
+                            !selectedParkingGarages.includes(p)
+                    )"
+                    v-model="selectedParkingGarages"
+                    :key="parkingGarage"
+                    :value="parkingGarage"
+                    :ripple="false"
+                    density="compact"
+                    hide-details
+                    multiple
+                >
+                    <template #label>
+                        <span class="text-caption" v-text="parkingGarage" />
+                    </template>
+                </v-checkbox>
+            </div>
 
-            <v-checkbox
-                v-if="dataToDisplay == 'shap'"
-                v-for="(shapKey, index) of selectedShaps"
-                v-model="selectedShaps"
-                :key="shapKey"
-                :label="ShapName[shapKey]"
-                :value="shapKey"
-                :ripple="false"
-                :color="lineColors[index]"
-                density="compact"
-                hide-details
-                multiple
-            >
-                <template #label>
-                    <span
-                        class="text-caption"
-                        :style="{ color: lineColors[index] }"
-                        v-text="ShapName[shapKey]"
+            <div v-if="dataToDisplay == 'shap'">
+                <div v-if="selectedParkingGarages.length > 1">
+                    <v-select
+                        v-model="selectedAggregationType"
+                        :items="aggregationTypesArray"
+                        :item-title="(item) => AggregationTypeMap[item]"
+                        :item-value="(item) => item"
+                        label="Aggregation"
+                        density="compact"
+                        variant="solo"
+                        bg-color="secondary"
+                        color="primary"
+                        max-width="250"
+                        flat
+                        hide-details
                     />
-                </template>
-            </v-checkbox>
-            <v-checkbox
-                v-if="dataToDisplay == 'shap'"
-                v-for="(shapKey, index) of unselectedShaps"
-                v-model="selectedShaps"
-                :key="shapKey"
-                :value="shapKey"
-                :ripple="false"
-                density="compact"
-                hide-details
-                multiple
-            >
-                <template #label>
-                    <span class="text-caption" v-text="ShapName[shapKey]" />
-                </template>
-            </v-checkbox>
+                </div>
+                <v-checkbox
+                    v-for="(shapKey, index) of selectedShaps"
+                    v-model="selectedShaps"
+                    :key="shapKey"
+                    :label="ShapName[shapKey]"
+                    :value="shapKey"
+                    :ripple="false"
+                    :color="lineColors[index]"
+                    density="compact"
+                    hide-details
+                    multiple
+                >
+                    <template #label>
+                        <span
+                            class="text-caption"
+                            :style="{ color: lineColors[index] }"
+                            v-text="ShapName[shapKey]"
+                        />
+                    </template>
+                </v-checkbox>
+                <v-checkbox
+                    v-for="(shapKey, index) of unselectedShaps"
+                    v-model="selectedShaps"
+                    :key="shapKey"
+                    :value="shapKey"
+                    :ripple="false"
+                    density="compact"
+                    hide-details
+                    multiple
+                >
+                    <template #label>
+                        <span class="text-caption" v-text="ShapName[shapKey]" />
+                    </template>
+                </v-checkbox>
+            </div>
         </div>
 
         <TimeLineSlider
@@ -192,6 +208,21 @@ const emit = defineEmits<{
 
 type ShapKey = Exclude<keyof typeof ShapName, 'shapSum'>;
 
+const AggregationTypeMap = {
+    average: 'Durchschnitt',
+    median: 'Median',
+    min: 'Minimum',
+    max: 'Maximum',
+    std: 'Standardabweichung',
+    range: 'Bereich',
+} as const;
+
+type AggregationType = keyof typeof AggregationTypeMap;
+
+const aggregationTypesArray: AggregationType[] = Object.keys(
+    AggregationTypeMap
+) as AggregationType[];
+
 const shapKeysArray: ShapKey[] = Object.keys(ShapName).filter(
     (key) => key !== 'shapSum'
 ) as ShapKey[];
@@ -210,6 +241,8 @@ const isCursorIn = ref(false);
 
 const selectedParkingGarages = ref<ParkingGarageName[]>([]);
 const selectedShaps = ref<ShapKey[]>([]);
+
+const selectedAggregationType = ref<AggregationType>('average');
 
 const unselectedShaps = computed<ShapKey[]>(() =>
     shapKeysArray.filter((shap) => !selectedShaps.value.includes(shap))
@@ -317,6 +350,7 @@ watch(
         dataToDisplay.value,
         selectedParkingGarages.value,
         selectedShaps.value,
+        selectedAggregationType.value,
     ],
     () => {
         renderChart();
@@ -490,8 +524,9 @@ function renderLines(
     // Add a cursor line element
     const cursorLine = svg
         .append('line')
-        .style('stroke', 'grey')
-        .style('stroke-width', 2)
+        .style('stroke', 'black')
+        .style('opacity', 0.4)
+        .style('stroke-width', 1)
         .attr('x1', 0)
         .attr('y1', 0)
         .attr('x2', 0)
@@ -561,24 +596,106 @@ function renderLines(
     });
 }
 
-function extractData(property: ShapKey[]): Map<string, number[]> {
-    const map = new Map<string, number[]>();
+function extractData(properties: ShapKey[]): Map<ShapKey, number[]> {
+    const mapByParkingGarage = new Map<ParkingGarageName, Map<ShapKey, number[]>>();
 
-    Array.from(props.parkingGarages.get(ParkingGarageName.CityPort)?.predictions.entries() ?? [])
-        .filter(
-            ([key]) =>
-                key >= props.filter.selectedRange.startDate.getTime() &&
-                key <= props.filter.selectedRange.endDate.getTime()
-        )
-        .forEach(([_, value]) =>
-            property.forEach((name) => {
-                const values = map.get(name) ?? [];
-                values.push(value[name]);
-                map.set(name, values);
-            })
+    selectedParkingGarages.value.forEach((garage) => {
+        const map = mapByParkingGarage.get(garage) ?? new Map<ShapKey, number[]>();
+
+        Array.from(props.parkingGarages.get(garage)?.predictions.entries() ?? [])
+            .filter(
+                ([key]) =>
+                    key >= props.filter.selectedRange.startDate.getTime() &&
+                    key <= props.filter.selectedRange.endDate.getTime()
+            )
+            .forEach(([_, value]) =>
+                properties.forEach((feature) => {
+                    const values = map.get(feature) ?? [];
+                    values.push(value[feature]);
+
+                    map.set(feature, values);
+                })
+            );
+
+        mapByParkingGarage.set(garage, map);
+    });
+
+    if (selectedParkingGarages.value.length == 1) {
+        return (
+            mapByParkingGarage.get(selectedParkingGarages.value[0]) ??
+            _throw('Something went wrong.')
         );
+    }
 
-    return map;
+    return aggregateData(mapByParkingGarage, properties);
+}
+
+function aggregateData(
+    data: Map<ParkingGarageName, Map<ShapKey, number[]>>,
+    properties: ShapKey[]
+): Map<ShapKey, number[]> {
+    const aggregatedValuesMap = new Map<ShapKey, number[]>();
+
+    properties.forEach((feature) => {
+        const aggregatedValues: number[] = [];
+
+        // Gather all SHAP values for the current feature across all garages
+        const allFeatureValuesByIndex: number[][] = [];
+        selectedParkingGarages.value.forEach((garage) => {
+            const featureValues = data.get(garage)?.get(feature) ?? [];
+
+            featureValues.forEach((value, index) => {
+                allFeatureValuesByIndex[index] = allFeatureValuesByIndex[index] ?? [];
+                allFeatureValuesByIndex[index].push(value);
+            });
+        });
+
+        // Compute aggregation for each index
+        allFeatureValuesByIndex.forEach((valuesAtIndex, index) => {
+            switch (selectedAggregationType.value) {
+                // case 'sum':
+                //     aggregatedValues[index] = valuesAtIndex.reduce((sum, val) => sum + val, 0);
+                //     break;
+                case 'average':
+                    aggregatedValues[index] =
+                        valuesAtIndex.reduce((sum, val) => sum + val, 0) /
+                        selectedParkingGarages.value.length;
+                    break;
+                case 'median':
+                    valuesAtIndex.sort((a, b) => a - b);
+                    const mid = Math.floor(valuesAtIndex.length / 2);
+                    aggregatedValues[index] =
+                        valuesAtIndex.length % 2 === 0
+                            ? (valuesAtIndex[mid - 1] + valuesAtIndex[mid]) / 2
+                            : valuesAtIndex[mid];
+                    break;
+                case 'min':
+                    aggregatedValues[index] = Math.min(...valuesAtIndex);
+                    break;
+                case 'max':
+                    aggregatedValues[index] = Math.max(...valuesAtIndex);
+                    break;
+                case 'std':
+                    const mean =
+                        valuesAtIndex.reduce((sum, val) => sum + val, 0) / valuesAtIndex.length;
+                    aggregatedValues[index] = Math.sqrt(
+                        valuesAtIndex.reduce((acc, val) => acc + Math.pow(val - mean, 2), 0) /
+                            valuesAtIndex.length
+                    );
+                    break;
+                case 'range':
+                    aggregatedValues[index] =
+                        Math.max(...valuesAtIndex) - Math.min(...valuesAtIndex);
+                    break;
+                default:
+                    throw new Error(`Unknown aggregation type: ${selectedAggregationType.value}`);
+            }
+        });
+
+        aggregatedValuesMap.set(feature, aggregatedValues);
+    });
+
+    return aggregatedValuesMap;
 }
 </script>
 
