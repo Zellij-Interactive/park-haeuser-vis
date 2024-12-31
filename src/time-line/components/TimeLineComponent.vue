@@ -7,18 +7,42 @@
             top: `${tooltipData.y}px`,
         }"
     >
-        <v-card class="tooltip-text pa-1">
-            <div>
-                <b>SHAP-Wert: </b>
-                <span v-text="tooltipData.shapValue.toFixed(2)" />
+        <v-card class="pa-1" max-width="300px" elevation="0" border="thin">
+            <div class="d-flex ">
+                <div>
+                    <b>Uhrzeit: </b>
+                    <span v-text="formatHour(tooltipData.date)" />
+                </div>
+                <div class="pl-8">
+                    <b>Datum: </b>
+                    <span v-text="formatDate(tooltipData.date)" />
+                </div>
             </div>
-            <div>
-                <b>Uhrzeit: </b>
-                <span v-text="formatHour(tooltipData.date)" />
+            <div
+                v-if="dataToDisplay == 'prediction'"
+                v-for="(value, name, index) in tooltipData.predictionValues"
+                :key="name"
+                :style="{ color: lineColors[index] }"
+            >
+                <b>{{ ParkingGarageName[name] }}: </b>
+                <span v-text="value.toFixed(2)" />
             </div>
-            <div>
-                <b>Datum: </b>
-                <span v-text="formatDate(tooltipData.date)" />
+            <div v-else>
+                <div>
+                    <b>Parkhäuser: </b>
+                    <span
+                        v-for="(name, index) in selectedParkingGarages"
+                        v-text="`${name}${selectedParkingGarages.length == index + 1 ? '' : ', '}`"
+                    />
+                </div>
+                <div
+                    v-for="(value, key, index) in tooltipData.shapValues"
+                    :key="key"
+                    :style="{ color: lineColors[index] }"
+                >
+                    <b>{{ ShapName[key] }}: </b>
+                    <span v-text="value.toFixed(2)" />
+                </div>
             </div>
         </v-card>
     </div>
@@ -235,7 +259,8 @@ const tooltipData = ref({
     x: 0,
     y: 0,
     date: new Date(),
-    shapValue: 0,
+    predictionValues: {} as Record<ParkingGarageName, number>,
+    shapValues: {} as Record<ShapKey, number>,
 });
 const isCursorIn = ref(false);
 
@@ -487,14 +512,12 @@ function renderChart() {
     //     .style('font-family', 'sans-serif')
     //     .text('Parkhausauslastung Vorhersage');
 
-    for (let i = 0; i < data.value.length; i++) {
-        const currentData = dates.value.map((date, index) => ({
-            date: date,
-            value: data.value[i][index],
-        }));
+    const allData = dates.value.map((date, index) => {
+        const values = data.value.map((lineData) => lineData[index]);
+        return { date, values };
+    });
 
-        renderLines(svg, xScale, yScale, tooltip, currentData, lineColors.value[i]);
-    }
+    renderLines(svg, xScale, yScale, tooltip, allData);
 }
 
 function renderLines(
@@ -502,8 +525,7 @@ function renderLines(
     xScale: d3.ScaleTime<number, number, never>,
     yScale: d3.ScaleLinear<number, number, never>,
     tooltip: d3.Selection<HTMLDivElement, unknown, HTMLElement, any>,
-    data: { date: Date; value: number }[],
-    color: string
+    allData: { date: Date; values: number[] }[]
 ) {
     if (!chart.value) return;
 
@@ -513,18 +535,25 @@ function renderLines(
         .x((d) => xScale(d.date))
         .y((d) => yScale(d.value));
 
-    // Add the line path to the SVG element
-    svg.append('path')
-        .datum(data)
-        .attr('fill', 'none')
-        .attr('stroke', color)
-        .attr('stroke-width', 2)
-        .attr('d', line);
+    // Add the line paths to the SVG element
+    data.value.forEach((lineData, lineIndex) => {
+        const currentData = dates.value.map((date, index) => ({
+            date: date,
+            value: lineData[index],
+        }));
+
+        svg.append('path')
+            .datum(currentData)
+            .attr('fill', 'none')
+            .attr('stroke', lineColors.value[lineIndex])
+            .attr('stroke-width', 2)
+            .attr('d', line);
+    });
 
     // Add a cursor line element
     const cursorLine = svg
         .append('line')
-        .style('stroke', 'black')
+        .style('stroke', props.darkModeOn ? 'white' : 'black')
         .style('opacity', 0.4)
         .style('stroke-width', 1)
         .attr('x1', 0)
@@ -544,12 +573,11 @@ function renderLines(
         const [xCoord, yCoord] = d3.pointer(event, this);
         const bisectDate = d3.bisector((d: { date: Date }) => d.date).left;
         const x0 = xScale.invert(xCoord);
-        const i = bisectDate(data, x0, 1);
-        const d0 = data[i - 1];
-        const d1 = data[i];
+        const i = bisectDate(allData, x0, 1);
+        const d0 = allData[i - 1];
+        const d1 = allData[i];
         const d = x0.getTime() - d0.date.getTime() > d1.date.getTime() - x0.getTime() ? d1 : d0;
         const xPos = xScale(d.date);
-        const yPos = yScale(d.value);
 
         // Update the cursor line position
         cursorLine
@@ -560,23 +588,23 @@ function renderLines(
             .attr('x2', xScale(d.date))
             .attr('y2', yScale(minMax.value.min));
 
-        // Add transition for the circle radius
-        //circle.transition().duration(50).attr('r', 5);
-
         tooltipData.value.x = event.pageX + 8;
         tooltipData.value.y = yCoord + 10;
         tooltipData.value.date = d.date;
-        tooltipData.value.shapValue = d.value;
-
-        // Add in our tooltip
-        // tooltip
-        //     .style('display', 'block')
-        //     .style('left', `${xPos}px`)
-        //     .style('top', `${yPos}px`)
-        //     .style('position', 'absolute')
-        //     .html(
-        //         `<strong>Date:</strong>${formatDate(d.date)}<br><strong>Wert:</strong> ${d.value !== undefined ? d.value : 'N/A'}`
-        //     );
+        tooltipData.value.shapValues = selectedShaps.value.reduce(
+            (acc, shapKey, index) => {
+                acc[shapKey] = d.values[index];
+                return acc;
+            },
+            {} as Record<ShapKey, number>
+        );
+        tooltipData.value.predictionValues = selectedParkingGarages.value.reduce(
+            (acc, parkingGarage, index) => {
+                acc[parkingGarage] = d.values[index];
+                return acc;
+            },
+            {} as Record<ParkingGarageName, number>
+        );
 
         isCursorIn.value = true;
 
@@ -749,8 +777,9 @@ function aggregateData(
 
 .tooltip {
     position: absolute;
-    opacity: 0.7;
+    opacity: 0.8;
     z-index: 2;
+    font-size: 13px;
 }
 
 /* scrollbar styling */
