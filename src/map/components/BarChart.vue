@@ -3,7 +3,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, onMounted } from 'vue';
+import { ref, watch, onMounted, computed } from 'vue';
 import * as d3 from 'd3';
 import { _throw } from '@/core/_throw';
 import { type SHAPValue } from '@/parkingGarage/types/shapNames';
@@ -22,6 +22,10 @@ const chart = ref<HTMLDivElement | null>(null);
 
 const width = 320;
 const height = 200;
+
+const barColors = computed(() =>
+    props.darkModeOn ? ['#33b1ff', '#fa4d56'] : ['#1192e8', '#fa4d56']
+);
 
 function renderHorizontalChart(data: SHAPValue[], title: string | undefined) {
     if (!chart.value) return;
@@ -60,31 +64,28 @@ function renderHorizontalChart(data: SHAPValue[], title: string | undefined) {
 
     // Draw horizontal grid lines
     svg.selectAll('.line')
-        .data(data)
+        .data(data.slice(1))
         .enter()
         .append('line')
-        .style('stroke-width', 1)
-        .style('stroke', props.darkModeOn ? 'white' : 'black')
-        .attr('stroke-opacity', strokeOpacity / 3)
+        .attr('stroke', '#e0e0e0')
+        .attr('stroke-width', 0.5)
         .attr('x1', 0)
         .attr('y1', (d, i) => yScale(d.name) || 0)
         .attr('x2', xScale(props.filter.maxShapValue))
-        .attr('y2', (d, i) => yScale(d.name) || 0)
-        .style('stroke-dasharray', '2, 2');
+        .attr('y2', (d, i) => yScale(d.name) || 0);
 
     // Draw vertical grid lines
     svg.selectAll('.line')
-        .data(data)
+        .data(xScale.ticks().slice(2))
         .enter()
         .append('line')
-        .style('stroke-width', 1)
-        .style('stroke', props.darkModeOn ? 'white' : 'black')
-        .attr('stroke-opacity', strokeOpacity / 3)
+        .attr('stroke', '#e0e0e0')
+        .attr('stroke-width', 0.5)
         .attr('x1', (d, i) => xScale(-25 + i * 5))
         .attr('y1', 0)
         .attr('x2', (d, i) => xScale(-25 + i * 5))
         .attr('y2', yScale.bandwidth() * 16 + 5)
-        .style('stroke-dasharray', '2, 2');
+        .attr('transform', `translate(15, 0)`);
 
     // Draw bars
     svg.selectAll('.bar')
@@ -96,9 +97,9 @@ function renderHorizontalChart(data: SHAPValue[], title: string | undefined) {
         .attr('x', (d) => xScale(Math.min(0, d.value)))
         .attr('width', (d) => Math.abs(xScale(d.value) - xScale(0)))
         .attr('height', yScale.bandwidth())
-        .attr('fill', (d) => (d.value > 0 ? 'steelblue' : 'tomato'))
-        .attr('stroke', 'black')
-        .attr('stroke-opacity', strokeOpacity);
+        .attr('fill', (d) => (d.value > 0 ? barColors.value[0] : barColors.value[1]))
+        .attr('stroke-opacity', strokeOpacity)
+        .attr('transform', 'translate(0, 1)');
 
     // Draw vertical centered line
     svg.selectAll('.line')
@@ -114,20 +115,23 @@ function renderHorizontalChart(data: SHAPValue[], title: string | undefined) {
         .attr('y2', (d) => yScale.bandwidth() * 16 + 5);
 
     // Add Y axis
-    svg.append('g').call(d3.axisLeft(yScale));
+    svg.append('g').call(d3.axisLeft(yScale)).style('stroke-opacity', 0);
 
     // Add X axis
-    svg.append('g').attr('transform', `translate(0,${innerHeight})`).call(d3.axisBottom(xScale));
+    svg.append('g')
+        .attr('transform', `translate(0,${innerHeight})`)
+        .call(d3.axisBottom(xScale))
+        .style('stroke-opacity', 0);
 
     // Add title
-    if (title) {
-        svg.append('text')
-            .attr('x', innerWidth / 2)
-            .attr('y', -margin.top / 2)
-            .attr('text-anchor', 'middle')
-            .style('font-size', '14px')
-            .text(title);
-    }
+    // if (title) {
+    //     svg.append('text')
+    //         .attr('x', innerWidth / 2)
+    //         .attr('y', -margin.top / 2)
+    //         .attr('text-anchor', 'middle')
+    //         .style('font-size', '14px')
+    //         .text(title);
+    // }
 
     // Add title
     // svg.append('text')
@@ -147,11 +151,4 @@ watch(
 );
 </script>
 
-<style>
-.bar {
-    opacity: 0.8;
-}
-.bar:hover {
-    opacity: 1;
-}
-</style>
+<style></style>

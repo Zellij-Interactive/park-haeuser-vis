@@ -1,8 +1,9 @@
 <template>
     <InfoWindow :options="props.options">
-        <div
-            class="info-window d-flex flex-column px-4 pb-4"
+        <v-card
+            class="info-window d-flex flex-column pa-4"
             :style="{ width: `${props.filter.showSHAPValues ? '340px' : '230px'}` }"
+            elevation="0"
         >
             <b class="text-center text-primary pb-4" v-text="props.parkingGarage.name" />
 
@@ -10,7 +11,8 @@
 
             <span>
                 <b>Koordinaten:</b> B {{ formatNumber(props.parkingGarage.location.latitude, 4) }},
-                L {{ formatNumber(props.parkingGarage.location.longitude, 4) }}
+                L
+                {{ formatNumber(props.parkingGarage.location.longitude, 4) }}
             </span>
 
             <span>
@@ -40,7 +42,7 @@
                 :filter="props.filter"
                 :dark-mode-on="props.darkModeOn"
             />
-        </div>
+        </v-card>
     </InfoWindow>
 </template>
 
@@ -97,7 +99,8 @@ const shapValues = computed<SHAPValue[]>(() => {
 }
 
 /* Hide the default google close button */
-.gm-ui-hover-effect {
+.gm-ui-hover-effect,
+.gm-style-iw-ch {
     display: none !important;
 }
 
