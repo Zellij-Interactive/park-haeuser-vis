@@ -8,10 +8,10 @@
 
             <span><b>Maximale Auslastung:</b> {{ props.parkingGarage.maximalOccupancy }}</span>
 
-            <span
-                ><b>Koordinaten:</b> B {{ formatNumber(props.parkingGarage.location.latitude, 4) }},
-                L {{ formatNumber(props.parkingGarage.location.longitude, 4) }}</span
-            >
+            <span>
+                <b>Koordinaten:</b> B {{ formatNumber(props.parkingGarage.location.latitude, 4) }},
+                L {{ formatNumber(props.parkingGarage.location.longitude, 4) }}
+            </span>
 
             <span>
                 <b>Vorhersage:</b>
