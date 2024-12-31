@@ -156,24 +156,6 @@ function toggleDetails(p: ParkingGarageName) {
     z-index: 0;
 }
 
-.custom-btn {
-    box-sizing: border-box;
-    background: white;
-    height: 40px;
-    width: 40px;
-    border-radius: 2px;
-    border: 0px;
-    margin: 10px;
-    padding: 0px;
-    font-size: 1.25rem;
-    text-transform: none;
-    appearance: none;
-    cursor: pointer;
-    user-select: none;
-    box-shadow: rgba(0, 0, 0, 0.3) 0px 1px 4px -1px;
-    overflow: hidden;
-}
-
 .gm-ui-hover-effect,
 .gm-fullscreen-control,
 .gm-style-mtc,
