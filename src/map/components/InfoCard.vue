@@ -32,11 +32,6 @@
 
             <span v-if="props.filter.showSHAPValues">
                 <b>SHAP-Werte:</b>
-                <span
-                    v-text="
-                        ` S. = ${props.parkingGarage.predictions.get(props.filter.index)?.shapSum}`
-                    "
-                ></span>
             </span>
 
             <BarChart
