@@ -533,7 +533,8 @@ function renderLines(
     const line = d3
         .line<{ date: Date; value: number }>()
         .x((d) => xScale(d.date))
-        .y((d) => yScale(d.value));
+        .y((d) => yScale(d.value))
+        .curve(d3.curveBasis);;
 
     // Add the line paths to the SVG element
     data.value.forEach((lineData, lineIndex) => {
