@@ -8,7 +8,7 @@
         }"
     >
         <v-card class="pa-1" max-width="300px" elevation="0" border="thin">
-            <div class="d-flex ">
+            <div class="d-flex">
                 <div>
                     <b>Uhrzeit: </b>
                     <span v-text="formatHour(tooltipData.date)" />
@@ -217,6 +217,7 @@ import { _throw } from '@/core/_throw';
 import { hourInMilliseconds } from '@/core/dateRange';
 import { ShapName } from '@/parkingGarage/types/shapNames';
 import { formatDate, formatHour } from '@/core/dateRange';
+import { getCategoricalColorPalette } from '@/core/colors';
 
 const props = defineProps<{
     parkingGarages: Map<ParkingGarageName, ParkingGarage>;
@@ -274,37 +275,7 @@ const unselectedShaps = computed<ShapKey[]>(() =>
 );
 
 const lineColors = computed(() =>
-    props.darkModeOn
-        ? [
-              '#33b1ff',
-              '#fa4d56',
-              '#8a3ffc',
-              '#007d79',
-              '#6fdc8c',
-              '#ff7eb6',
-              '#d2a106',
-              '#4589ff',
-              '#08bdba',
-              '#d4bbff',
-              '#ba4e00',
-              '#d12771',
-              '#bae6ff',
-          ]
-        : [
-              '#1192e8',
-              '#fa4d56',
-              '#6929c4',
-              '#005d5d',
-              '#198038',
-              '#b28600',
-              '#9f1853',
-              '#570408',
-              '#8a3800',
-              '#ee538b',
-              '#009d9a',
-              '#a56eff',
-              '#012749',
-          ]
+    getCategoricalColorPalette(props.darkModeOn, props.filter.colorBlindMode)
 );
 
 // Chart dimensions
@@ -534,7 +505,7 @@ function renderLines(
         .line<{ date: Date; value: number }>()
         .x((d) => xScale(d.date))
         .y((d) => yScale(d.value))
-        .curve(d3.curveBasis);;
+        .curve(d3.curveBasis);
 
     // Add the line paths to the SVG element
     data.value.forEach((lineData, lineIndex) => {
