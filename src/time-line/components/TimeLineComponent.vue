@@ -369,7 +369,7 @@ function renderChart() {
     d3.select(chart.value).selectAll('*').remove();
 
     // Create tooltip
-    const tooltip = d3.select('body').append('div').attr('class', 'tooltip');
+    const tooltip = d3.select(chart.value).append('div').attr('class', 'tooltip');
 
     // Create SVG container
     const svg = d3
@@ -495,7 +495,7 @@ function renderLines(
     svg: d3.Selection<SVGGElement, unknown, null, undefined>,
     xScale: d3.ScaleTime<number, number, never>,
     yScale: d3.ScaleLinear<number, number, never>,
-    tooltip: d3.Selection<HTMLDivElement, unknown, HTMLElement, any>,
+    tooltip: d3.Selection<HTMLDivElement, unknown, null, undefined>,
     allData: { date: Date; values: number[] }[]
 ) {
     if (!chart.value) return;
