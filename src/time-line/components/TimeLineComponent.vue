@@ -393,20 +393,44 @@ function renderChart() {
         .range([innerHeight, 0])
         .domain([minMax.value.min, minMax.value.max]);
 
+    // Determine the appropriate tick interval and format based on the date range
+    const dateRange =
+        props.filter.selectedRange.endDate.getTime() -
+        props.filter.selectedRange.startDate.getTime();
+    let tickInterval, tickFormat;
+    if (dateRange <= 7 * 24 * 60 * 60 * 1000) {
+        // less than or equal to 1 week
+        tickInterval = d3.timeDay.every(1);
+        tickFormat = d3.timeFormat('%d %b');
+    } else if (dateRange <= 30 * 24 * 60 * 60 * 1000) {
+        // less than or equal to 1 month
+        tickInterval = d3.timeWeek.every(1);
+        tickFormat = d3.timeFormat('%d %b');
+    } else {
+        tickInterval = d3.timeMonth.every(1);
+        tickFormat = d3.timeFormat('%b %Y');
+    }
+
     // Add the x-axis
-    svg.append('g')
+    const xAxis = svg
+        .append('g')
         .attr('transform', `translate(0,${innerHeight - 5})`)
         .style('font-size', '14px')
         .call(
             d3
                 .axisBottom(xScale)
-                .ticks(d3.timeMonth.every(1))
-                .tickFormat(d3.timeFormat('%b %Y') as (value: Date | d3.NumberValue) => string)
+                .ticks(tickInterval)
+                .tickFormat(tickFormat as (value: Date | d3.NumberValue) => string)
         )
         .call((g) => g.select('.domain').remove())
         .selectAll('.tick line')
         .style('stroke-opacity', 0);
-    svg.selectAll('.tick text').attr('fill', '#777');
+
+    xAxis
+        .selectAll('.tick text')
+        .attr('fill', '#777')
+        .attr('transform', 'rotate(-45)')
+        .style('text-anchor', 'end');
 
     // Add the y-axis
     svg.append('g')
