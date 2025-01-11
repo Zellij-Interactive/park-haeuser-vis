@@ -57,8 +57,7 @@ export const useParkingGarageStore = defineStore('parking-garage', {
             this.filter.maxShapValue = globalMax;
             this.filter.minShapValue = globalMin;
 
-            // TODO uncomment
-            //await new Promise((resolve) => setTimeout(resolve, 3000));
+            await new Promise((resolve) => setTimeout(resolve, 2000));
 
             return parkingGarages;
         },

@@ -294,7 +294,9 @@ watchEffect(() => keepFilterUpdated());
 function onApplyClick() {
     unsavedFilter.value.dateRange = new DateRange(
         unsavedFilter.value.dateRange.startDate,
-        addHours(new Date(unsavedFilter.value.dateRange.endDate), 23)
+        unsavedFilter.value.dateRange.endDate.getTime() <= new Date('2025-12-31').getTime()
+            ? addHours(new Date(unsavedFilter.value.dateRange.endDate), 23)
+            : unsavedFilter.value.dateRange.endDate
     );
     emit('update:filter', unsavedFilter.value);
 
