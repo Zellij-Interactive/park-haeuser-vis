@@ -12,7 +12,7 @@ Department of Technology, Applied Computer Science
 
 Dr. Prof. Ing. Klaus Böhm
 
-Conception and development: Karim Ouhammi, Walid Beladdad
+Conception and development: Karim Ouhammi and Walid Beladdad
 
 Demo: https://www.youtube.com/watch?v=ARAVtoIdNk0
 
