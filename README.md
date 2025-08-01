@@ -17,9 +17,7 @@ The main goal is to provide a visual interface for analyzing the predictions of 
 
 A machine learning model (XGBoost) was developed to predict parking occupancy at various garages in Mainz. The first task is to visualize the predictions and the model's quality geographically. Since the dashboard is designed for forecasts (e.g., up to the year 2025), the true values for the future are unknown. However, historical performance at specific times is known, and this information can be used to assess model quality and build trust through transparency.
 
-To enhance interpretability, the project uses **Explainable AI (XAI)** techniques — specifically **SHAP (SHapley Additive exPlanations)** ([docs](https://shap.readthedocs.io/en/stable/)). SHAP provides local explanations for each prediction, showing how different features influenced the outcome. These are visualized through intuitive plots.
-
-Your task is to integrate SHAP explanations into the existing visualization and build a system that allows comparison of model performance across ~10 selected parking locations. Spatial and temporal components need to be incorporated into the visuals. This could include filters, animations, or even 3D visualizations.
+To enhance interpretability, the project uses **Explainable AI (XAI)** techniques — specifically **SHAP (SHapley Additive exPlanations)** ([docs](https://shap.readthedocs.io/en/stable/)). SHAP provides local explanations for each prediction, showing how different features influenced the outcome.
 
 ---
 
